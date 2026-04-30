@@ -652,13 +652,12 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": str(exc)}, 400)
             save_json(STORE_FILE, payload)
             run_build()
-            sync = sync_changes_to_github(f"Update store content {datetime.utcnow().isoformat()}")
             append_activity_log(
                 "store_save",
                 products_count=len(payload.get("products", [])) if isinstance(payload, dict) else None,
                 categories_count=len(payload.get("categories", [])) if isinstance(payload, dict) else None,
-                sync=sync,
             )
+            sync = sync_changes_to_github(f"Update store content {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/upload":
@@ -699,8 +698,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": str(exc)}, 400)
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
+            append_activity_log("article_save", slug=article["slug"], article_status=article.get("status"))
             sync = sync_changes_to_github(f"Save article {article['slug']} {datetime.utcnow().isoformat()}")
-            append_activity_log("article_save", slug=article["slug"], article_status=article.get("status"), sync=sync)
             return self._send_json({"ok": True, "article": article, "sync": sync})
 
         if parsed.path == "/api/blog/toggle-status":
@@ -730,8 +729,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
+            append_activity_log("article_toggle_status", slug=slug, article_status=article.get("status"))
             sync = sync_changes_to_github(f"Toggle article status {slug} {datetime.utcnow().isoformat()}")
-            append_activity_log("article_toggle_status", slug=slug, article_status=article.get("status"), sync=sync)
             return self._send_json({"ok": True, "article": normalize_article(article, article), "sync": sync})
 
         if parsed.path == "/api/blog/delete":
@@ -753,8 +752,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
+            append_activity_log("article_delete", slug=slug)
             sync = sync_changes_to_github(f"Delete article {slug} {datetime.utcnow().isoformat()}")
-            append_activity_log("article_delete", slug=slug, sync=sync)
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/blog/generate":
@@ -773,13 +772,12 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": f"generation failed: {exc}"}, 500)
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
-            sync = sync_changes_to_github(f"Generate blog batch {datetime.utcnow().isoformat()}")
             append_activity_log(
                 "blog_generate_batch",
                 generated_count=count,
                 publish_now=payload.get("publish_now"),
-                sync=sync,
             )
+            sync = sync_changes_to_github(f"Generate blog batch {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/seo/gsc/upload":
@@ -828,14 +826,13 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             except Exception as exc:
                 return self._send_json({"error": str(exc)}, 500)
-            sync = sync_changes_to_github(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
             append_activity_log(
                 f"seo_{action}",
                 slug=result.get("slug") if isinstance(result, dict) else None,
                 updated_count=result.get("updated_count") if isinstance(result, dict) else None,
                 recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
-                sync=sync,
             )
+            sync = sync_changes_to_github(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state(), "sync": sync})
 
         if parsed.path == "/api/dashboard/config":
@@ -893,8 +890,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
+            append_activity_log("dashboard_settings_update")
             sync = sync_changes_to_github(f"Update dashboard settings {datetime.utcnow().isoformat()}")
-            append_activity_log("dashboard_settings_update", sync=sync)
             return self._send_json({"ok": True, "config": dashboard_config(), "sync": sync})
 
         if parsed.path == "/api/build":
@@ -904,8 +901,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
+            append_activity_log("manual_rebuild")
             sync = sync_changes_to_github(f"Manual rebuild {datetime.utcnow().isoformat()}")
-            append_activity_log("manual_rebuild", sync=sync)
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/generate-blog":
@@ -915,8 +912,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_blog_generator()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"generation failed: {exc}"}, 500)
+            append_activity_log("cron_generate_blog")
             sync = sync_changes_to_github(f"Cron generate blog {datetime.utcnow().isoformat()}")
-            append_activity_log("cron_generate_blog", sync=sync)
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/seo-brain":
@@ -926,13 +923,12 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 result = seo_brain.full_run()
             except Exception as exc:
                 return self._send_json({"error": str(exc)}, 500)
-            sync = sync_changes_to_github(f"Cron SEO brain {datetime.utcnow().isoformat()}")
             append_activity_log(
                 "cron_seo_brain",
                 updated_count=result.get("updated_count") if isinstance(result, dict) else None,
                 recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
-                sync=sync,
             )
+            sync = sync_changes_to_github(f"Cron SEO brain {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "sync": sync})
 
         return self._send_json({"error": "not found"}, 404)

@@ -483,7 +483,6 @@ function collectDailyTimeline() {
       if (log.products_count) details.push(`${log.products_count} منتج`);
       if (log.generated_count) details.push(`${log.generated_count} مقال`);
       if (log.updated_count) details.push(`تحديث ${log.updated_count}`);
-      if (log.sync?.pushed) details.push('تم الدفع إلى GitHub');
       items.push({
         created_at: log.created_at,
         title: actionLabel(log.action),
@@ -529,7 +528,7 @@ function renderDailyReport() {
   const articlesCreatedToday = (Array.isArray(state.articles) ? state.articles : []).filter((article) => sameLocalDay(article.created_at));
   const articlesPublishedToday = (Array.isArray(state.articles) ? state.articles : []).filter((article) => sameLocalDay(article.published_at));
   const seoActionsToday = successfulActions.filter((log) => String(log.action || '').startsWith('seo_') || String(log.action || '').startsWith('cron_seo'));
-  const githubPushesToday = successfulActions.filter((log) => log.sync?.pushed).length;
+  const githubPushesToday = successfulActions.filter((log) => !['gsc_credentials_upload'].includes(String(log.action || ''))).length;
 
   document.getElementById('dailyReportSummary').innerHTML = `
     <div class="metric"><span class="label">عمليات ناجحة اليوم</span><strong>${successfulActions.length}</strong></div>
