@@ -25,6 +25,35 @@ ENV_FILE = BASE_DIR / ".env"
 BUILD_SCRIPT = BASE_DIR / "build_content.py"
 BLOG_GENERATOR = BASE_DIR / "generateDailyBlog.js"
 GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
+SEO_AUDIT_FILE = BASE_DIR / "data" / "seo_audit.json"
+SEO_BRAIN_LOG_FILE = BASE_DIR / "data" / "seo_brain_log.json"
+PRODUCT_SCHEMA_FILE = BASE_DIR / "data" / "product-schema.json"
+AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
+SITEMAP_FILE = BASE_DIR / "sitemap.xml"
+ROBOTS_FILE = BASE_DIR / "robots.txt"
+LLMS_FILE = BASE_DIR / "llms.txt"
+SYNC_PATHS = [
+    STORE_FILE,
+    SITE_FILE,
+    BLOG_DIR,
+    BLOG_LOG_FILE,
+    SEO_AUDIT_FILE,
+    SEO_BRAIN_LOG_FILE,
+    PRODUCT_SCHEMA_FILE,
+    AI_CATALOG_FILE,
+    BASE_DIR / "blog",
+    BASE_DIR / "services",
+    BASE_DIR / "store",
+    BASE_DIR / "about",
+    BASE_DIR / "contact",
+    BASE_DIR / "privacy-policy",
+    BASE_DIR / "refund-policy",
+    BASE_DIR / "terms",
+    BASE_DIR / "admin" / "blog" / "index.html",
+    SITEMAP_FILE,
+    ROBOTS_FILE,
+    LLMS_FILE,
+]
 
 
 def slugify(value: str) -> str:
@@ -147,6 +176,79 @@ def read_blog_logs(limit: int = 20) -> list[dict]:
     return logs[:limit]
 
 
+def repo_relative(path: Path) -> str:
+    return str(path.relative_to(BASE_DIR))
+
+
+def git_sync_enabled(env: dict[str, str]) -> bool:
+    return (
+        str(env.get("AUTO_PUSH_CHANGES", "true")).lower() != "false"
+        and bool(env.get("GITHUB_TOKEN"))
+        and bool(env.get("GITHUB_REPO"))
+    )
+
+
+def sync_changes_to_github(commit_message: str, extra_paths: list[Path] | None = None) -> dict:
+    env = load_env()
+    if not git_sync_enabled(env):
+        return {"ok": False, "skipped": True, "reason": "git sync not configured"}
+
+    token = env["GITHUB_TOKEN"].strip()
+    repo = env["GITHUB_REPO"].strip()
+    branch = env.get("GITHUB_BRANCH", "main").strip() or "main"
+    author_name = env.get("GIT_AUTHOR_NAME", "Respira Tech Dashboard").strip() or "Respira Tech Dashboard"
+    author_email = env.get("GIT_AUTHOR_EMAIL", "noreply@respira-tech.com").strip() or "noreply@respira-tech.com"
+
+    stage_paths = SYNC_PATHS + (extra_paths or [])
+    unique_paths: list[str] = []
+    seen: set[str] = set()
+    for path in stage_paths:
+        relative = repo_relative(path)
+        if relative not in seen:
+            seen.add(relative)
+            unique_paths.append(relative)
+
+    git_env = os.environ.copy()
+    git_env.update({
+        "GIT_AUTHOR_NAME": author_name,
+        "GIT_AUTHOR_EMAIL": author_email,
+        "GIT_COMMITTER_NAME": author_name,
+        "GIT_COMMITTER_EMAIL": author_email,
+        "GIT_TERMINAL_PROMPT": "0",
+    })
+
+    def run_git(args: list[str]) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(
+            args,
+            cwd=BASE_DIR,
+            env=git_env,
+            text=True,
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            combined = "\n".join(part for part in [result.stdout, result.stderr] if part).strip()
+            sanitized = combined.replace(token, "***")
+            raise RuntimeError(sanitized or f"git command failed: {' '.join(args[:2])}")
+        return result
+
+    try:
+        run_git(["git", "add", "-A", "--", *unique_paths])
+        diff = subprocess.run(
+            ["git", "diff", "--cached", "--quiet"],
+            cwd=BASE_DIR,
+            env=git_env,
+        )
+        if diff.returncode == 0:
+            return {"ok": True, "skipped": True, "reason": "no staged changes"}
+
+        run_git(["git", "commit", "-m", commit_message])
+        push_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+        run_git(["git", "push", push_url, f"HEAD:{branch}"])
+        return {"ok": True, "pushed": True, "branch": branch}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+
+
 def dashboard_config() -> dict:
     env = load_env()
     site_data = load_json(SITE_FILE, {})
@@ -171,6 +273,10 @@ def dashboard_config() -> dict:
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", site.get("base_url", "https://respira-tech.com"))),
             "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
+            "auto_push_changes": str(env.get("AUTO_PUSH_CHANGES", "true")).lower() != "false",
+            "github_repo": env.get("GITHUB_REPO", ""),
+            "github_branch": env.get("GITHUB_BRANCH", "main"),
+            "github_sync_configured": git_sync_enabled(env),
         },
         "logs": read_blog_logs(),
         "articles": load_articles(),
@@ -328,7 +434,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": str(exc)}, 400)
             save_json(STORE_FILE, payload)
             run_build()
-            return self._send_json({"ok": True})
+            sync = sync_changes_to_github(f"Update store content {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/upload":
             try:
@@ -368,7 +475,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": str(exc)}, 400)
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
-            return self._send_json({"ok": True, "article": article})
+            sync = sync_changes_to_github(f"Save article {article['slug']} {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "article": article, "sync": sync})
 
         if parsed.path == "/api/blog/toggle-status":
             if not self._ensure_admin():
@@ -397,7 +505,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
-            return self._send_json({"ok": True, "article": normalize_article(article, article)})
+            sync = sync_changes_to_github(f"Toggle article status {slug} {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "article": normalize_article(article, article), "sync": sync})
 
         if parsed.path == "/api/blog/delete":
             if not self._ensure_admin():
@@ -418,7 +527,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
-            return self._send_json({"ok": True})
+            sync = sync_changes_to_github(f"Delete article {slug} {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/blog/generate":
             if not self._ensure_admin():
@@ -436,7 +546,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": f"generation failed: {exc}"}, 500)
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
-            return self._send_json({"ok": True})
+            sync = sync_changes_to_github(f"Generate blog batch {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/seo/gsc/upload":
             if not self._ensure_admin():
@@ -483,7 +594,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             except Exception as exc:
                 return self._send_json({"error": str(exc)}, 500)
-            return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state()})
+            sync = sync_changes_to_github(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state(), "sync": sync})
 
         if parsed.path == "/api/dashboard/config":
             if not self._ensure_admin():
@@ -504,6 +616,9 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 "SEO_BRAIN_AUTO": "true" if payload.get("seo_brain_auto", True) else "false",
                 "SEO_BRAIN_RUNS_PER_DAY": str(payload.get("seo_brain_runs_per_day") or 2),
                 "GSC_SITE_URL": str(payload.get("gsc_site_url") or payload.get("site_base_url") or "https://respira-tech.com").strip(),
+                "AUTO_PUSH_CHANGES": "true" if payload.get("auto_push_changes", True) else "false",
+                "GITHUB_REPO": str(payload.get("github_repo") or "").strip(),
+                "GITHUB_BRANCH": str(payload.get("github_branch") or "main").strip() or "main",
             }
             api_key = str(payload.get("openai_api_key") or "").strip()
             if api_key and api_key != "********":
@@ -514,6 +629,9 @@ class StoreHandler(SimpleHTTPRequestHandler):
             cron_secret = str(payload.get("cron_secret") or "").strip()
             if cron_secret:
                 updates["CRON_SECRET"] = cron_secret
+            github_token = str(payload.get("github_token") or "").strip()
+            if github_token:
+                updates["GITHUB_TOKEN"] = github_token
             save_env(updates)
 
             site_data = load_json(SITE_FILE, {})
@@ -534,7 +652,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
-            return self._send_json({"ok": True, "config": dashboard_config()})
+            sync = sync_changes_to_github(f"Update dashboard settings {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "config": dashboard_config(), "sync": sync})
 
         if parsed.path == "/api/build":
             if not self._ensure_admin():
@@ -543,7 +662,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_build()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
-            return self._send_json({"ok": True})
+            sync = sync_changes_to_github(f"Manual rebuild {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/generate-blog":
             if not self._cron_authorized():
@@ -552,7 +672,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 run_blog_generator()
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"generation failed: {exc}"}, 500)
-            return self._send_json({"ok": True})
+            sync = sync_changes_to_github(f"Cron generate blog {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/seo-brain":
             if not self._cron_authorized():
@@ -561,7 +682,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 result = seo_brain.full_run()
             except Exception as exc:
                 return self._send_json({"error": str(exc)}, 500)
-            return self._send_json({"ok": True, "result": result})
+            sync = sync_changes_to_github(f"Cron SEO brain {datetime.utcnow().isoformat()}")
+            return self._send_json({"ok": True, "result": result, "sync": sync})
 
         return self._send_json({"error": "not found"}, 404)
 
