@@ -86,6 +86,7 @@ const state = {
   logs: [],
   articles: [],
   seoBrain: { settings: {}, audit: {}, logs: [] },
+  activityLogs: [],
   currentThumbnail: '',
   currentGallery: [],
   selectedArticle: null
@@ -345,7 +346,11 @@ function renderSettings() {
   document.getElementById('settingGenerateImages').checked = state.settings.generate_blog_images !== false;
   document.getElementById('settingWhatsapp').value = state.settings.whatsapp_number || '';
   document.getElementById('settingBaseUrl').value = state.settings.site_base_url || '';
+  document.getElementById('settingGithubRepo').value = state.settings.github_repo || '';
+  document.getElementById('settingGithubBranch').value = state.settings.github_branch || 'main';
+  document.getElementById('settingAutoPushChanges').checked = state.settings.auto_push_changes !== false;
   document.getElementById('settingOpenAiKey').placeholder = state.settings.openai_api_key_set ? 'المفتاح محفوظ بالفعل' : 'الصق المفتاح هنا';
+  document.getElementById('settingGithubToken').placeholder = state.settings.github_sync_configured ? 'التوكن محفوظ بالفعل' : 'الصق التوكن هنا';
 }
 
 function renderLogs() {
@@ -424,6 +429,134 @@ function renderSeoBrain() {
   `).join('') : '<div class="empty-state">لا يوجد سجل SEO Brain بعد.</div>';
 }
 
+function sameLocalDay(value) {
+  if (!value) return false;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return false;
+  const now = new Date();
+  return date.getFullYear() === now.getFullYear()
+    && date.getMonth() === now.getMonth()
+    && date.getDate() === now.getDate();
+}
+
+function formatDateTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return escapeHTML(String(value));
+  return date.toLocaleString('ar-EG', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function actionLabel(action) {
+  const labels = {
+    store_save: 'حفظ المنتجات',
+    article_save: 'حفظ مقال',
+    article_toggle_status: 'تغيير حالة مقال',
+    article_delete: 'حذف مقال',
+    blog_generate_batch: 'توليد دفعة مقالات',
+    gsc_credentials_upload: 'رفع بيانات Search Console',
+    seo_audit: 'SEO Audit',
+    seo_refresh_links: 'تحديث الروابط الداخلية',
+    seo_full_run: 'تشغيل SEO Brain الكامل',
+    seo_from_url: 'إنشاء مقال من رابط',
+    dashboard_settings_update: 'حفظ الإعدادات',
+    manual_rebuild: 'إعادة بناء الصفحات',
+    cron_generate_blog: 'كرون توليد المقالات',
+    cron_seo_brain: 'كرون SEO Brain'
+  };
+  return labels[action] || action || 'عملية';
+}
+
+function collectDailyTimeline() {
+  const items = [];
+
+  (Array.isArray(state.activityLogs) ? state.activityLogs : [])
+    .filter((log) => sameLocalDay(log.created_at) && (log.status || 'success') === 'success')
+    .forEach((log) => {
+      const details = [];
+      if (log.slug) details.push(log.slug);
+      if (log.products_count) details.push(`${log.products_count} منتج`);
+      if (log.generated_count) details.push(`${log.generated_count} مقال`);
+      if (log.updated_count) details.push(`تحديث ${log.updated_count}`);
+      if (log.sync?.pushed) details.push('تم الدفع إلى GitHub');
+      items.push({
+        created_at: log.created_at,
+        title: actionLabel(log.action),
+        detail: details.join(' · ') || 'تم التنفيذ بنجاح',
+        badge: 'Activity'
+      });
+    });
+
+  (Array.isArray(state.logs) ? state.logs : [])
+    .filter((log) => sameLocalDay(log.created_at) && log.type === 'success')
+    .forEach((log) => {
+      items.push({
+        created_at: log.created_at,
+        title: 'توليد مقالات يومي',
+        detail: `${log.generated_count || (Array.isArray(log.items) ? log.items.length : 0)} مقال`,
+        badge: 'Blog'
+      });
+    });
+
+  (Array.isArray(state.seoBrain.logs) ? state.seoBrain.logs : [])
+    .filter((log) => sameLocalDay(log.created_at) && !log.error)
+    .forEach((log) => {
+      const details = [];
+      if (log.slug) details.push(log.slug);
+      if (log.updated_count) details.push(`تحديث ${log.updated_count}`);
+      if (log.recommendations_count) details.push(`توصيات ${log.recommendations_count}`);
+      items.push({
+        created_at: log.created_at,
+        title: `SEO Brain: ${actionLabel(`seo_${log.type || ''}`)}`,
+        detail: details.join(' · ') || 'تم التنفيذ',
+        badge: 'SEO'
+      });
+    });
+
+  return items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+}
+
+function renderDailyReport() {
+  const activityToday = (Array.isArray(state.activityLogs) ? state.activityLogs : []).filter((log) => sameLocalDay(log.created_at));
+  const successfulActions = activityToday.filter((log) => (log.status || 'success') === 'success');
+  const generatedRuns = (Array.isArray(state.logs) ? state.logs : []).filter((log) => sameLocalDay(log.created_at) && log.type === 'success');
+  const generatedArticles = generatedRuns.reduce((sum, log) => sum + (Number(log.generated_count) || (Array.isArray(log.items) ? log.items.length : 0)), 0);
+  const articlesCreatedToday = (Array.isArray(state.articles) ? state.articles : []).filter((article) => sameLocalDay(article.created_at));
+  const articlesPublishedToday = (Array.isArray(state.articles) ? state.articles : []).filter((article) => sameLocalDay(article.published_at));
+  const seoActionsToday = successfulActions.filter((log) => String(log.action || '').startsWith('seo_') || String(log.action || '').startsWith('cron_seo'));
+  const githubPushesToday = successfulActions.filter((log) => log.sync?.pushed).length;
+
+  document.getElementById('dailyReportSummary').innerHTML = `
+    <div class="metric"><span class="label">عمليات ناجحة اليوم</span><strong>${successfulActions.length}</strong></div>
+    <div class="metric"><span class="label">مقالات تولدت اليوم</span><strong>${generatedArticles}</strong></div>
+    <div class="metric"><span class="label">مقالات جديدة اليوم</span><strong>${articlesCreatedToday.length}</strong></div>
+    <div class="metric"><span class="label">مقالات منشورة اليوم</span><strong>${articlesPublishedToday.length}</strong></div>
+    <div class="metric"><span class="label">عمليات SEO اليوم</span><strong>${seoActionsToday.length}</strong></div>
+    <div class="metric"><span class="label">Push إلى GitHub اليوم</span><strong>${githubPushesToday}</strong></div>
+    <div class="metric"><span class="label">الربط التلقائي</span><strong>${state.settings.github_sync_configured ? 'مفعّل' : 'غير مكتمل'}</strong></div>
+    <div class="metric"><span class="label">آخر مراجعة SEO</span><strong>${sameLocalDay(state.seoBrain.audit?.created_at) ? 'اليوم' : 'ليس اليوم'}</strong></div>
+  `;
+
+  document.getElementById('dailyReportNotes').innerHTML = `
+    آخر تحديث للتقرير: ${escapeHTML(formatDateTime(new Date().toISOString()))}<br>
+    الحفظ التلقائي إلى GitHub: ${state.settings.github_sync_configured ? 'مفعل، وأي عملية ناجحة تدفع التغيير ثم تؤدي إلى redeploy تلقائي على Railway.' : 'غير مكتمل بعد، لذلك بعض العمليات قد تنجح محليًا فقط.'}
+  `;
+
+  const timeline = collectDailyTimeline();
+  document.getElementById('dailyReportTimeline').innerHTML = timeline.length ? timeline.map((item) => `
+    <div class="log-item">
+      <strong>${escapeHTML(item.title)}</strong>
+      <div class="mini-card-sub">${escapeHTML(formatDateTime(item.created_at))} · ${escapeHTML(item.badge)}</div>
+      <div style="margin-top:.35rem">${escapeHTML(item.detail)}</div>
+    </div>
+  `).join('') : '<div class="empty-state">لا توجد عمليات ناجحة مسجلة اليوم بعد.</div>';
+}
+
 function renderArticlesList() {
   const wrap = document.getElementById('articlesList');
   if (!state.articles.length) {
@@ -493,6 +626,7 @@ async function refreshDashboard() {
   state.logs = dashboardData.logs || [];
   state.articles = dashboardData.articles || [];
   state.seoBrain = dashboardData.seo_brain || { settings: {}, audit: {}, logs: [] };
+  state.activityLogs = dashboardData.activity_logs || [];
 
   renderMetrics();
   renderCategoryList();
@@ -502,6 +636,7 @@ async function refreshDashboard() {
   renderLogs();
   renderArticlesList();
   renderSeoBrain();
+  renderDailyReport();
   if (state.selectedArticle) {
     const updated = state.articles.find((item) => item.slug === state.selectedArticle.slug);
     if (updated) selectArticle(updated);
@@ -560,6 +695,10 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
     site_base_url: document.getElementById('settingBaseUrl').value.trim(),
     admin_password: document.getElementById('settingAdminPassword').value.trim(),
     cron_secret: document.getElementById('settingCronSecret').value.trim(),
+    github_repo: document.getElementById('settingGithubRepo').value.trim(),
+    github_branch: document.getElementById('settingGithubBranch').value.trim(),
+    github_token: document.getElementById('settingGithubToken').value.trim(),
+    auto_push_changes: document.getElementById('settingAutoPushChanges').checked,
     seo_brain_auto: document.getElementById('settingSeoBrainAuto')?.checked,
     seo_brain_runs_per_day: Number(document.getElementById('settingSeoRuns')?.value) || 2,
     gsc_site_url: document.getElementById('settingGscSiteUrl')?.value.trim()
@@ -568,6 +707,7 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
   document.getElementById('settingOpenAiKey').value = '';
   document.getElementById('settingAdminPassword').value = '';
   document.getElementById('settingCronSecret').value = '';
+  document.getElementById('settingGithubToken').value = '';
   await refreshDashboard();
   window.alert('تم حفظ الإعدادات.');
 });

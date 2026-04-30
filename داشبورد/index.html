@@ -294,6 +294,7 @@
       <button class="tab-btn" type="button" data-tab="automation">الأتمتة والإعدادات</button>
       <button class="tab-btn" type="button" data-tab="seo">SEO Brain</button>
       <button class="tab-btn" type="button" data-tab="articles">المقالات</button>
+      <button class="tab-btn" type="button" data-tab="report">تقرير اليوم</button>
     </section>
 
     <section class="tab-panel is-active" id="tab-products">
@@ -483,6 +484,22 @@
                   <input id="settingCronSecret" type="password" placeholder="اختياري">
                 </div>
               </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="settingGithubRepo">GITHUB_REPO</label>
+                  <input id="settingGithubRepo" type="text" placeholder="username/repository">
+                </div>
+                <div class="field">
+                  <label for="settingGithubBranch">GITHUB_BRANCH</label>
+                  <input id="settingGithubBranch" type="text" placeholder="main">
+                </div>
+              </div>
+              <div class="field">
+                <label for="settingGithubToken">GITHUB_TOKEN</label>
+                <input id="settingGithubToken" type="password" placeholder="اتركه فارغًا إذا كان محفوظًا بالفعل">
+                <div class="hint">لو تركته فارغًا سيبقى التوكن الحالي كما هو على الخادم.</div>
+              </div>
+              <label class="toggle-row"><input id="settingAutoPushChanges" type="checkbox" checked><span>حفظ التغييرات على GitHub وإعادة النشر تلقائيًا</span></label>
               <div class="toolbar">
                 <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
                 <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
@@ -661,6 +678,28 @@
               <button class="btn btn-danger" id="deleteArticleBtn" type="button">حذف</button>
             </div>
             <div id="articleSeoChecklist" class="list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-report">
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-head"><h2>ملخص التنفيذ اليومي</h2></div>
+          <div class="panel-body">
+            <div class="metrics" id="dailyReportSummary"></div>
+            <div class="mini-card">
+              <div class="mini-card-title">ملاحظات سريعة</div>
+              <div class="mini-card-sub" id="dailyReportNotes"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>العمليات الناجحة اليوم</h2></div>
+          <div class="panel-body">
+            <div class="logs" id="dailyReportTimeline"></div>
           </div>
         </div>
       </div>
