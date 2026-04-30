@@ -22,10 +22,46 @@
     }
   ],
   "config": {
-    "whatsapp_phone": "201012566955",
+    "whatsapp_phone": "your_whatsapp_number_here",
     "price_text_default": "السعر عند التواصل"
   },
   "products": [
+    {
+      "id": "airfit-f20-codex-dashboard-test",
+      "slug": "airfit-f20-codex-dashboard-test",
+      "name_ar": "ماسك ResMed AirFit F20 اختبار الداشبورد",
+      "name_en": "ResMed AirFit F20 Dashboard Test",
+      "brand": "ResMed",
+      "category": "Full Face Mask",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "منتج اختبار تمت إضافته لمحاكاة الحفظ من الداشبورد مع مزامنة GitHub وتقرير اليوم.",
+      "long_description_ar": "هذا منتج اختبار للتحقق من أن حفظ المنتجات من لوحة التحكم يؤدي إلى بناء صفحة المنتج، ثم دفع التغييرات إلى GitHub، ثم ظهور العملية داخل تقرير اليوم.",
+      "key_features_ar": [
+        "وسادة مريحة",
+        "مناسب لاختبار الحفظ من الداشبورد",
+        "مزامنة تلقائية مع GitHub"
+      ],
+      "included_items_ar": [
+        "الماسك",
+        "الحزام",
+        "وسادة الوجه"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "compatibility_notes_ar": "اختبار تقني فقط.",
+      "price_text": "السعر عند التواصل",
+      "main_image": "/assets/images/store/respira-tech-logo.png",
+      "gallery_images": [],
+      "whatsapp_message": "مرحبًا، أريد الاستفسار عن ماسك ResMed AirFit F20 اختبار الداشبورد",
+      "seo_title": "ماسك ResMed AirFit F20 اختبار الداشبورد | Respira Tech",
+      "seo_description": "منتج اختبار للتأكد من أن إضافة المنتجات من لوحة التحكم تعمل مع الحفظ والبناء والمزامنة التلقائية.",
+      "filter_tags": [
+        "cpap-masks"
+      ]
+    },
     {
       "id": "airfit-f20-complete-mask-system",
       "slug": "airfit-f20-complete-mask-system",
