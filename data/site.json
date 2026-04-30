@@ -1,0 +1,88 @@
+{
+  "site": {
+    "name": "Respira Tech",
+    "base_url": "https://respira-tech.com",
+    "locale": "ar_EG",
+    "direction": "rtl",
+    "default_title": "Respira Tech | حلول أجهزة CPAP و BiPAP والعلاج التنفسي",
+    "default_description": "Respira Tech تقدم حلول CPAP وBiPAP والماسكات والإكسسوارات والدعم التنفسي المنزلي مع متابعة فنية ومحتوى تثقيفي باللغة العربية.",
+    "default_image": "/assets/images/store/respira-tech-logo.png",
+    "whatsapp_number": "201012566955",
+    "email": "support@respira-tech.com",
+    "phone": "+201012566955",
+    "address": "القاهرة، مصر",
+    "city": "القاهرة",
+    "country": "EG",
+    "author": "فريق Respira Tech",
+    "medical_disclaimer": "هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص."
+  },
+  "organization": {
+    "legal_name": "Respira Tech",
+    "type": "MedicalBusiness",
+    "same_as": [
+      "https://www.facebook.com/profile.php?id=61580291109675",
+      "https://wa.me/201012566955"
+    ]
+  },
+  "navigation": [
+    {
+      "label": "الرئيسية",
+      "url": "/index.html"
+    },
+    {
+      "label": "من نحن",
+      "url": "/about/"
+    },
+    {
+      "label": "الخدمات",
+      "url": "/services/"
+    },
+    {
+      "label": "المتجر",
+      "url": "/store/"
+    },
+    {
+      "label": "المدونة",
+      "url": "/blog/"
+    },
+    {
+      "label": "تواصل معنا",
+      "url": "/contact/"
+    }
+  ],
+  "blog_categories": [
+    "انقطاع النفس أثناء النوم",
+    "أجهزة CPAP",
+    "أجهزة BiPAP",
+    "الشخير واضطرابات النوم",
+    "ماسكات وإكسسوارات",
+    "نصائح الاستخدام والعناية",
+    "الأكسجين والتنفس المنزلي"
+  ],
+  "core_links": [
+    {
+      "anchor": "أجهزة CPAP",
+      "url": "/services/cpap/"
+    },
+    {
+      "anchor": "أجهزة BiPAP",
+      "url": "/services/bipap/"
+    },
+    {
+      "anchor": "انقطاع النفس أثناء النوم",
+      "url": "/services/sleep-apnea/"
+    },
+    {
+      "anchor": "ماسكات CPAP",
+      "url": "/services/cpap-masks/"
+    },
+    {
+      "anchor": "المتجر",
+      "url": "/store/"
+    },
+    {
+      "anchor": "تواصل معنا",
+      "url": "/contact/"
+    }
+  ]
+}

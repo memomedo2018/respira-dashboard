@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Respira Tech Dashboard</title>
+  <meta name="description" content="لوحة تحكم Respira Tech لإدارة المتجر والمقالات والتوليد اليومي عبر OpenAI.">
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Marhey:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f3f8fc;
+      --surface: rgba(255,255,255,.9);
+      --surface-strong: rgba(255,255,255,.96);
+      --border: rgba(15,23,42,.1);
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #138496;
+      --primary-soft: rgba(19,132,150,.12);
+      --danger: #b91c1c;
+    }
+    body {
+      font-family: 'Alexandria', 'Segoe UI', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,.22), transparent 28%),
+        radial-gradient(circle at top right, rgba(23,162,184,.18), transparent 26%),
+        var(--bg);
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,.82);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-shell, .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding-inline: 1.25rem;
+    }
+    .topbar-shell {
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .85rem;
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: #0097b2;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #17a2b8, #138496);
+      box-shadow: 0 14px 32px rgba(23,162,184,.25);
+    }
+    .actions, .tabs, .toolbar, .mini-actions, .inline-chips, .sizes-preview {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .btn, .tab-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.08);
+      padding: .85rem 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .25s ease;
+      background: rgba(255,255,255,.9);
+      color: var(--text);
+    }
+    .btn:hover, .tab-btn:hover { transform: translateY(-2px); }
+    .btn-primary, .tab-btn.is-active {
+      background: linear-gradient(135deg, #17a2b8, #138496);
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(23,162,184,.22);
+    }
+    .btn-danger {
+      color: var(--danger);
+      border-color: rgba(185,28,28,.18);
+    }
+    .page { padding-block: 2rem 4rem; }
+    .hero {
+      padding: 2.1rem;
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(228,243,251,.9));
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 24px 56px rgba(15,23,42,.08);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Marhey', 'Alexandria', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      margin-bottom: .75rem;
+      color: #0097b2;
+    }
+    .hero p { max-width: 920px; color: var(--muted); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .metric, .panel {
+      background: var(--surface);
+      border: 1px solid rgba(15,23,42,.08);
+      border-radius: 28px;
+      box-shadow: 0 18px 44px rgba(15,23,42,.06);
+    }
+    .metric { padding: 1.2rem 1.3rem; }
+    .metric .label { color: var(--muted); font-size: .92rem; }
+    .metric strong { display: block; font-size: 1.9rem; margin-top: .35rem; }
+    .tab-panel { display: none; }
+    .tab-panel.is-active { display: block; }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+    .panel-head {
+      padding: 1.2rem 1.3rem;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      background: rgba(255,255,255,.72);
+    }
+    .panel-head h2 { font-size: 1.15rem; }
+    .panel-body { padding: 1.2rem; display: grid; gap: 1rem; }
+    .stack { display: grid; gap: 1rem; }
+    .field, .field textarea, .field input, .field select { width: 100%; }
+    .field { display: grid; gap: .42rem; }
+    .field label { font-weight: 800; font-size: .92rem; }
+    .field input, .field textarea, .field select {
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 18px;
+      padding: .95rem 1rem;
+      background: rgba(255,255,255,.96);
+      color: var(--text);
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field-row, .field-row-3 {
+      display: grid;
+      gap: .8rem;
+    }
+    .field-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .field-row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .hint { color: #64748b; font-size: .84rem; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .95rem 1rem;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,.95);
+    }
+    .toggle-row input { width: auto; accent-color: #138496; }
+    .list {
+      display: grid;
+      gap: .9rem;
+      max-height: 900px;
+      overflow: auto;
+      padding-right: .15rem;
+    }
+    .mini-card {
+      padding: 1rem;
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,.08);
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 12px 28px rgba(15,23,42,.05);
+    }
+    .mini-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: .9rem;
+      margin-bottom: .55rem;
+    }
+    .mini-card-title { font-size: 1.05rem; font-weight: 900; }
+    .mini-card-sub { color: var(--muted); font-size: .92rem; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .42rem .8rem;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+    .chip {
+      display: inline-flex;
+      padding: .35rem .7rem;
+      border-radius: 999px;
+      background: rgba(0,151,178,.08);
+      color: #0097b2;
+      font-weight: 800;
+      font-size: .8rem;
+    }
+    .preview-box {
+      background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(233,246,252,.92));
+      border: 1px dashed rgba(23,162,184,.25);
+      border-radius: 24px;
+      padding: 1rem;
+    }
+    .preview-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 24px;
+      background: #eef8fd;
+    }
+    .gallery-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: .9rem;
+    }
+    .gallery-preview img {
+      width: 74px;
+      height: 74px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(15,23,42,.08);
+      background: #eef8fd;
+    }
+    .status-published { color: #047857; }
+    .status-draft { color: #b45309; }
+    .article-editor textarea { min-height: 220px; }
+    .logs {
+      display: grid;
+      gap: .7rem;
+      max-height: 360px;
+      overflow: auto;
+    }
+    .log-item {
+      padding: .9rem 1rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(15,23,42,.08);
+    }
+    .empty-state {
+      text-align: center;
+      color: #64748b;
+      padding: 2rem 1rem;
+    }
+    @media (max-width: 1180px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .field-row, .field-row-3, .metrics { grid-template-columns: 1fr; }
+      .hero { padding: 1.4rem; }
+      .topbar-shell { padding-block: .9rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-shell">
+      <a href="/index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        Respira Tech Dashboard
+      </a>
+      <div class="actions">
+        <a href="/store/" class="btn">عرض المتجر</a>
+        <a href="/blog/" class="btn">عرض المدونة</a>
+        <a href="/index.html" class="btn">العودة للرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <h1>إدارة المتجر والمدونة والأتمتة</h1>
+      <p>لوحة واحدة لإدارة منتجات Respira Tech، إعدادات OpenAI، التوليد اليومي للمقالات، الصور المميزة، والسيو الخاص بالمحتوى العربي. النظام مضبوط لينشئ مقالتين يوميًا مع حفظ الصور محليًا داخل المشروع عند تفعيل المفتاح.</p>
+    </section>
+
+    <section class="metrics" id="metrics"></section>
+
+    <section class="tabs">
+      <button class="tab-btn is-active" type="button" data-tab="products">المنتجات</button>
+      <button class="tab-btn" type="button" data-tab="automation">الأتمتة والإعدادات</button>
+      <button class="tab-btn" type="button" data-tab="seo">SEO Brain</button>
+      <button class="tab-btn" type="button" data-tab="articles">المقالات</button>
+    </section>
+
+    <section class="tab-panel is-active" id="tab-products">
+      <div class="dashboard-grid">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>معاينة الصور</h2></div>
+            <div class="panel-body">
+              <div class="preview-box">
+                <img id="thumbnailPreview" class="preview-thumb" alt="Thumbnail preview">
+                <div class="gallery-preview" id="galleryPreview"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>التصنيفات الحالية</h2></div>
+            <div class="panel-body">
+              <div class="list" id="categoriesList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>بيانات المنتج</h2></div>
+            <div class="panel-body">
+              <input id="editingProductId" type="hidden">
+              <div class="field-row">
+                <div class="field">
+                  <label for="productNameAr">اسم المنتج بالعربي</label>
+                  <input id="productNameAr" type="text">
+                </div>
+                <div class="field">
+                  <label for="productNameEn">اسم المنتج بالإنجليزية</label>
+                  <input id="productNameEn" type="text">
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="productSlug">Slug</label>
+                  <input id="productSlug" type="text">
+                </div>
+                <div class="field">
+                  <label for="productBrand">البراند</label>
+                  <input id="productBrand" type="text" value="ResMed">
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="productCategoryText">اسم التصنيف الظاهر</label>
+                  <input id="productCategoryText" type="text" placeholder="مثال: ماسكات Full Face">
+                </div>
+                <div class="field">
+                  <label for="productType">نوع المنتج</label>
+                  <input id="productType" type="text" value="CPAP Mask">
+                </div>
+              </div>
+
+              <div class="field">
+                <label>فلاتر الظهور</label>
+                <div class="inline-chips" id="filterTagsWrap"></div>
+              </div>
+
+              <div class="field">
+                <label for="productShortDescription">وصف مختصر</label>
+                <textarea id="productShortDescription"></textarea>
+              </div>
+
+              <div class="field">
+                <label for="productLongDescription">وصف كامل</label>
+                <textarea id="productLongDescription"></textarea>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="productFeatures">المميزات الرئيسية</label>
+                  <textarea id="productFeatures" placeholder="كل ميزة في سطر مستقل"></textarea>
+                </div>
+                <div class="field">
+                  <label for="productIncludedItems">محتويات العبوة</label>
+                  <textarea id="productIncludedItems" placeholder="كل عنصر في سطر مستقل"></textarea>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="productSizes">المقاسات</label>
+                  <textarea id="productSizes" placeholder="كل مقاس في سطر مستقل"></textarea>
+                </div>
+                <div class="field">
+                  <label for="productCompatibility">ملاحظات التوافق</label>
+                  <textarea id="productCompatibility"></textarea>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="productSeoTitle">SEO Title</label>
+                  <input id="productSeoTitle" type="text">
+                </div>
+                <div class="field">
+                  <label for="productSeoDescription">SEO Description</label>
+                  <input id="productSeoDescription" type="text">
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="productThumbnailFile">رفع الصورة الرئيسية</label>
+                <input id="productThumbnailFile" type="file" accept="image/*">
+              </div>
+
+              <div class="field">
+                <label for="productGalleryFiles">رفع صور الجاليري</label>
+                <input id="productGalleryFiles" type="file" accept="image/*" multiple>
+              </div>
+
+              <div class="toolbar">
+                <button class="btn btn-primary" id="saveProductBtn" type="button">حفظ المنتج</button>
+                <button class="btn" id="newProductBtn" type="button">منتج جديد</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>المنتجات الحالية</h2></div>
+            <div class="panel-body">
+              <div class="list" id="productsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-automation">
+      <div class="dashboard-grid">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>إعدادات OpenAI والنشر</h2></div>
+            <div class="panel-body">
+              <div class="field">
+                <label for="settingOpenAiKey">OPENAI_API_KEY</label>
+                <input id="settingOpenAiKey" type="password" placeholder="الصق المفتاح هنا">
+                <div class="hint">إذا تركته فارغًا سيبقى المفتاح الحالي كما هو.</div>
+              </div>
+              <div class="field-row-3">
+                <div class="field">
+                  <label for="settingDailyCount">عدد المقالات يوميًا</label>
+                  <input id="settingDailyCount" type="number" min="1" max="5" value="2">
+                </div>
+                <div class="field">
+                  <label for="settingTextModel">موديل الكتابة</label>
+                  <input id="settingTextModel" type="text" value="gpt-4.1">
+                </div>
+                <div class="field">
+                  <label for="settingImageModel">موديل الصور</label>
+                  <input id="settingImageModel" type="text" value="gpt-image-1">
+                </div>
+              </div>
+              <label class="toggle-row"><input id="settingAutoPublish" type="checkbox"><span>نشر تلقائي بدل Draft</span></label>
+              <label class="toggle-row"><input id="settingGenerateImages" type="checkbox" checked><span>توليد صورة مميزة لكل مقال</span></label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>إعدادات الموقع والحماية</h2></div>
+            <div class="panel-body">
+              <div class="field-row">
+                <div class="field">
+                  <label for="settingWhatsapp">رقم واتساب</label>
+                  <input id="settingWhatsapp" type="text" placeholder="2010...">
+                </div>
+                <div class="field">
+                  <label for="settingBaseUrl">رابط الموقع الأساسي</label>
+                  <input id="settingBaseUrl" type="text" placeholder="https://respira-tech.com">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="settingAdminPassword">كلمة مرور الإدارة</label>
+                  <input id="settingAdminPassword" type="password" placeholder="اختياري">
+                </div>
+                <div class="field">
+                  <label for="settingCronSecret">CRON_SECRET</label>
+                  <input id="settingCronSecret" type="password" placeholder="اختياري">
+                </div>
+              </div>
+              <div class="toolbar">
+                <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
+                <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>تشغيل يدوي</h2></div>
+            <div class="panel-body">
+              <div class="field-row">
+                <div class="field">
+                  <label for="manualGenerateCount">عدد المقالات الآن</label>
+                  <input id="manualGenerateCount" type="number" min="1" max="5" value="2">
+                </div>
+                <div class="field">
+                  <label>وقت التشغيل اليومي</label>
+                  <div class="toggle-row"><span>09:00 صباحًا بتوقيت القاهرة</span></div>
+                </div>
+              </div>
+              <div class="toolbar">
+                <button class="btn" id="generateDraftNowBtn" type="button">توليد Draft الآن</button>
+                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
+                <a class="btn" href="/api/cron/generate-blog" target="_blank" rel="noopener">رابط الكرون</a>
+              </div>
+              <div class="hint">الكرون يجب أن يرسل `Authorization: Bearer CRON_SECRET` أو `X-Cron-Secret` مرة يوميًا، والنظام سيوقف نفسه بعد الوصول للحد اليومي.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>سجل التوليد</h2></div>
+            <div class="panel-body">
+              <div class="logs" id="logsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-seo">
+      <div class="dashboard-grid">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>SEO Brain Control</h2></div>
+            <div class="panel-body">
+              <label class="toggle-row"><input id="settingSeoBrainAuto" type="checkbox" checked><span>تشغيل SEO Brain تلقائيًا</span></label>
+              <div class="field-row">
+                <div class="field">
+                  <label for="settingSeoRuns">عدد مرات المراجعة يوميًا</label>
+                  <input id="settingSeoRuns" type="number" min="1" max="6" value="2">
+                </div>
+                <div class="field">
+                  <label for="settingGscSiteUrl">رابط property في Search Console</label>
+                  <input id="settingGscSiteUrl" type="text" placeholder="https://respira-tech.com">
+                </div>
+              </div>
+              <div class="field">
+                <label for="gscCredentialsJson">Google Search Console Service Account JSON</label>
+                <textarea id="gscCredentialsJson" placeholder="الصق JSON هنا إذا أردت تتبع الكلمات والترتيب من Search Console"></textarea>
+                <div class="hint">لن يعمل تتبع الكلمات الفعلي إلا بعد رفع credentials وإضافة service account إلى Google Search Console property.</div>
+              </div>
+              <div class="toolbar">
+                <button class="btn" id="saveSeoSettingsBtn" type="button">حفظ إعدادات SEO Brain</button>
+                <button class="btn" id="uploadGscBtn" type="button">رفع GSC Credentials</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>توليد مقال من رابط</h2></div>
+            <div class="panel-body">
+              <div class="field">
+                <label for="sourceArticleUrl">رابط المصدر</label>
+                <input id="sourceArticleUrl" type="url" placeholder="https://example.com/article">
+              </div>
+              <div class="toolbar">
+                <button class="btn" id="generateFromUrlDraftBtn" type="button">كتابة Draft من الرابط</button>
+                <button class="btn btn-primary" id="generateFromUrlPublishBtn" type="button">كتابة ونشر من الرابط</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>عمليات سريعة</h2></div>
+            <div class="panel-body">
+              <div class="toolbar">
+                <button class="btn" id="runSeoAuditBtn" type="button">تشغيل SEO Audit</button>
+                <button class="btn" id="refreshInternalLinksBtn" type="button">تحديث Internal Links</button>
+                <button class="btn btn-primary" id="runSeoFullBtn" type="button">ضبط SEO بضغطة زر</button>
+                <a class="btn" href="/api/cron/seo-brain" target="_blank" rel="noopener">رابط كرون SEO</a>
+              </div>
+              <div class="hint">زر الضبط الكامل يشغل: مراجعة سريعة للموقع + تحديث الربط الداخلي للمقالات القديمة + إعادة بناء الصفحات.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>ملخص SEO الحالي</h2></div>
+            <div class="panel-body">
+              <div class="list" id="seoAuditSummary"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>سجل SEO Brain</h2></div>
+            <div class="panel-body">
+              <div class="logs" id="seoLogsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-articles">
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-head"><h2>المقالات الحالية</h2></div>
+          <div class="panel-body">
+            <div class="toolbar">
+              <button class="btn" id="generateArticleDraftBtn" type="button">توليد Draft</button>
+              <button class="btn btn-primary" id="generateArticleBtn" type="button">توليد ونشر الآن</button>
+              <button class="btn" id="refreshArticlesBtn" type="button">تحديث القائمة</button>
+            </div>
+            <div class="list" id="articlesList"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>تحرير المقال</h2></div>
+          <div class="panel-body article-editor">
+            <input id="editingArticleSlug" type="hidden">
+            <div class="field-row">
+              <div class="field">
+                <label for="articleTitle">العنوان</label>
+                <input id="articleTitle" type="text">
+              </div>
+              <div class="field">
+                <label for="articleSlug">Slug</label>
+                <input id="articleSlug" type="text">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="articleMetaTitle">Meta Title</label>
+                <input id="articleMetaTitle" type="text">
+              </div>
+              <div class="field">
+                <label for="articleMetaDescription">Meta Description</label>
+                <input id="articleMetaDescription" type="text">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="articleCategory">التصنيف</label>
+                <input id="articleCategory" type="text">
+              </div>
+              <div class="field">
+                <label for="articleTags">Tags</label>
+                <input id="articleTags" type="text" placeholder="افصل بفاصلة">
+              </div>
+            </div>
+            <div class="field">
+              <label for="articleExcerpt">Excerpt</label>
+              <textarea id="articleExcerpt"></textarea>
+            </div>
+            <div class="field">
+              <label for="articleContent">المحتوى Markdown</label>
+              <textarea id="articleContent"></textarea>
+            </div>
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveArticleBtn" type="button">حفظ</button>
+              <button class="btn" id="toggleArticleStatusBtn" type="button">نشر / إلغاء نشر</button>
+              <button class="btn btn-danger" id="deleteArticleBtn" type="button">حذف</button>
+            </div>
+            <div id="articleSeoChecklist" class="list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/dashboard.js"></script>
+</body>
+</html>

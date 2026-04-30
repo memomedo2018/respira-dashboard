@@ -1,0 +1,129 @@
+{
+  "created_at": "2026-04-30T16:09:35.509477",
+  "site_base_url": "https://respira-tech.com",
+  "pages": [
+    {
+      "url": "https://respira-tech.com/",
+      "status": 200,
+      "load_ms": 444,
+      "html_kb": 30.0,
+      "has_title": true,
+      "has_meta_description": true,
+      "has_canonical": false,
+      "h1_count": 1
+    },
+    {
+      "url": "https://respira-tech.com/store/",
+      "status": 200,
+      "load_ms": 309,
+      "html_kb": 37.9,
+      "has_title": true,
+      "has_meta_description": true,
+      "has_canonical": false,
+      "h1_count": 0
+    },
+    {
+      "url": "https://respira-tech.com/blog/",
+      "status": 200,
+      "load_ms": 296,
+      "html_kb": 20.0,
+      "has_title": true,
+      "has_meta_description": true,
+      "has_canonical": true,
+      "h1_count": 1
+    },
+    {
+      "url": "https://respira-tech.com/services/",
+      "status": 200,
+      "load_ms": 293,
+      "html_kb": 16.6,
+      "has_title": true,
+      "has_meta_description": true,
+      "has_canonical": true,
+      "h1_count": 1
+    },
+    {
+      "url": "https://respira-tech.com/contact/",
+      "status": 200,
+      "load_ms": 340,
+      "html_kb": 16.2,
+      "has_title": true,
+      "has_meta_description": true,
+      "has_canonical": true,
+      "h1_count": 1
+    }
+  ],
+  "content": {
+    "articles_total": 17,
+    "published_total": 3,
+    "draft_total": 14,
+    "logo_featured_images": [],
+    "low_score_articles": [
+      {
+        "slug": "full-face-vs-nasal-mask",
+        "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
+        "seo_score": 83
+      },
+      {
+        "slug": "choose-cpap-mask-guide",
+        "title": "كيف تختار ماسك CPAP المناسب؟ دليلك الكامل لاختيار القناع الأفضل لجهاز التنفس الليلي",
+        "seo_score": 83
+      },
+      {
+        "slug": "cpap-sleep-comfort-egypt",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "seo_score": 75
+      },
+      {
+        "slug": "cpap-sleep-comfort",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟  حقائق ونصائح وتجارب واقعية",
+        "seo_score": 83
+      },
+      {
+        "slug": "cpap-during-sleep-comfort",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل كامل لفهم التجربة وطرق التكيف",
+        "seo_score": 83
+      },
+      {
+        "slug": "cpap-discomfort-during-sleep",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
+        "seo_score": 83
+      },
+      {
+        "slug": "sleep-apnea-headache-relationship",
+        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+        "seo_score": 83
+      },
+      {
+        "slug": "sleep-apnea-morning-headache-relationship",
+        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي: فهم الأسباب والحلول العملية",
+        "seo_score": 75
+      },
+      {
+        "slug": "why-wake-up-tired-after-long-sleep",
+        "title": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+        "seo_score": 83
+      },
+      {
+        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "seo_score": 75
+      },
+      {
+        "slug": "sudden-awakening-choking-sleep-causes",
+        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم: الدليل الشامل",
+        "seo_score": 83
+      }
+    ],
+    "missing_internal_links": []
+  },
+  "search_console": {
+    "configured": false,
+    "message": "Google Search Console غير مربوط بعد. ارفع ملف service account JSON وامنح الإيميل صلاحية على الـ property.",
+    "queries": []
+  },
+  "recommendations": [
+    "11 مقال يحتاج تحسين SEO score أو metadata.",
+    "بعض الصفحات الأساسية تحتاج مراجعة structure أو availability."
+  ]
+}

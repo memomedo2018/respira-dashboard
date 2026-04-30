@@ -1,0 +1,155 @@
+{
+  "site": {
+    "name": "Respira Tech",
+    "base_url": "https://respira-tech.com",
+    "locale": "ar_EG",
+    "medical_disclaimer": "هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص."
+  },
+  "services": [
+    {
+      "name": "أجهزة CPAP",
+      "url": "https://respira-tech.com/services/cpap/"
+    },
+    {
+      "name": "أجهزة BiPAP",
+      "url": "https://respira-tech.com/services/bipap/"
+    },
+    {
+      "name": "انقطاع النفس أثناء النوم",
+      "url": "https://respira-tech.com/services/sleep-apnea/"
+    },
+    {
+      "name": "ماسكات CPAP",
+      "url": "https://respira-tech.com/services/cpap-masks/"
+    }
+  ],
+  "products": [
+    {
+      "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
+      "name_en": "AirFit F20 Complete Mask System",
+      "brand": "ResMed",
+      "category": "ماسكات Full Face",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك كامل الوجه من ResMed مصمم لتوفير ثبات عالي وراحة أثناء النوم، مع كوشن InfinitySeal ومشابك مغناطيسية لسهولة الارتداء والخلع.",
+      "long_description_ar": "ماسك ResMed AirFit F20 كامل الوجه مصمم للمستخدمين الذين يحتاجون تغطية الأنف والفم مع ثبات موثوق أثناء العلاج بأجهزة CPAP أو BiPAP. يعتمد على كوشن InfinitySeal للمساعدة في الحفاظ على الإحكام عبر إعدادات ضغط هواء مختلفة، ويقدم إطارًا مرنًا مع أكمام ناعمة وهدباند مريح لدعم الاستخدام الليلي براحة أكبر. كما يسهّل كوع التحرير السريع فصل الماسك أثناء الليل دون الحاجة إلى خلعه بالكامل.",
+      "sizes": [
+        "L",
+        "M",
+        "S"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. لاستخدامه مع AirMini يلزم F20 setup pack، وإذا كان AirMini مستخدمًا مع ماسك آخر فستحتاج إلى AirFit F20 Mask Connector. يتطلب وصفة طبية.",
+      "url": "https://respira-tech.com/store/airfit-f20-complete-mask-system/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"
+    },
+    {
+      "name_ar": "ماسك ResMed AirFit N20 الأنفي",
+      "name_en": "AirFit N20 Complete Mask System",
+      "brand": "ResMed",
+      "category": "ماسكات Nasal",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك أنفي مريح من ResMed يوفر ثباتًا جيدًا مع تصميم خفيف ومرن ومشابك مغناطيسية سهلة الاستخدام.",
+      "long_description_ar": "ماسك ResMed AirFit N20 الأنفي يقدم تغطية أنفية تقليدية مع تصميم خفيف ومرن يركز على الثبات والراحة أثناء النوم. يستخدم كوشن InfinitySeal للمساعدة في الحفاظ على الإغلاق عند إعدادات ضغط مختلفة، مع كوع تحرير سريع لتسهيل الحركة ليلًا، بالإضافة إلى هدباند مبطن وإطار مريح يدعمان الاستخدام اليومي المنزلي بشكل عملي.",
+      "sizes": [
+        "L",
+        "M",
+        "S"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. لاستخدامه مع AirMini يلزم N20 setup pack، وإذا كنت تستخدم AirMini مع ماسك بنمط مختلف فستحتاج إلى AirFit N20 Mask Connector.",
+      "url": "https://respira-tech.com/store/airfit-n20-complete-mask-system/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-n20-main.jpg"
+    },
+    {
+      "name_ar": "ماسك ResMed AirFit F30i كامل الوجه بوصلة علوية",
+      "name_en": "AirFit F30i Complete Mask System",
+      "brand": "ResMed",
+      "category": "ماسكات Full Face منخفضة التصميم",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك كامل الوجه بتصميم منخفض ووصلة خرطوم من أعلى الرأس، مناسب لمن يحتاج حرية حركة أكبر أثناء النوم مع تقليل الضغط على جسر الأنف.",
+      "long_description_ar": "ماسك ResMed AirFit F30i كامل الوجه بوصلة علوية مصمم للمستخدمين الذين يفضلون حرية أكبر في الحركة أثناء النوم مع تغطية الفم والأنف في تصميم منخفض. وصلة الخرطوم أعلى الرأس تساعد على إبقاء الأنبوب بعيدًا عن الوجه، بينما صُمم كوشن UltraCompact ليستقر أسفل الأنف ويساعد على تقليل الضغط أو العلامات على جسر الأنف. كما تدعم المشابك المغناطيسية وكوع التحرير السريع تجربة استخدام عملية ومريحة.",
+      "sizes": [
+        "W",
+        "M",
+        "S"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. غير متوافق مع AirMini. مناسب لمن يفضلون وصلة خرطوم علوية مع تصميم Full Face منخفض.",
+      "url": "https://respira-tech.com/store/airfit-f30i-complete-mask-system/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-f30i-main.jpg"
+    },
+    {
+      "name_ar": "ماسك ResMed AirFit N30 الأنفي خفيف التصميم",
+      "name_en": "AirFit N30 Complete Mask System",
+      "brand": "ResMed",
+      "category": "ماسكات Nasal Cradle",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك أنفي صغير وخفيف أسفل الأنف، مناسب للنوم الجانبي ويوفر راحة عالية مع تقليل علامات الضغط على الأنف.",
+      "long_description_ar": "ماسك ResMed AirFit N30 الأنفي خفيف التصميم يقدم تجربة استخدام صغيرة وخفيفة مع كوشن nasal cradle يستقر أسفل الأنف بدلًا من تغطيته بالكامل. يناسب من يفضلون تصميمًا منخفض الظهور أثناء النوم، خصوصًا من ينامون على الجنب، مع هدباند QuickFit مرن وسهل الارتداء ومشبك صغير للتعديلات البسيطة عند الحاجة.",
+      "sizes": [
+        "M",
+        "S",
+        "SW"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. لاستخدامه مع AirMini يلزم N30 setup pack، وإذا كنت تستخدم AirMini مع ماسك بنمط مختلف فستحتاج إلى AirFit N30 Mask Connector.",
+      "url": "https://respira-tech.com/store/airfit-n30-complete-mask-system/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-n30-main.jpg"
+    },
+    {
+      "name_ar": "ماسك ResMed AirFit N30i Starter Pack بوصلة علوية",
+      "name_en": "AirFit N30i Starter Pack",
+      "brand": "ResMed",
+      "category": "ماسكات Nasal Cradle / Top-of-Head Tube",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك أنفي أسفل الأنف بوصلة خرطوم من أعلى الرأس، يمنح حرية حركة أكبر وتجربة هادئة، ومناسب لمن ينامون على البطن أو يرتدون نظارة.",
+      "long_description_ar": "ماسك ResMed AirFit N30i Starter Pack بوصلة علوية مصمم لمن يريدون إبقاء خرطوم الهواء بعيدًا عن الوجه أثناء النوم. يعتمد على كوشن nasal cradle أسفل الأنف مع وصلة أعلى الرأس لحرية أكبر في الحركة، كما يستخدم تقنية QuietAir لتوزيع هواء الزفير بشكل أكثر هدوءًا. ويتميز بإطار SpringFit يتكيف تلقائيًا مع أشكال الوجه المختلفة، ما يجعله خيارًا عمليًا للنوم على البطن أو عند ارتداء النظارات أو مشاهدة التلفاز في السرير.",
+      "sizes": [
+        "وسادة Small",
+        "وسادة Small-Wide",
+        "وسادة Medium",
+        "إطار Standard",
+        "إطار Small"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. غير متوافق مع AirMini. مناسب لمن يريدون ماسك Nasal Cradle مع وصلة خرطوم أعلى الرأس.",
+      "url": "https://respira-tech.com/store/airfit-n30i-starter-pack/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-n30i-main.jpg"
+    },
+    {
+      "name_ar": "ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم",
+      "name_en": "AirFit F40 Complete Mask System",
+      "brand": "ResMed",
+      "category": "ماسكات Full Face منخفضة التصميم",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ماسك كامل الوجه بتصميم حديث منخفض ومرن، يجمع بين الثبات العالي والراحة وسهولة الاستخدام مع إطار ناعم يتكيف مع الوجه طوال الليل.",
+      "long_description_ar": "ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم يقدم مفهوم Full Face مدمجًا في شكل أكثر انخفاضًا ومرونة. يستخدم سيليكون AdaptiSeal الناعم مع إطار مرن بالكامل ونقاط ضبط أقل لسهولة الاستخدام، كما يوفر أنبوبًا قصيرًا للمساعدة على الحركة الطبيعية أثناء النوم. هذا التصميم يجمع بين الأداء العالي في الإحكام والشعور براحة أكبر في تجربة استخدام يومية أكثر بساطة.",
+      "sizes": [
+        "وسادة Small-Wide",
+        "وسادة Medium",
+        "وسادة Large",
+        "هدباند Small",
+        "هدباند Standard",
+        "هدباند Large"
+      ],
+      "compatibility_notes_ar": "متوافق مع أجهزة CPAP وBiPAP الشائعة. غير متوافق مع AirMini. مناسب لمن يريدون ماسك Full Face بتصميم منخفض ومرن وسهل الاستخدام.",
+      "url": "https://respira-tech.com/store/airfit-f40-complete-mask-system/",
+      "image": "https://respira-tech.com/assets/images/store/resmed-airfit-f40-main.jpg"
+    }
+  ],
+  "articles": [
+    {
+      "title_ar": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+      "category": "اضطرابات النوم",
+      "excerpt": "انقطاع النفس أثناء النوم مشكلة تؤثر على جودة الحياة، ومن أبرز أعراضها الصداع الصباحي. نكشف في هذا المقال أسباب هذا الارتباط، ونقدم نصائح عملية للتعامل مع الحالة.",
+      "url": "https://respira-tech.com/blog/sleep-apnea-headache-relationship/"
+    },
+    {
+      "title_ar": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+      "category": "اضطرابات النوم والتنفس",
+      "excerpt": "يشعر البعض أحيانًا باستيقاظ مفاجئ ليلاً مع كتمة أو إحساس بالاختناق، مما يثير القلق ويؤثر على جودة النوم. في هذا المقال نشرح الأسباب الأكثر شيوعًا لهذه الحالة ومتى يجب طلب المساعدة الطبية.",
+      "url": "https://respira-tech.com/blog/causes-sudden-waking-up-shortness-breath-sleep/"
+    },
+    {
+      "title_ar": "ما هو جهاز CPAP وكيف يساعد في علاج انقطاع النفس أثناء النوم؟",
+      "category": "أجهزة CPAP",
+      "excerpt": "دليل عربي مبسط يشرح جهاز CPAP، فائدته، وكيف يساعد بعض مرضى انقطاع النفس أثناء النوم على الحصول على نوم أكثر راحة واستقرارًا.",
+      "url": "https://respira-tech.com/blog/what-is-cpap-and-how-it-helps-sleep-apnea/"
+    }
+  ]
+}

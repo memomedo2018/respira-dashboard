@@ -1,0 +1,197 @@
+[
+  {
+    "type": "success",
+    "created_at": "2026-04-30T10:40:32.809Z",
+    "generated_count": 2,
+    "items": [
+      {
+        "topic": "كيف تختار ماسك CPAP المناسب؟",
+        "slug": "choose-cpap-mask-guide",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/choose-cpap-mask-guide.png"
+      },
+      {
+        "topic": "الفرق بين Full Face Mask و Nasal Mask",
+        "slug": "full-face-vs-nasal-mask",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/full-face-vs-nasal-mask.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:57:46.980Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "slug": "cpap-sleep-comfort-egypt",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/cpap-sleep-comfort-egypt.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:57:31.364Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "slug": "cpap-sleep-comfort",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/cpap-sleep-comfort.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:57:18.230Z",
+    "generated_count": 2,
+    "items": [
+      {
+        "topic": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "slug": "cpap-during-sleep-comfort",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/cpap-during-sleep-comfort.png"
+      },
+      {
+        "topic": "كيف تختار ماسك CPAP المناسب؟",
+        "slug": "choose-right-cpap-mask",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/choose-right-cpap-mask.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:56:53.979Z",
+    "generated_count": 2,
+    "items": [
+      {
+        "topic": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "slug": "cpap-discomfort-during-sleep",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/cpap-discomfort-during-sleep.png"
+      },
+      {
+        "topic": "كيف تختار ماسك CPAP المناسب؟",
+        "slug": "how-to-choose-right-cpap-mask",
+        "status": "draft",
+        "featured_image": "/assets/images/blog/how-to-choose-right-cpap-mask.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:53:06.566Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+        "slug": "sleep-apnea-headache-relationship",
+        "status": "published",
+        "featured_image": "/assets/images/blog/sleep-apnea-headache-relationship.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:45:17.623Z",
+    "generated_count": 2,
+    "items": [
+      {
+        "topic": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+        "slug": "why-wake-up-tired-after-long-sleep",
+        "status": "draft",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      },
+      {
+        "topic": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+        "slug": "sleep-apnea-morning-headache-relationship",
+        "status": "draft",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      }
+    ]
+  },
+  {
+    "type": "openai_image_error",
+    "topic": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+    "slug": "sleep-apnea-morning-headache-relationship",
+    "created_at": "2026-04-29T17:45:17.307Z",
+    "error": "OpenAI image error: {\n  \"error\": {\n    \"message\": \"Project `proj_cQTo3jSJHwHN4nNsPP9CoSxi` does not have access to model `gpt-image-1`\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_found\"\n  }\n}"
+  },
+  {
+    "type": "openai_image_error",
+    "topic": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+    "slug": "why-wake-up-tired-after-long-sleep",
+    "created_at": "2026-04-29T17:44:51.721Z",
+    "error": "OpenAI image error: {\n  \"error\": {\n    \"message\": \"Project `proj_cQTo3jSJHwHN4nNsPP9CoSxi` does not have access to model `gpt-image-1`\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_found\"\n  }\n}"
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:42:19.171Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "status": "published",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      }
+    ]
+  },
+  {
+    "type": "openai_image_error",
+    "topic": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+    "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+    "created_at": "2026-04-29T17:42:19.039Z",
+    "error": "OpenAI image error: {\n  \"error\": {\n    \"message\": \"Project `proj_cQTo3jSJHwHN4nNsPP9CoSxi` does not have access to model `gpt-image-1`\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_found\"\n  }\n}"
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:40:49.577Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "slug": "sudden-awakening-choking-sleep-causes",
+        "status": "draft",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      }
+    ]
+  },
+  {
+    "type": "openai_image_error",
+    "topic": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+    "slug": "sudden-awakening-choking-sleep-causes",
+    "created_at": "2026-04-29T17:40:49.421Z",
+    "error": "OpenAI image error: {\n  \"error\": {\n    \"message\": \"Project `proj_cQTo3jSJHwHN4nNsPP9CoSxi` does not have access to model `gpt-image-1`\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_found\"\n  }\n}"
+  },
+  {
+    "type": "success",
+    "created_at": "2026-04-29T17:26:00.294Z",
+    "generated_count": 2,
+    "items": [
+      {
+        "topic": "أعراض انقطاع النفس أثناء النوم التي لا يجب تجاهلها",
+        "slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "status": "draft",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      },
+      {
+        "topic": "هل الشخير المستمر علامة على مشكلة صحية؟",
+        "slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "status": "draft",
+        "featured_image": "/assets/images/store/respira-tech-logo.png"
+      }
+    ]
+  },
+  {
+    "type": "skipped",
+    "created_at": "2026-04-29T17:25:07.962Z",
+    "message": "daily limit reached for 2026-04-29",
+    "daily_limit": 2,
+    "existing_today": 2
+  }
+]

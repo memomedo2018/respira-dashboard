@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 320" role="img" aria-labelledby="title desc">
+  <title>BMC G3 BiPAP</title>
+  <desc>BiPAP</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eefbfd"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#b9d6ef" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="448" height="320" rx="36" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <rect x="54" y="34" width="340" height="188" rx="32" fill="#f9fdff" stroke="#dcecf8"/>
+    <rect x="108" y="120" width="224" height="118" rx="46" fill="#ffffff" stroke="#0f9fb7" stroke-width="8"/><path d="M108 180 Q220 86 332 180" fill="none" stroke="#0f9fb7" stroke-width="8"/><rect x="144" y="146" width="84" height="42" rx="14" fill="#eefbfd"/><circle cx="284" cy="175" r="26" fill="#0f9fb7"/><rect x="122" y="204" width="196" height="34" rx="16" fill="#0d7490" opacity="0.16"/>
+  </g>
+  <rect x="24" y="24" width="112" height="42" rx="21" fill="#ffffff" stroke="#dcecf8"/>
+  <text x="80" y="51" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0d7490">BiPAP</text>
+  <text x="224" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#17324d">BMC G3 BiPAP</text>
+  <text x="224" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#5a6f86">BMC</text>
+</svg>
