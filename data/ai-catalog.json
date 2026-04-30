@@ -25,6 +25,23 @@
   ],
   "products": [
     {
+      "name_ar": "ماسك ResMed AirFit F20 اختبار الداشبورد",
+      "name_en": "ResMed AirFit F20 Dashboard Test",
+      "brand": "ResMed",
+      "category": "Full Face Mask",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "منتج اختبار تمت إضافته لمحاكاة الحفظ من الداشبورد مع مزامنة GitHub وتقرير اليوم.",
+      "long_description_ar": "هذا منتج اختبار للتحقق من أن حفظ المنتجات من لوحة التحكم يؤدي إلى بناء صفحة المنتج، ثم دفع التغييرات إلى GitHub، ثم ظهور العملية داخل تقرير اليوم.",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "compatibility_notes_ar": "اختبار تقني فقط.",
+      "url": "https://respira-tech.com/store/airfit-f20-codex-dashboard-test/",
+      "image": "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
+    },
+    {
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
       "name_en": "AirFit F20 Complete Mask System",
       "brand": "ResMed",
