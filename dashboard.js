@@ -429,10 +429,16 @@ function renderSeoBrain() {
   `).join('') : '<div class="empty-state">لا يوجد سجل SEO Brain بعد.</div>';
 }
 
+function parseDashboardDate(value) {
+  if (!value) return null;
+  const normalized = /z$/i.test(String(value)) ? String(value) : `${String(value)}Z`;
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function sameLocalDay(value) {
-  if (!value) return false;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return false;
+  const date = parseDashboardDate(value);
+  if (!date) return false;
   const now = new Date();
   return date.getFullYear() === now.getFullYear()
     && date.getMonth() === now.getMonth()
@@ -440,9 +446,8 @@ function sameLocalDay(value) {
 }
 
 function formatDateTime(value) {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return escapeHTML(String(value));
+  const date = parseDashboardDate(value);
+  if (!date) return value ? escapeHTML(String(value)) : '—';
   return date.toLocaleString('ar-EG', {
     year: 'numeric',
     month: '2-digit',
