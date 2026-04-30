@@ -10,7 +10,7 @@ import requests
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 
 import seo_brain
 
@@ -188,6 +188,182 @@ def git_sync_enabled(env: dict[str, str]) -> bool:
     )
 
 
+def collect_sync_targets(paths: list[Path]) -> tuple[dict[str, Path], set[str], set[str]]:
+    files: dict[str, Path] = {}
+    managed_dirs: set[str] = set()
+    managed_files: set[str] = set()
+
+    for path in paths:
+        relative = repo_relative(path)
+        if path.exists():
+            if path.is_file():
+                files[relative] = path
+                managed_files.add(relative)
+                continue
+            if path.is_dir():
+                managed_dirs.add(f"{relative.rstrip('/')}/")
+                for child in path.rglob("*"):
+                    if child.is_file():
+                        files[repo_relative(child)] = child
+                continue
+
+        # Missing explicit files are still managed so they can be deleted remotely.
+        managed_files.add(relative)
+
+    return files, managed_dirs, managed_files
+
+
+def github_api_request(method: str, url: str, token: str, payload: dict | None = None) -> requests.Response:
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    response = requests.request(method, url, headers=headers, json=payload, timeout=60)
+    return response
+
+
+def github_get_branch_tree(repo: str, branch: str, token: str) -> dict[str, str]:
+    branch_url = f"https://api.github.com/repos/{repo}/branches/{quote(branch, safe='')}"
+    branch_response = github_api_request("GET", branch_url, token)
+    if branch_response.status_code >= 400:
+        raise RuntimeError(f"GitHub branch lookup failed: {branch_response.text}")
+
+    branch_data = branch_response.json()
+    tree_sha = (((branch_data.get("commit") or {}).get("commit") or {}).get("tree") or {}).get("sha")
+    if not tree_sha:
+        return {}
+
+    tree_url = f"https://api.github.com/repos/{repo}/git/trees/{tree_sha}?recursive=1"
+    tree_response = github_api_request("GET", tree_url, token)
+    if tree_response.status_code >= 400:
+        raise RuntimeError(f"GitHub tree lookup failed: {tree_response.text}")
+
+    tree = {}
+    for item in (tree_response.json().get("tree") or []):
+        if item.get("type") == "blob" and item.get("path") and item.get("sha"):
+            tree[item["path"]] = item["sha"]
+    return tree
+
+
+def github_get_file(repo: str, branch: str, relative: str, token: str) -> dict | None:
+    url = f"https://api.github.com/repos/{repo}/contents/{quote(relative, safe='/')}?ref={quote(branch, safe='')}"
+    response = github_api_request("GET", url, token)
+    if response.status_code == 404:
+        return None
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub file lookup failed for {relative}: {response.text}")
+
+    payload = response.json()
+    encoded = payload.get("content") or ""
+    decoded = base64.b64decode(encoded) if encoded else b""
+    return {
+        "sha": payload.get("sha"),
+        "content": decoded,
+    }
+
+
+def github_put_file(
+    repo: str,
+    branch: str,
+    relative: str,
+    local_path: Path,
+    token: str,
+    author_name: str,
+    author_email: str,
+    commit_message: str,
+) -> str:
+    existing = github_get_file(repo, branch, relative, token)
+    local_bytes = local_path.read_bytes()
+    if existing and existing.get("content") == local_bytes:
+        return "unchanged"
+
+    payload = {
+        "message": f"{commit_message}: {relative}",
+        "content": base64.b64encode(local_bytes).decode("ascii"),
+        "branch": branch,
+        "committer": {"name": author_name, "email": author_email},
+    }
+    if existing and existing.get("sha"):
+        payload["sha"] = existing["sha"]
+
+    url = f"https://api.github.com/repos/{repo}/contents/{quote(relative, safe='/')}"
+    response = github_api_request("PUT", url, token, payload)
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub update failed for {relative}: {response.text}")
+    return "updated" if existing else "created"
+
+
+def github_delete_file(
+    repo: str,
+    branch: str,
+    relative: str,
+    sha: str,
+    token: str,
+    author_name: str,
+    author_email: str,
+    commit_message: str,
+) -> None:
+    payload = {
+        "message": f"{commit_message}: delete {relative}",
+        "sha": sha,
+        "branch": branch,
+        "committer": {"name": author_name, "email": author_email},
+    }
+    url = f"https://api.github.com/repos/{repo}/contents/{quote(relative, safe='/')}"
+    response = github_api_request("DELETE", url, token, payload)
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub delete failed for {relative}: {response.text}")
+
+
+def sync_changes_via_github_api(
+    commit_message: str,
+    stage_paths: list[Path],
+    repo: str,
+    branch: str,
+    token: str,
+    author_name: str,
+    author_email: str,
+) -> dict:
+    local_files, managed_dirs, managed_files = collect_sync_targets(stage_paths)
+    remote_tree = github_get_branch_tree(repo, branch, token)
+
+    created = 0
+    updated = 0
+    deleted = 0
+
+    for relative, local_path in sorted(local_files.items()):
+        result = github_put_file(repo, branch, relative, local_path, token, author_name, author_email, commit_message)
+        if result == "created":
+            created += 1
+        elif result == "updated":
+            updated += 1
+
+    remote_managed = {
+        relative: sha
+        for relative, sha in remote_tree.items()
+        if relative in managed_files or any(relative.startswith(prefix) for prefix in managed_dirs)
+    }
+    local_paths = set(local_files)
+    for relative, sha in sorted(remote_managed.items()):
+        if relative in local_paths:
+            continue
+        github_delete_file(repo, branch, relative, sha, token, author_name, author_email, commit_message)
+        deleted += 1
+
+    if created == 0 and updated == 0 and deleted == 0:
+        return {"ok": True, "skipped": True, "reason": "no synced changes"}
+    return {
+        "ok": True,
+        "pushed": True,
+        "branch": branch,
+        "mode": "github_api",
+        "created": created,
+        "updated": updated,
+        "deleted": deleted,
+    }
+
+
 def sync_changes_to_github(commit_message: str, extra_paths: list[Path] | None = None) -> dict:
     env = load_env()
     if not git_sync_enabled(env):
@@ -207,6 +383,20 @@ def sync_changes_to_github(commit_message: str, extra_paths: list[Path] | None =
         if relative not in seen:
             seen.add(relative)
             unique_paths.append(relative)
+
+    if not shutil.which("git"):
+        try:
+            return sync_changes_via_github_api(
+                commit_message=commit_message,
+                stage_paths=stage_paths,
+                repo=repo,
+                branch=branch,
+                token=token,
+                author_name=author_name,
+                author_email=author_email,
+            )
+        except Exception as exc:
+            return {"ok": False, "error": str(exc)}
 
     git_env = os.environ.copy()
     git_env.update({
