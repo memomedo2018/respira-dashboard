@@ -27,6 +27,40 @@
   },
   "products": [
     {
+      "id": "airtouch-f20-codex-dashboard-report-test",
+      "slug": "airtouch-f20-codex-dashboard-report-test",
+      "name_ar": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
+      "name_en": "ResMed AirTouch F20 Daily Report Test",
+      "brand": "ResMed",
+      "category": "Full Face Mask",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "اختبار ثاني للتأكد من أن إضافة المنتج تدخل في تقرير اليوم وتُدفع إلى GitHub.",
+      "long_description_ar": "هذا منتج اختبار ثانٍ بعد إصلاح حفظ سجل النشاط قبل المزامنة. الهدف منه التأكد أن العملية ستظهر في تبويب تقرير اليوم وتظل موجودة بعد الـ redeploy.",
+      "key_features_ar": [
+        "اختبار تقرير اليوم",
+        "اختبار مزامنة GitHub",
+        "اختبار بناء صفحة المنتج"
+      ],
+      "included_items_ar": [
+        "الماسك",
+        "الحزام"
+      ],
+      "sizes": [
+        "M",
+        "L"
+      ],
+      "compatibility_notes_ar": "اختبار تقني فقط.",
+      "price_text": "السعر عند التواصل",
+      "main_image": "/assets/images/store/respira-tech-logo.png",
+      "gallery_images": [],
+      "whatsapp_message": "مرحبًا، أريد الاستفسار عن ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
+      "seo_title": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم | Respira Tech",
+      "seo_description": "منتج اختبار للتحقق من أن تقرير اليوم يسجل إضافة المنتجات ويحتفظ بها بعد المزامنة التلقائية.",
+      "filter_tags": [
+        "cpap-masks"
+      ]
+    },
+    {
       "id": "airfit-f20-codex-dashboard-test",
       "slug": "airfit-f20-codex-dashboard-test",
       "name_ar": "ماسك ResMed AirFit F20 اختبار الداشبورد",
