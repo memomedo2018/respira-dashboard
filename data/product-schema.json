@@ -2,6 +2,21 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
+    "name": "ماسك ResMed AirFit F20 اختبار الداشبورد",
+    "image": [
+      "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
+    ],
+    "description": "منتج اختبار تمت إضافته لمحاكاة الحفظ من الداشبورد مع مزامنة GitHub وتقرير اليوم.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "Full Face Mask",
+    "url": "https://respira-tech.com/store/airfit-f20-codex-dashboard-test/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
     "name": "ماسك ResMed AirFit F20 كامل الوجه",
     "image": [
       "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"
