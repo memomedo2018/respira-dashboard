@@ -51,6 +51,7 @@ SYNC_PATHS = [
     BASE_DIR / "privacy-policy",
     BASE_DIR / "refund-policy",
     BASE_DIR / "terms",
+    BASE_DIR / "رفع-اللايف",
     BASE_DIR / "admin" / "blog" / "index.html",
     SITEMAP_FILE,
     ROBOTS_FILE,

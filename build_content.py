@@ -11,6 +11,7 @@ from urllib.parse import quote
 
 
 BASE_DIR = Path(__file__).resolve().parent
+LIVE_RELEASE_DIR = BASE_DIR / "رفع-اللايف"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 STORE_FILE = BASE_DIR / "data" / "store.json"
@@ -30,6 +31,30 @@ STORE_PRODUCT_TEMPLATE = STORE_DIR / "product" / "index.html"
 LLMS_FILE = BASE_DIR / "llms.txt"
 AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
 
+RELEASE_TOP_LEVEL_PATHS = [
+    BASE_DIR / ".htaccess",
+    BASE_DIR / "index.html",
+    BASE_DIR / "about",
+    BASE_DIR / "assets",
+    BASE_DIR / "blog",
+    BASE_DIR / "contact",
+    BASE_DIR / "privacy-policy",
+    BASE_DIR / "refund-policy",
+    BASE_DIR / "services",
+    BASE_DIR / "store",
+    BASE_DIR / "terms",
+    BASE_DIR / "sitemap.xml",
+    BASE_DIR / "robots.txt",
+    BASE_DIR / "llms.txt",
+]
+
+RELEASE_DATA_PATHS = [
+    STORE_FILE,
+    SITE_FILE,
+    BASE_DIR / "data" / "product-schema.json",
+    AI_CATALOG_FILE,
+]
+
 
 def load_json(path: Path) -> dict | list:
     with path.open("r", encoding="utf-8") as file:
@@ -39,6 +64,34 @@ def load_json(path: Path) -> dict | list:
 def save_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def sync_live_release() -> None:
+    if LIVE_RELEASE_DIR.exists():
+        for child in LIVE_RELEASE_DIR.iterdir():
+            if child.is_dir():
+                shutil.rmtree(child)
+            else:
+                child.unlink()
+    LIVE_RELEASE_DIR.mkdir(parents=True, exist_ok=True)
+
+    for source in RELEASE_TOP_LEVEL_PATHS:
+        if not source.exists():
+            continue
+        target = LIVE_RELEASE_DIR / source.name
+        if source.is_dir():
+            shutil.copytree(source, target, dirs_exist_ok=True)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
+
+    release_data_dir = LIVE_RELEASE_DIR / "data"
+    release_data_dir.mkdir(parents=True, exist_ok=True)
+    for source in RELEASE_DATA_PATHS:
+        if not source.exists():
+            continue
+        target = release_data_dir / source.name
+        shutil.copy2(source, target)
 
 
 def slugify(value: str) -> str:
@@ -917,6 +970,7 @@ def main() -> None:
     build_store_product_schema(site_data)
     build_ai_catalog(site_data, articles)
     build_llms(site_data, articles)
+    sync_live_release()
     print(f"Built {len(articles)} blog articles, store product pages, sitemap, robots, AI catalog, llms.txt, service pages, and admin shell.")
 
 

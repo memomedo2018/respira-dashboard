@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://respira-tech.com/sitemap.xml

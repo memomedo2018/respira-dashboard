@@ -1,0 +1,34 @@
+name: Deploy Shared Hosting
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build public site release
+        run: python3 build_content.py
+
+      - name: Deploy release folder to shared hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SHARED_HOSTING_FTP_SERVER }}
+          username: ${{ secrets.SHARED_HOSTING_FTP_USERNAME }}
+          password: ${{ secrets.SHARED_HOSTING_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          server-dir: /public_html/
+          local-dir: ./رفع-اللايف/
