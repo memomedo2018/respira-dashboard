@@ -2,36 +2,6 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "سبيلبي اختبار يدوي",
-    "image": [
-      "https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg"
-    ],
-    "description": "اختبار حفظ يدوي من نفس API.",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "ماسكات Nasal",
-    "url": "https://respira-tech.com/store/sabily-manual-check/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "سبيلبي",
-    "image": [
-      "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
-    ],
-    "description": "ءرؤ",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "يبلبي",
-    "url": "https://respira-tech.com/store/%D9%8A/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
     "name": "ماسك ResMed AirFit F20 كامل الوجه",
     "image": [
       "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"

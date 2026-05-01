@@ -1,8 +1,4 @@
 {
-  "config": {
-    "whatsapp_phone": "your_whatsapp_number_here",
-    "price_text_default": "السعر عند التواصل"
-  },
   "categories": [
     {
       "id": "full-face",
@@ -25,70 +21,11 @@
       "name_ar": "إكسسوارات الماسك"
     }
   ],
+  "config": {
+    "whatsapp_phone": "201012566955",
+    "price_text_default": "السعر عند التواصل"
+  },
   "products": [
-    {
-      "id": "sabily-manual-check",
-      "slug": "sabily-manual-check",
-      "name_ar": "سبيلبي اختبار يدوي",
-      "name_en": "Sabily Manual Check",
-      "brand": "ResMed",
-      "category": "ماسكات Nasal",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "اختبار حفظ يدوي من نفس API.",
-      "long_description_ar": "اختبار حفظ يدوي من نفس API للتأكد من أن slug والصورة يصلان بشكل صحيح.",
-      "key_features_ar": [
-        "اختبار"
-      ],
-      "included_items_ar": [
-        "صورة"
-      ],
-      "sizes": [
-        "M"
-      ],
-      "compatibility_notes_ar": "اختبار فقط",
-      "price_text": "السعر عند التواصل",
-      "main_image": "/assets/images/store/test-arabic-upload-20260501165847551310.jpg",
-      "gallery_images": [
-        "/assets/images/store/test-arabic-upload-20260501165847551310.jpg"
-      ],
-      "whatsapp_message": "مرحبًا، أريد الاستفسار عن سبيلبي اختبار يدوي",
-      "seo_title": "سبيلبي اختبار يدوي",
-      "seo_description": "اختبار حفظ يدوي",
-      "filter_tags": [
-        "nasal",
-        "cpap-masks"
-      ]
-    },
-    {
-      "id": "ي",
-      "slug": "ي",
-      "name_ar": "سبيلبي",
-      "name_en": "يبلبي",
-      "brand": "ResMed",
-      "category": "يبلبي",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "ءرؤ",
-      "long_description_ar": "يبل",
-      "key_features_ar": [
-        "ءبؤر"
-      ],
-      "included_items_ar": [
-        "ءبؤلا"
-      ],
-      "sizes": [
-        "رؤء"
-      ],
-      "compatibility_notes_ar": "ءلارؤ",
-      "price_text": "السعر عند التواصل",
-      "main_image": "/assets/images/store/respira-tech-logo.png",
-      "gallery_images": [],
-      "whatsapp_message": "مرحبًا، أريد الاستفسار عن سبيلبي",
-      "seo_title": "يبل",
-      "seo_description": "بي",
-      "filter_tags": [
-        "nasal"
-      ]
-    },
     {
       "id": "airfit-f20-complete-mask-system",
       "slug": "airfit-f20-complete-mask-system",

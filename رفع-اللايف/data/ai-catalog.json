@@ -25,36 +25,6 @@
   ],
   "products": [
     {
-      "name_ar": "سبيلبي اختبار يدوي",
-      "name_en": "Sabily Manual Check",
-      "brand": "ResMed",
-      "category": "ماسكات Nasal",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "اختبار حفظ يدوي من نفس API.",
-      "long_description_ar": "اختبار حفظ يدوي من نفس API للتأكد من أن slug والصورة يصلان بشكل صحيح.",
-      "sizes": [
-        "M"
-      ],
-      "compatibility_notes_ar": "اختبار فقط",
-      "url": "https://respira-tech.com/store/sabily-manual-check/",
-      "image": "https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg"
-    },
-    {
-      "name_ar": "سبيلبي",
-      "name_en": "يبلبي",
-      "brand": "ResMed",
-      "category": "يبلبي",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "ءرؤ",
-      "long_description_ar": "يبل",
-      "sizes": [
-        "رؤء"
-      ],
-      "compatibility_notes_ar": "ءلارؤ",
-      "url": "https://respira-tech.com/store/%D9%8A/",
-      "image": "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
-    },
-    {
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
       "name_en": "AirFit F20 Complete Mask System",
       "brand": "ResMed",
