@@ -21,6 +21,7 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - CPAP masks: https://respira-tech.com/services/cpap-masks/
 
 ## Featured products
+- سبيلبي اختبار يدوي: https://respira-tech.com/store/sabily-manual-check/
 - سبيلبي: https://respira-tech.com/store/%D9%8A/
 - ماسك ResMed AirFit F20 كامل الوجه: https://respira-tech.com/store/airfit-f20-complete-mask-system/
 - ماسك ResMed AirFit N20 الأنفي: https://respira-tech.com/store/airfit-n20-complete-mask-system/

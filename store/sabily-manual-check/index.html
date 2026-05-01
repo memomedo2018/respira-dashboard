@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سبيلبي اختبار يدوي</title>
+<meta name="description" content="اختبار حفظ يدوي">
+<link rel="canonical" href="https://respira-tech.com/store/sabily-manual-check/">
+<meta property="og:type" content="product">
+<meta property="og:title" content="سبيلبي اختبار يدوي">
+<meta property="og:description" content="اختبار حفظ يدوي">
+<meta property="og:url" content="https://respira-tech.com/store/sabily-manual-check/">
+<meta property="og:image" content="https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="سبيلبي اختبار يدوي">
+<meta name="twitter:description" content="اختبار حفظ يدوي">
+<meta name="twitter:image" content="https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg">
+<script>window.__PRODUCT_SLUG__ = "sabily-manual-check";</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Product", "name": "سبيلبي اختبار يدوي", "image": ["https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg", "https://respira-tech.com/assets/images/store/test-arabic-upload-20260501165847551310.jpg"], "description": "اختبار حفظ يدوي من نفس API للتأكد من أن slug والصورة يصلان بشكل صحيح.", "brand": {"@type": "Brand", "name": "ResMed"}, "category": "ماسكات Nasal", "url": "https://respira-tech.com/store/sabily-manual-check/"}</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --header-offset: 124px;
+  --theme-bg: #f3f8fc;
+  --theme-surface: rgba(255,255,255,0.9);
+  --theme-surface-strong: rgba(255,255,255,0.96);
+  --theme-border: rgba(15, 23, 42, 0.1);
+  --theme-text: #0f172a;
+  --theme-text-soft: #475569;
+  --theme-heading: #0f172a;
+  --theme-text-muted: #334155;
+  --theme-section-2: linear-gradient(135deg, #f7fbff, #e9f3fb);
+  --theme-section-3: linear-gradient(135deg, #ffffff, #edf7ff, #d9eef9);
+}
+body {
+  font-family: 'Alexandria', 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, #ffffff, #edf6fc);
+  color: var(--theme-text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body[data-theme="dark"] {
+  --theme-bg: #0f172a;
+  --theme-surface: rgba(15, 23, 42, 0.82);
+  --theme-surface-strong: rgba(15, 23, 42, 0.94);
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-text: #f8fafc;
+  --theme-text-soft: #cbd5e1;
+  --theme-heading: #f8fafc;
+  --theme-text-muted: #cbd5e1;
+  --theme-section-2: linear-gradient(135deg, #111827, #10233a);
+  --theme-section-3: linear-gradient(135deg, #0f172a, #13263e, #111827);
+  background: linear-gradient(180deg, #0f172a, #111827);
+}
+a { color: inherit; text-decoration: none; }
+.floating-header {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, calc(100vw - 24px));
+  background: var(--theme-surface-strong);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--theme-border);
+  border-radius: 0 0 32px 32px;
+  padding: 1rem 2rem;
+  z-index: 1000;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+}
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0097b2;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 900;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  cursor: pointer;
+}
+.nav-link {
+  color: var(--theme-text-muted);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+.nav-link:hover,
+.nav-link.is-active {
+  color: #0097b2;
+  background: rgba(0, 151, 178, 0.1);
+}
+.theme-fab {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 1200;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.84);
+  backdrop-filter: blur(12px);
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+body[data-theme="dark"] .theme-fab,
+body[data-theme="dark"] .menu-toggle {
+  background: rgba(15,23,42,0.92);
+  color: #f8fafc;
+  border-color: rgba(255,255,255,0.08);
+}
+.brand-mark {
+  width: 35px;
+  height: 35px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: calc(var(--header-offset) + 1.5rem) 1.25rem 4rem;
+}
+.breadcrumbs {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  align-items: center;
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+.breadcrumbs a:hover { color: #0097b2; }
+.shell {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid rgba(255,255,255,0.78);
+  box-shadow: 0 28px 60px rgba(15,23,42,0.08);
+  border-radius: 36px;
+  overflow: hidden;
+}
+body[data-theme="dark"] .shell,
+body[data-theme="dark"] .purchase-panel,
+body[data-theme="dark"] .accordion,
+body[data-theme="dark"] .helpful-shell,
+body[data-theme="dark"] .related-card,
+body[data-theme="dark"] .footer-cta-card,
+body[data-theme="dark"] .footer-section {
+  background: rgba(15,23,42,0.82);
+  border-color: rgba(255,255,255,0.08);
+}
+body[data-theme="dark"] .media-panel {
+  background: linear-gradient(180deg, #152235, #102033);
+}
+body[data-theme="dark"] .main-image,
+body[data-theme="dark"] .thumb,
+body[data-theme="dark"] .related-card img {
+  background: #0f172a;
+}
+body[data-theme="dark"] .title,
+body[data-theme="dark"] .helpful-shell h2,
+body[data-theme="dark"] .related-card-title,
+body[data-theme="dark"] .accordion summary,
+body[data-theme="dark"] .footer-cta-card h2 {
+  color: #f8fafc;
+}
+body[data-theme="dark"] .description,
+body[data-theme="dark"] .support-point,
+body[data-theme="dark"] .accordion-body,
+body[data-theme="dark"] .helpful-shell p,
+body[data-theme="dark"] .related-card-meta,
+body[data-theme="dark"] .footer-text,
+body[data-theme="dark"] .copyright,
+body[data-theme="dark"] .breadcrumbs {
+  color: #cbd5e1;
+}
+body[data-theme="dark"] .feature-item,
+body[data-theme="dark"] .btn-secondary,
+body[data-theme="dark"] .badge,
+body[data-theme="dark"] .meta-chip,
+body[data-theme="dark"] .helpful-link {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.08);
+  color: #f8fafc;
+}
+.product-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  gap: 2rem;
+  padding: 2rem;
+}
+.media-panel {
+  background: linear-gradient(180deg, #f9fdff, #e8f4fb);
+  border-radius: 30px;
+  padding: 1.2rem;
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+}
+.main-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 26px;
+  background: #ffffff;
+}
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 92px));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.thumb {
+  width: 92px;
+  height: 92px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+}
+.thumb.is-active { border-color: #17a2b8; }
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,0.08);
+  background: rgba(255,255,255,0.86);
+  color: #0f4c5c;
+  font-weight: 800;
+}
+.title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.2;
+  font-weight: 900;
+  color: var(--theme-heading);
+}
+.title-wrap {
+  display: grid;
+  gap: 0.8rem;
+}
+.meta {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.meta-chip {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: rgba(0,151,178,0.08);
+  color: #0097b2;
+  font-weight: 700;
+}
+.price {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0c6674;
+}
+.purchase-panel {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 28px;
+  padding: 1.2rem;
+  box-shadow: 0 18px 40px rgba(15,23,42,0.06);
+}
+.purchase-stack {
+  display: grid;
+  gap: 1rem;
+}
+.support-points {
+  display: grid;
+  gap: 0.7rem;
+}
+.support-point {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #334155;
+  font-weight: 600;
+}
+.support-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #17a2b8, #17a2b8);
+  flex: 0 0 auto;
+}
+.description {
+  color: var(--theme-text-soft);
+  font-size: 1.05rem;
+}
+.feature-list {
+  display: grid;
+  gap: 0.65rem;
+}
+.feature-item {
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.86);
+  color: #334155;
+}
+.cta-row {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.btn {
+  padding: 1rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #17a2b8, #138496, #0c6674);
+  color: #fff;
+  box-shadow: 0 18px 36px rgba(23, 162, 184, 0.24);
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.92);
+  color: #0f172a;
+  border: 1px solid rgba(15,23,42,0.08);
+}
+.accordion-group {
+  display: grid;
+  gap: 0.8rem;
+}
+.accordion {
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.88);
+  overflow: hidden;
+}
+.accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.05rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  color: #0f172a;
+}
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after {
+  content: '+';
+  font-size: 1.2rem;
+  color: #0097b2;
+}
+.accordion[open] summary::after { content: '−'; }
+.accordion-body {
+  padding: 0 1.2rem 1.2rem;
+  color: #475569;
+}
+.related-section {
+  margin-top: 2rem;
+}
+.helpful-articles {
+  margin-top: 2rem;
+}
+.helpful-shell {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid rgba(255,255,255,0.78);
+  box-shadow: 0 24px 50px rgba(15,23,42,0.08);
+  border-radius: 36px;
+  padding: 2rem;
+}
+.helpful-shell h2 {
+  font-size: 1.7rem;
+  color: #0f172a;
+  margin-bottom: 0.7rem;
+}
+.helpful-shell p {
+  color: #475569;
+  margin-bottom: 1rem;
+}
+.helpful-links {
+  display: grid;
+  gap: 0.8rem;
+}
+.helpful-link {
+  display: block;
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(15,23,42,0.08);
+  color: #0097b2;
+  font-weight: 700;
+}
+.related-card-shell {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid rgba(255,255,255,0.78);
+  box-shadow: 0 24px 50px rgba(15,23,42,0.08);
+  border-radius: 36px;
+  padding: 2rem;
+}
+.related-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.related-head h2 {
+  font-size: 1.8rem;
+  color: #0f172a;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.related-card {
+  display: block;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(15,23,42,0.06);
+}
+.related-card:hover { transform: translateY(-4px); transition: transform .25s ease; }
+.related-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #eef8fd;
+}
+.related-card-body {
+  padding: 1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.related-card-title {
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.5;
+}
+.related-card-meta {
+  color: #0c6674;
+  font-weight: 800;
+}
+.footer-cta {
+  padding: 5rem 0 2rem;
+  background: var(--theme-section-3);
+}
+.footer-cta-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.footer-cta-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(224, 242, 254, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 40px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.08);
+}
+.footer-cta-card h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+.footer-cta-card p {
+  color: var(--theme-text-soft);
+  font-size: 1.05rem;
+  line-height: 1.9;
+  max-width: 760px;
+  margin: 0 auto 1.8rem;
+}
+.footer-section {
+  padding: 3.5rem 0;
+  background: linear-gradient(180deg, #f8fcff, #edf6fc);
+}
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+.footer-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0097b2;
+  margin-bottom: 0.9rem;
+}
+.footer-text {
+  max-width: 780px;
+  margin: 0 auto 1.3rem;
+  color: #64748b;
+  line-height: 1.9;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.footer-link {
+  color: #475569;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+}
+.footer-link:hover {
+  background: rgba(0,151,178,0.08);
+  color: #0097b2;
+}
+.copyright {
+  color: #64748b;
+  font-size: 0.95rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.1);
+}
+.loading, .error {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #475569;
+}
+@media (max-width: 960px) {
+  .product-layout { grid-template-columns: 1fr; }
+  .media-panel { position: static; }
+  .related-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --header-offset: 100px; }
+  .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
+  .floating-header {
+    top: 12px;
+    width: calc(100vw - 16px);
+    padding: 0.9rem 1rem;
+    border-radius: 28px;
+  }
+  .header-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .brand-logo { min-width: 0; font-size: 1.25rem; gap: 0.55rem; }
+  .brand-mark { width: 32px; height: 32px; }
+  .menu-toggle { display: inline-flex; }
+  .nav-links {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 0.2rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+  }
+  .floating-header.is-open .nav-links { display: grid; gap: 0.55rem; }
+  .nav-link { display: block; width: 100%; text-align: center; padding: 0.8rem 1rem; font-size: 0.98rem; }
+  .page { padding-right: 1rem; padding-left: 1rem; }
+  .product-layout { padding: 1rem; }
+  .thumb { width: 78px; height: 78px; }
+  .cta-row { flex-direction: column; }
+  .btn {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.82rem 1rem;
+    font-size: 0.92rem;
+    gap: 0.45rem;
+  }
+  .related-card-shell { padding: 1rem; }
+  .related-grid { grid-template-columns: 1fr; }
+  .footer-cta-shell,
+  .footer-content { padding-right: 1rem; padding-left: 1rem; }
+  .details { gap: 0.85rem; }
+  .title { font-size: clamp(1.45rem, 6.3vw, 2rem); }
+  .description { font-size: 0.96rem; }
+  .price { font-size: 1.35rem; }
+  .badge, .meta-chip { font-size: 0.82rem; padding: 0.55rem 0.85rem; }
+  .purchase-panel, .helpful-shell { padding: 1rem; }
+}
+</style>
+</head>
+<body data-theme="light">
+<button class="theme-fab theme-toggle" type="button" aria-label="تبديل وضع الألوان"><span class="theme-toggle-icon">🌙</span></button>
+<header class="floating-header">
+  <nav class="header-content">
+    <a href="/" class="brand-logo"><img class="brand-mark" src="/assets/images/store/respira-tech-logo.png" alt="Respira Tech logo" loading="eager" decoding="async">Respira Tech</a>
+    <button class="menu-toggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="siteNav">☰</button>
+    <ul class="nav-links" id="siteNav">
+      <li><a href="/" class="nav-link">الرئيسية</a></li>
+      <li><a href="/about/" class="nav-link">من نحن</a></li>
+      <li><a href="/services/" class="nav-link">الخدمات</a></li>
+      <li><a href="/store/" class="nav-link is-active">المتجر</a></li>
+      <li><a href="/blog/" class="nav-link">المدونة</a></li>
+      <li><a href="/contact/" class="nav-link">تواصل معنا</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="page" id="pageRoot">
+  <div class="loading">جاري تحميل بيانات المنتج...</div>
+</main>
+
+<section class="footer-cta" id="contact-store">
+  <div class="footer-cta-shell">
+    <div class="footer-cta-card">
+      <h2>جاهز تبدأ نوم أفضل؟</h2>
+      <p>تواصل معنا الآن وسنساعدك في اختيار المنتج الأنسب لك مع شرح واضح وخطوات سهلة للطلب.</p>
+      <a id="footerWhatsappCta" href="https://wa.me/?text=%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%D8%A8%D8%B4%D8%A3%D9%86%20%D8%A7%D9%84%D9%85%D8%AA%D8%AC%D8%B1" class="btn btn-primary" target="_blank" rel="noopener">تواصل معنا الآن</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer-section">
+  <div class="footer-content">
+    <div class="footer-logo">Respira Tech</div>
+    <p class="footer-text">متجر Respira Tech امتداد طبيعي لهوية الموقع: أجهزة أصلية، تجربة شراء واضحة، ومتابعة عملية بعد الاستلام للحفاظ على راحة النوم والتنفس.</p>
+    <nav class="footer-links">
+      <a href="/" class="footer-link">الرئيسية</a>
+      <a href="/about/" class="footer-link">من نحن</a>
+      <a href="/services/" class="footer-link">الخدمات</a>
+      <a href="/store/" class="footer-link">المتجر</a>
+      <a href="/blog/" class="footer-link">المدونة</a>
+      <a href="/contact/" class="footer-link">تواصل معنا</a>
+      <a href="/privacy-policy/" class="footer-link">سياسة الخصوصية</a>
+      <a href="/refund-policy/" class="footer-link">سياسة الاسترجاع</a>
+    </nav>
+    <div class="copyright">© 2024 Respira Tech. جميع الحقوق محفوظة.</div>
+  </div>
+</footer>
+
+<script>
+const body = document.body;
+const header = document.querySelector('.floating-header');
+const menuToggle = document.querySelector('.menu-toggle');
+const savedTheme = localStorage.getItem('respira-theme') || 'light';
+body.setAttribute('data-theme', savedTheme);
+document.querySelectorAll('.theme-toggle').forEach((toggle) => {
+  const icon = toggle.querySelector('.theme-toggle-icon');
+  if (icon) icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+  toggle.addEventListener('click', () => {
+    const nextTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('respira-theme', nextTheme);
+    const icon = toggle.querySelector('.theme-toggle-icon');
+    if (icon) icon.textContent = nextTheme === 'light' ? '🌙' : '☀️';
+  });
+});
+
+if (header && menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    const isOpen = header.classList.toggle('is-open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    menuToggle.textContent = isOpen ? '✕' : '☰';
+  });
+  document.querySelectorAll('#siteNav .nav-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      header.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.textContent = '☰';
+    });
+  });
+}
+
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function upsertMeta(name, content) {
+  if (!content) return;
+  let node = document.head.querySelector(`meta[name="${name}"]`);
+  if (!node) {
+    node = document.createElement('meta');
+    node.setAttribute('name', name);
+    document.head.appendChild(node);
+  }
+  node.setAttribute('content', content);
+}
+
+function upsertLink(rel, href) {
+  if (!href) return;
+  let node = document.head.querySelector(`link[rel="${rel}"]`);
+  if (!node) {
+    node = document.createElement('link');
+    node.setAttribute('rel', rel);
+    document.head.appendChild(node);
+  }
+  node.setAttribute('href', href);
+}
+
+function getCategoryName(categories, id) {
+  return categories.find((item) => item.id === id)?.name_ar || categories.find((item) => item.id === id)?.name || id;
+}
+
+function renderThumbs(images, productName) {
+  return images.map((image, index) => `
+    <button class="thumb ${index === 0 ? 'is-active' : ''}" type="button" data-image="${escapeHTML(image)}">
+      <img loading="lazy" src="${escapeHTML(image)}" alt="${escapeHTML(productName)} ${index + 1}">
+    </button>
+  `).join('');
+}
+
+function renderRelatedProducts(allProducts, currentProduct, categories) {
+  const currentTags = new Set(currentProduct.filter_tags || []);
+  const related = allProducts
+    .filter((item) => item.id !== currentProduct.id)
+    .filter((item) => (item.filter_tags || []).some((tag) => currentTags.has(tag)))
+    .slice(0, 3);
+
+  if (!related.length) return '';
+
+  return `
+    <section class="related-section">
+      <div class="related-card-shell">
+        <div class="related-head">
+          <div>
+            <div class="badge">${escapeHTML(getCategoryName(categories, currentProduct.category))}</div>
+            <h2>منتجات مشابهة</h2>
+          </div>
+          <a href="/store/" class="btn btn-secondary">كل المنتجات</a>
+        </div>
+        <div class="related-grid">
+          ${related.map((item) => `
+            <a class="related-card" href="/store/${encodeURIComponent(item.slug || item.id)}/">
+              <img loading="lazy" src="${escapeHTML(item.main_image || '')}" alt="${escapeHTML(item.name_ar || item.name_en || item.slug)}">
+              <div class="related-card-body">
+                <div class="related-card-title">${escapeHTML(item.name_ar || item.name_en || item.slug)}</div>
+                <div class="related-card-meta">${escapeHTML(item.price_text || 'السعر عند التواصل')}</div>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderProduct(product, categories, whatsappPhone, allProducts) {
+  const pageRoot = document.getElementById('pageRoot');
+  const productName = product.name_ar || product.name_en || product.slug;
+  const productImages = [product.main_image, ...(product.gallery_images || [])].filter(Boolean);
+  const uniqueImages = [...new Set(productImages)];
+  const categoryName = product.category || getCategoryName(categories, product.category);
+  const whatsappMessage = encodeURIComponent(product.whatsapp_message || `مرحبًا، أريد الاستفسار عن ${productName}`);
+  const whatsappUrl = `https://wa.me/${encodeURIComponent(whatsappPhone || '')}?text=${whatsappMessage}`;
+  const canonicalUrl = `${window.location.origin}/store/${encodeURIComponent(product.slug || product.id || '')}/`;
+  document.title = product.seo_title || `${productName} | Respira Tech`;
+  upsertMeta('description', product.seo_description || product.long_description_ar || product.short_description_ar || 'تفاصيل منتج من متجر Respira Tech.');
+  upsertLink('canonical', canonicalUrl);
+  document.getElementById('product-schema')?.remove();
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: productName,
+    image: uniqueImages.map((image) => `${window.location.origin}${image}`),
+    description: product.long_description_ar || product.short_description_ar || '',
+    brand: { '@type': 'Brand', name: product.brand || 'Respira Tech' },
+    category: categoryName,
+    url: canonicalUrl,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'EGP',
+      availability: 'https://schema.org/InStock',
+      description: product.price_text || 'السعر عند التواصل'
+    }
+  };
+  const schemaTag = document.createElement('script');
+  schemaTag.id = 'product-schema';
+  schemaTag.type = 'application/ld+json';
+  schemaTag.textContent = JSON.stringify(productSchema);
+  document.head.appendChild(schemaTag);
+  const footerWhatsappCta = document.getElementById('footerWhatsappCta');
+  if (footerWhatsappCta) footerWhatsappCta.href = whatsappUrl;
+  const sizesMarkup = Array.isArray(product.sizes) && product.sizes.length
+    ? product.sizes.map((size) => `<div class="feature-item">${escapeHTML(size)}</div>`).join('')
+    : '<div class="feature-item">يرجى التواصل لمعرفة المقاسات المتاحة.</div>';
+  const includedMarkup = Array.isArray(product.included_items_ar) && product.included_items_ar.length
+    ? product.included_items_ar.map((item) => `<div class="feature-item">${escapeHTML(item)}</div>`).join('')
+    : '<div class="feature-item">يرجى التواصل لمعرفة محتويات العبوة.</div>';
+  const featuresMarkup = Array.isArray(product.key_features_ar) && product.key_features_ar.length
+    ? product.key_features_ar.map((feature) => `<div class="feature-item">${escapeHTML(feature)}</div>`).join('')
+    : '<div class="feature-item">لا توجد مميزات إضافية متاحة حاليًا.</div>';
+
+  pageRoot.innerHTML = `
+    <div class="breadcrumbs">
+      <a href="/">الرئيسية</a>
+      <span>/</span>
+      <a href="/store/">المتجر</a>
+      <span>/</span>
+      <span>${escapeHTML(productName)}</span>
+    </div>
+    <section class="shell">
+      <div class="product-layout">
+        <div class="media-panel">
+          <img id="mainProductImage" class="main-image" src="${escapeHTML(uniqueImages[0] || '')}" alt="${escapeHTML(productName)}">
+          ${uniqueImages.length > 1 ? `<div class="thumbs" id="productThumbs">${renderThumbs(uniqueImages, productName)}</div>` : ''}
+        </div>
+        <div class="details">
+          <div class="title-wrap">
+            <div class="badge">${escapeHTML(product.brand || 'ResMed')}</div>
+            <h1 class="title">${escapeHTML(productName)}</h1>
+            ${product.name_en ? `<div class="description" style="font-weight:700;color:#1e3a8a">${escapeHTML(product.name_en)}</div>` : ''}
+            <div class="meta">
+              <div class="meta-chip">${escapeHTML(categoryName)}</div>
+              ${product.product_type ? `<div class="meta-chip">${escapeHTML(product.product_type)}</div>` : ''}
+            </div>
+            ${product.short_description_ar ? `<p class="description">${escapeHTML(product.short_description_ar)}</p>` : ''}
+          </div>
+
+          <div class="purchase-panel">
+            <div class="purchase-stack">
+              <div style="font-weight:800;color:#0f172a">اطلب المنتج</div>
+              <div class="price">${escapeHTML(product.price_text || 'السعر عند التواصل')}</div>
+              <div class="support-points">
+                <div class="support-point"><span class="support-dot"></span><span>استشارة قبل الشراء لاختيار المنتج المناسب</span></div>
+                <div class="support-point"><span class="support-dot"></span><span>دعم فني ومتابعة بعد الاستلام</span></div>
+                <div class="support-point"><span class="support-dot"></span><span>تنسيق توصيل سريع حسب المنطقة</span></div>
+              </div>
+              <div class="cta-row">
+                <a href="${escapeHTML(whatsappUrl)}" class="btn btn-primary" target="_blank" rel="noopener">اطلب عبر واتساب</a>
+                <a href="/store/" class="btn btn-secondary">العودة إلى المتجر</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-group">
+            <details class="accordion" open>
+              <summary>نظرة عامة</summary>
+              <div class="accordion-body description">${escapeHTML(product.long_description_ar || '')}</div>
+            </details>
+            <details class="accordion">
+              <summary>المميزات الرئيسية</summary>
+              <div class="accordion-body"><div class="feature-list">${featuresMarkup}</div></div>
+            </details>
+            <details class="accordion">
+              <summary>محتويات العبوة</summary>
+              <div class="accordion-body"><div class="feature-list">${includedMarkup}</div></div>
+            </details>
+            <details class="accordion">
+              <summary>المقاسات المتاحة</summary>
+              <div class="accordion-body"><div class="feature-list">${sizesMarkup}</div></div>
+            </details>
+            <details class="accordion">
+              <summary>ملاحظات التوافق</summary>
+              <div class="accordion-body description">${escapeHTML(product.compatibility_notes_ar || 'يرجى التواصل لمعرفة تفاصيل التوافق الكاملة.')}</div>
+            </details>
+            <details class="accordion">
+              <summary>روابط مفيدة</summary>
+              <div class="accordion-body">
+                <div class="feature-list">
+                  <div class="feature-item"><a href="/services/cpap-masks">تعرف على خدمة ماسكات CPAP</a></div>
+                  <div class="feature-item"><a href="/services/cpap">تعرف على أجهزة CPAP المرتبطة بالماسك</a></div>
+                  <div class="feature-item"><a href="/contact/">تواصل معنا لمساعدة مباشرة</a></div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="helpful-articles">
+      <div class="helpful-shell">
+        <h2>مقالات قد تساعدك</h2>
+        <p>نعمل على إضافة مقالات متخصصة عن اختيار ماسكات CPAP والفرق بين الأنواع المختلفة. إلى أن تُنشر هذه المقالات، يمكنك مراجعة الروابط التالية:</p>
+        <div class="helpful-links">
+          <a class="helpful-link" href="/blog/">زيارة المدونة</a>
+          <a class="helpful-link" href="/services/cpap-masks/">تعرف على خدمة ماسكات CPAP</a>
+          <a class="helpful-link" href="/contact/">تواصل معنا لمساعدة مباشرة</a>
+        </div>
+      </div>
+    </section>
+    <!-- TODO: add direct links here when these blog articles are published:
+      /blog/how-to-choose-cpap-mask/
+      /blog/full-face-vs-nasal-mask/
+      /blog/cpap-mask-air-leaks/
+    -->
+    ${renderRelatedProducts(allProducts, product, categories)}
+  `;
+
+  const mainImage = document.getElementById('mainProductImage');
+  document.querySelectorAll('#productThumbs .thumb').forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      const image = thumb.dataset.image;
+      mainImage.src = image;
+      document.querySelectorAll('#productThumbs .thumb').forEach((item) => item.classList.remove('is-active'));
+      thumb.classList.add('is-active');
+    });
+  });
+}
+
+async function initProductPage() {
+  const pageRoot = document.getElementById('pageRoot');
+  if (window.location.pathname.endsWith('/index.html')) {
+    const targetPath = window.location.pathname.replace(/index\.html$/, '');
+    const finalPath = targetPath.endsWith('/') ? targetPath : `${targetPath}/`;
+    window.location.replace(`${finalPath}${window.location.search}${window.location.hash}`);
+    return;
+  }
+  const querySlug = new URLSearchParams(window.location.search).get('slug');
+  const pathParts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  const pathSlug = pathParts[0] === 'store' && pathParts[1] && pathParts[1] !== 'product' ? decodeURIComponent(pathParts[1]) : '';
+  const slug = querySlug || pathSlug || window.__PRODUCT_SLUG__ || '';
+  if (!slug) {
+    pageRoot.innerHTML = '<div class="error">المنتج غير محدد. ارجع إلى <a href="/store/">المتجر</a>.</div>';
+    return;
+  }
+
+  try {
+    let data = null;
+    let lastError = null;
+    for (const source of ['/api/store', '/data/store.json']) {
+      try {
+        const response = await fetch(source, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Failed to load ${source}: ${response.status}`);
+        data = await response.json();
+        break;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (!data) throw lastError || new Error('Unable to load product data');
+    const products = Array.isArray(data.products) ? data.products : [];
+    const categories = Array.isArray(data.categories) ? data.categories : [];
+    const product = products.find((item) => item.slug === slug || item.id === slug);
+
+    if (!product) {
+      pageRoot.innerHTML = '<div class="error">المنتج غير موجود حاليًا. ارجع إلى <a href="/store/">المتجر</a>.</div>';
+      return;
+    }
+
+    renderProduct(product, categories, data.config?.whatsapp_phone || '', products);
+  } catch (error) {
+    pageRoot.innerHTML = '<div class="error">حدث خطأ أثناء تحميل المنتج. حاول مرة أخرى.</div>';
+  }
+}
+
+initProductPage();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</body>
+</html>
