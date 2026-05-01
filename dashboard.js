@@ -237,19 +237,29 @@ function renderProductsList() {
   }
   wrap.innerHTML = state.products.map((product) => `
     <div class="mini-card">
-      <div class="mini-card-head">
-        <div>
-          <div class="mini-card-title">${escapeHTML(product.name_ar)}</div>
-          <div class="mini-card-sub">${escapeHTML(product.name_en || '')}</div>
+      <div class="product-list-card">
+        <img
+          class="product-list-thumb"
+          src="${escapeHTML(product.main_image || '/assets/images/store/respira-tech-logo.png')}"
+          alt="${escapeHTML(product.name_ar || product.name_en || 'Product image')}"
+          loading="lazy"
+        >
+        <div class="product-list-copy">
+          <div class="mini-card-head">
+            <div>
+              <div class="mini-card-title">${escapeHTML(product.name_ar)}</div>
+              <div class="mini-card-sub">${escapeHTML(product.name_en || '')}</div>
+            </div>
+            <span class="badge">${escapeHTML(product.brand || 'ResMed')}</span>
+          </div>
+          <div class="mini-card-sub">${escapeHTML(product.category || '')}</div>
+          <div class="sizes-preview" style="margin-top:.6rem">${(product.sizes || []).slice(0, 4).map((item) => `<span class="chip">${escapeHTML(item)}</span>`).join('')}</div>
+          <div class="mini-actions" style="margin-top:.9rem">
+            <a class="btn" href="/store/${encodeURIComponent(product.slug || product.id)}/" target="_blank" rel="noopener">معاينة</a>
+            <button class="btn" type="button" data-edit-product="${escapeHTML(product.id)}">تعديل</button>
+            <button class="btn btn-danger" type="button" data-delete-product="${escapeHTML(product.id)}">حذف</button>
+          </div>
         </div>
-        <span class="badge">${escapeHTML(product.brand || 'ResMed')}</span>
-      </div>
-      <div class="mini-card-sub">${escapeHTML(product.category || '')}</div>
-      <div class="sizes-preview" style="margin-top:.6rem">${(product.sizes || []).slice(0, 4).map((item) => `<span class="chip">${escapeHTML(item)}</span>`).join('')}</div>
-      <div class="mini-actions" style="margin-top:.9rem">
-        <a class="btn" href="/store/${encodeURIComponent(product.slug || product.id)}/" target="_blank" rel="noopener">معاينة</a>
-        <button class="btn" type="button" data-edit-product="${escapeHTML(product.id)}">تعديل</button>
-        <button class="btn btn-danger" type="button" data-delete-product="${escapeHTML(product.id)}">حذف</button>
       </div>
     </div>
   `).join('');

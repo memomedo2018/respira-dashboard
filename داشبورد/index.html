@@ -179,6 +179,22 @@
       background: rgba(255,255,255,.94);
       box-shadow: 0 12px 28px rgba(15,23,42,.05);
     }
+    .product-list-card {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    .product-list-thumb {
+      width: 116px;
+      height: 116px;
+      object-fit: cover;
+      border-radius: 22px;
+      border: 1px solid rgba(15,23,42,.08);
+      background: #eef8fd;
+      box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    }
+    .product-list-copy { min-width: 0; }
     .mini-card-head {
       display: flex;
       justify-content: space-between;
@@ -263,6 +279,12 @@
       .field-row, .field-row-3, .metrics { grid-template-columns: 1fr; }
       .hero { padding: 1.4rem; }
       .topbar-shell { padding-block: .9rem; }
+      .product-list-card { grid-template-columns: 1fr; }
+      .product-list-thumb {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+      }
     }
   </style>
 </head>
