@@ -25,6 +25,21 @@
   ],
   "products": [
     {
+      "name_ar": "test",
+      "name_en": "test",
+      "brand": "ResMed",
+      "category": "",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "test",
+      "long_description_ar": "test",
+      "sizes": [
+        "test"
+      ],
+      "compatibility_notes_ar": "test",
+      "url": "https://respira-tech.com/store/test/",
+      "image": "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
+    },
+    {
       "name_ar": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
       "name_en": "ResMed AirTouch F20 Daily Report Test",
       "brand": "ResMed",
