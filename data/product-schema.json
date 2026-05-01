@@ -2,6 +2,21 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
+    "name": "اختبار صورة منتج 2",
+    "image": [
+      "https://respira-tech.com/assets/images/store/codex-product-test-2-20260501134706290751.png"
+    ],
+    "description": "اختبار مزامنة الصورة بعد الإصلاح.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "اختبار",
+    "url": "https://respira-tech.com/store/codex-image-check-20260501-b/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
     "name": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
     "image": [
       "https://respira-tech.com/assets/images/store/respira-tech-logo.png"

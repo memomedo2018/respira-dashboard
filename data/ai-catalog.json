@@ -25,6 +25,21 @@
   ],
   "products": [
     {
+      "name_ar": "اختبار صورة منتج 2",
+      "name_en": "Codex Image Check Product 2",
+      "brand": "ResMed",
+      "category": "اختبار",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "اختبار مزامنة الصورة بعد الإصلاح.",
+      "long_description_ar": "اختبار مزامنة الصورة بعد الإصلاح.",
+      "sizes": [
+        "Standard"
+      ],
+      "compatibility_notes_ar": "اختبار فقط",
+      "url": "https://respira-tech.com/store/codex-image-check-20260501-b/",
+      "image": "https://respira-tech.com/assets/images/store/codex-product-test-2-20260501134706290751.png"
+    },
+    {
       "name_ar": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
       "name_en": "ResMed AirTouch F20 Daily Report Test",
       "brand": "ResMed",
