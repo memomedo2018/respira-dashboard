@@ -25,6 +25,21 @@
   ],
   "products": [
     {
+      "name_ar": "test2",
+      "name_en": "فث",
+      "brand": "ResMed",
+      "category": "",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "test",
+      "long_description_ar": "test",
+      "sizes": [
+        "test"
+      ],
+      "compatibility_notes_ar": "test",
+      "url": "https://respira-tech.com/store/%D9%81/",
+      "image": "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
+    },
+    {
       "name_ar": "test",
       "name_en": "test",
       "brand": "ResMed",
