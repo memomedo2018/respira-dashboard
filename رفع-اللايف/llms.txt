@@ -21,9 +21,6 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - CPAP masks: https://respira-tech.com/services/cpap-masks/
 
 ## Featured products
-- اختبار صورة منتج 2: https://respira-tech.com/store/codex-image-check-20260501-b/
-- ماسك ResMed AirTouch F20 اختبار تقرير اليوم: https://respira-tech.com/store/airtouch-f20-codex-dashboard-report-test/
-- ماسك ResMed AirFit F20 اختبار الداشبورد: https://respira-tech.com/store/airfit-f20-codex-dashboard-test/
 - ماسك ResMed AirFit F20 كامل الوجه: https://respira-tech.com/store/airfit-f20-complete-mask-system/
 - ماسك ResMed AirFit N20 الأنفي: https://respira-tech.com/store/airfit-n20-complete-mask-system/
 - ماسك ResMed AirFit F30i كامل الوجه بوصلة علوية: https://respira-tech.com/store/airfit-f30i-complete-mask-system/

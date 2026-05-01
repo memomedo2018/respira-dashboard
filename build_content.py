@@ -98,6 +98,9 @@ def sync_live_release() -> None:
         target = release_data_dir / source.name
         shutil.copy2(source, target)
 
+    if STORE_FILE.exists():
+        shutil.copy2(STORE_FILE, LIVE_RELEASE_DIR / "store-data.json")
+
 
 def slugify(value: str) -> str:
     value = value.strip().lower()

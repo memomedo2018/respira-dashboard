@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر ماسكات ResMed | Respira Tech</title>
+<meta name="description" content="متجر Respira Tech لماسكات ResMed الأصلية لأجهزة CPAP وBiPAP مع تفاصيل المقاسات وملاحظات التوافق والدعم بعد الشراء.">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --header-offset: 124px;
+  --theme-bg: #f3f8fc;
+  --theme-surface: rgba(255, 255, 255, 0.82);
+  --theme-surface-strong: rgba(255, 255, 255, 0.9);
+  --theme-border: rgba(15, 23, 42, 0.12);
+  --theme-text: #0f172a;
+  --theme-text-muted: #334155;
+  --theme-text-soft: #475569;
+  --theme-heading: #0f172a;
+  --theme-section-1: linear-gradient(180deg, #ffffff, #f1f7fb);
+  --theme-section-2: linear-gradient(135deg, #f7fbff, #e9f3fb);
+  --theme-section-3: linear-gradient(135deg, #ffffff, #edf7ff, #d9eef9);
+  --theme-card-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+body {
+  font-family: 'Alexandria', 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: var(--theme-text);
+  background: var(--theme-bg);
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+body[data-theme="dark"] {
+  --theme-bg: #0f172a;
+  --theme-surface: rgba(15, 23, 42, 0.78);
+  --theme-surface-strong: rgba(15, 23, 42, 0.92);
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-text: #f8fafc;
+  --theme-text-muted: #cbd5e1;
+  --theme-text-soft: #94a3b8;
+  --theme-heading: #f8fafc;
+  --theme-section-1: linear-gradient(180deg, #0f172a, #111827);
+  --theme-section-2: linear-gradient(135deg, #111827, #10233a);
+  --theme-section-3: linear-gradient(135deg, #0f172a, #13263e, #111827);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.floating-header {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, calc(100vw - 24px));
+  background: var(--theme-surface-strong);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--theme-border);
+  border-radius: 0 0 32px 32px;
+  padding: 1rem 2rem;
+  z-index: 1000;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0097b2;
+}
+
+.brand-mark {
+  width: 35px;
+  height: 35px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 900;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  cursor: pointer;
+}
+
+.nav-link {
+  color: var(--theme-text-muted);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+  color: #0097b2;
+  background: rgba(0, 151, 178, 0.1);
+}
+
+.theme-toggle {
+  border: 1px solid var(--theme-border);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--theme-text);
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 151, 178, 0.12);
+}
+
+.theme-fab {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 1200;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.theme-fab:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+}
+
+body[data-theme="dark"] .theme-fab,
+body[data-theme="dark"] .theme-toggle,
+body[data-theme="dark"] .menu-toggle {
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-ultra {
+  position: relative;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-primary-ultra {
+  background: linear-gradient(135deg, #17a2b8, #138496, #0c6674);
+  color: white;
+  box-shadow: 0 20px 40px rgba(23, 162, 184, 0.24);
+}
+
+.btn-primary-ultra:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 55px rgba(23, 162, 184, 0.28);
+}
+
+.btn-secondary-ultra {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--theme-text);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.btn-secondary-ultra:hover {
+  transform: translateY(-4px);
+  background: #ffffff;
+}
+
+.store-section,
+.faq-section,
+.trust-section,
+.footer-cta,
+.footer-section {
+  scroll-margin-top: 40px;
+}
+
+.store-section {
+  padding: calc(var(--header-offset) + 2.5rem) 0 7rem;
+  background: var(--theme-section-1);
+}
+
+.section-header {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 3rem;
+  padding: 0 2rem;
+}
+
+.section-badge {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  color: #0f766e;
+  padding: 0.8rem 1.3rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.section-title-ultra {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--theme-heading), #0097b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.section-description {
+  color: var(--theme-text-soft);
+  font-size: 1.1rem;
+  line-height: 1.9;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto 2.5rem;
+  padding: 0 2rem;
+}
+
+.filter-btn {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--theme-text-muted);
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.is-active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  box-shadow: 0 14px 30px rgba(23, 162, 184, 0.26), 0 0 0 3px rgba(23,162,184,.14);
+}
+
+.filter-btn.is-active {
+  transform: translateY(-1px);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.35s ease;
+  cursor: pointer;
+}
+
+body[data-theme="dark"] .product-card,
+body[data-theme="dark"] .products-empty-card,
+body[data-theme="dark"] .trust-card,
+body[data-theme="dark"] .faq-item,
+body[data-theme="dark"] .footer-cta-card,
+body[data-theme="dark"] .footer-section,
+body[data-theme="dark"] .store-help-card {
+  background: rgba(15, 23, 42, 0.82);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .product-media {
+  background: linear-gradient(180deg, #152235, #102033);
+}
+
+body[data-theme="dark"] .section-title-ultra,
+body[data-theme="dark"] .product-title,
+body[data-theme="dark"] .product-title-en,
+body[data-theme="dark"] .trust-card h3,
+body[data-theme="dark"] .faq-item summary,
+body[data-theme="dark"] .footer-cta-card h2 {
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .section-description,
+body[data-theme="dark"] .product-description,
+body[data-theme="dark"] .product-meta,
+body[data-theme="dark"] .trust-card p,
+body[data-theme="dark"] .faq-item p,
+body[data-theme="dark"] .footer-text,
+body[data-theme="dark"] .footer-cta-card p,
+body[data-theme="dark"] .store-help-card p,
+body[data-theme="dark"] .copyright {
+  color: #cbd5e1;
+}
+
+body[data-theme="dark"] .btn-secondary-ultra,
+body[data-theme="dark"] .filter-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 28px 55px rgba(15, 23, 42, 0.12);
+}
+
+.product-card.is-hidden {
+  display: none;
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.product-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-height: 320px;
+  background: linear-gradient(180deg, #f8fcff, #e7f4fb);
+  overflow: hidden;
+}
+
+.product-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f4c5c;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.product-body {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.product-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.product-brand-badge,
+.product-category-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.product-brand-badge {
+  background: rgba(0, 151, 178, 0.1);
+  color: #0097b2;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.product-category-chip {
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f766e;
+  border: 1px solid rgba(15, 118, 110, 0.16);
+  padding: 0.45rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.product-title {
+  color: var(--theme-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.product-title-en {
+  color: #0097b2;
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.product-description {
+  color: var(--theme-text-soft);
+  font-size: 0.98rem;
+  line-height: 1.8;
+}
+
+.product-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0c6674;
+}
+
+.product-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.product-meta small {
+  color: var(--theme-text-soft);
+  font-weight: 700;
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.product-action {
+  flex: 1 1 180px;
+  justify-content: center;
+}
+
+.product-gallery {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.product-gallery img {
+  width: 74px;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #f8fbfe;
+}
+
+.products-empty {
+  max-width: 1240px;
+  margin: 1rem auto 0;
+  padding: 0 2rem;
+  display: none;
+}
+
+.products-empty.is-visible {
+  display: block;
+}
+
+.products-empty-card {
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 28px;
+  padding: 2rem 1.5rem;
+  color: #64748b;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
+}
+
+.store-help {
+  max-width: 1240px;
+  margin: 2rem auto 0;
+  padding: 0 2rem;
+}
+
+.store-help-card {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 28px;
+  padding: 1.8rem;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.06);
+}
+
+.store-help-card h3 {
+  color: #0f172a;
+  font-size: 1.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.store-help-card p {
+  color: #475569;
+  line-height: 1.9;
+  margin-bottom: 1rem;
+}
+
+.store-help-links {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.trust-section {
+  padding: 6rem 0;
+  background: var(--theme-section-2);
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.trust-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 28px;
+  padding: 2.3rem;
+  text-align: center;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trust-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+}
+
+.trust-icon {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 1.2rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  box-shadow: 0 18px 34px rgba(23, 162, 184, 0.22);
+}
+
+.trust-card h3 {
+  font-size: 1.35rem;
+  color: var(--theme-heading);
+  margin-bottom: 0.75rem;
+}
+
+.trust-card p {
+  color: var(--theme-text-soft);
+  line-height: 1.8;
+}
+
+.faq-section {
+  padding: 6.5rem 0;
+  background: var(--theme-section-1);
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.faq-item {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 24px;
+  padding: 1.35rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--theme-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::before {
+  content: "+";
+  order: -1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.12);
+  color: #0097b2;
+  font-size: 1.2rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.faq-item[open] summary::before {
+  content: "−";
+}
+
+.faq-item p {
+  margin: 1rem 0 0;
+  padding-right: 3rem;
+  color: var(--theme-text-muted);
+  line-height: 1.9;
+}
+
+.footer-cta {
+  padding: 5.5rem 0;
+  background: var(--theme-section-2);
+}
+
+.footer-cta-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-cta-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(231,245,252,0.9));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 36px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 24px 54px rgba(15, 23, 42, 0.1);
+}
+
+.footer-cta-card h2 {
+  font-family: 'Marhey', 'Alexandria', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  color: var(--theme-heading);
+  margin-bottom: 1rem;
+}
+
+.footer-cta-card p {
+  color: var(--theme-text-soft);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section {
+  background: var(--theme-section-1);
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--theme-border);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+}
+
+.footer-text {
+  color: var(--theme-text-soft);
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  font-size: 1.05rem;
+  max-width: 860px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  color: var(--theme-text-muted);
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.footer-link:hover {
+  color: #0097b2;
+}
+
+.copyright {
+  color: #64748b;
+  font-size: 0.95rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.scroll-animation {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+}
+
+.scroll-animation.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1180px) {
+  .products-grid,
+  .trust-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
+  :root {
+    --header-offset: 100px;
+  }
+
+  .floating-header {
+    top: 12px;
+    width: calc(100vw - 16px);
+    padding: 0.9rem 1rem;
+    border-radius: 28px;
+  }
+
+  .header-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .brand-logo { min-width: 0; font-size: 1.25rem; gap: 0.55rem; }
+  .brand-mark { width: 32px; height: 32px; }
+  .menu-toggle { display: inline-flex; }
+  .nav-links {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 0.2rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+  }
+  .floating-header.is-open .nav-links {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .nav-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem 1rem;
+    font-size: 0.98rem;
+  }
+
+  .theme-toggle:not(.theme-fab) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-header,
+  .products-grid,
+  .trust-grid,
+  .faq-grid,
+  .footer-cta-shell,
+  .footer-content {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .store-section {
+    padding-top: calc(var(--header-offset) + 1rem);
+    padding-bottom: 4.5rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.4rem;
+  }
+
+  .section-badge {
+    padding: 0.58rem 0.9rem;
+    font-size: 0.78rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title-ultra {
+    font-size: clamp(1.7rem, 9.5vw, 2.35rem);
+    line-height: 1.08;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-description,
+  .footer-cta-card p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  .filter-bar {
+    padding: 0 1rem 0.3rem;
+    margin: 0 auto 1.4rem;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 0.55rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 0.56rem 0.82rem;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    min-height: 36px;
+  }
+
+  .products-grid {
+    gap: 1.2rem;
+  }
+
+  .product-media {
+    min-height: 260px;
+  }
+
+  .product-body {
+    padding: 1.15rem;
+    gap: 0.8rem;
+  }
+
+  .product-title {
+    font-size: 1.12rem;
+    line-height: 1.45;
+  }
+
+  .product-title-en {
+    font-size: 0.84rem;
+  }
+
+  .product-description {
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .product-price {
+    font-size: 1.05rem;
+  }
+
+  .product-brand-badge,
+  .product-category-chip,
+  .product-badge {
+    font-size: 0.7rem;
+  }
+
+  .product-badge {
+    top: 0.8rem;
+    right: 0.8rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .product-actions {
+    flex-direction: column;
+  }
+
+  .btn-ultra,
+  .product-action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-ultra {
+    min-height: 46px;
+    padding: 0.82rem 1rem;
+    font-size: 0.92rem;
+    gap: 0.45rem;
+  }
+
+  .product-action {
+    flex: 1 1 auto;
+  }
+
+  .products-grid,
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-item p {
+    padding-right: 0;
+  }
+
+  .footer-cta-card {
+    padding: 2.2rem 1.3rem;
+  }
+
+  .trust-section,
+  .faq-section,
+  .footer-cta {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+</style>
+</head>
+<body data-theme="light">
+
+<header class="floating-header">
+  <nav class="header-content">
+    <a href="/" class="brand-logo">
+      <img class="brand-mark" src="/assets/images/store/respira-tech-logo.png" alt="Respira Tech logo" loading="eager" decoding="async">
+      Respira Tech
+    </a>
+    <button class="menu-toggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="siteNav">☰</button>
+    <ul class="nav-links" id="siteNav">
+      <li><a href="/" class="nav-link">الرئيسية</a></li>
+      <li><a href="/about/" class="nav-link">من نحن</a></li>
+      <li><a href="/services/" class="nav-link">الخدمات</a></li>
+      <li><a href="/store/#products" class="nav-link is-active">المتجر</a></li>
+      <li><a href="/blog/" class="nav-link">المدونة</a></li>
+      <li><a href="/contact/" class="nav-link">تواصل معنا</a></li>
+    </ul>
+  </nav>
+</header>
+
+<button class="theme-toggle theme-fab" type="button" aria-label="تبديل وضع الألوان">
+  <span class="theme-toggle-icon">🌙</span>
+</button>
+
+<section class="store-section scroll-animation" id="products">
+  <div class="section-header">
+    <div class="section-badge">متجر Respira Tech</div>
+    <h2 class="section-title-ultra">ماسكات ResMed الأصلية</h2>
+    <p class="section-description">
+      تصفح مجموعة ماسكات ResMed الأصلية المخصصة لأجهزة CPAP وBiPAP، مع تفاصيل المقاسات والمحتويات وملاحظات التوافق والدعم بعد الشراء.
+    </p>
+  </div>
+
+  <div class="filter-bar" id="filterBar" aria-label="فلاتر المنتجات"></div>
+  <div class="products-grid" id="productsGrid"></div>
+  <div class="products-empty" id="productsEmpty">
+    <div class="products-empty-card">لا توجد منتجات متاحة حاليًا داخل هذا التصنيف.</div>
+  </div>
+  <div class="store-help">
+    <div class="store-help-card">
+      <h3>محتوى قد يساعدك قبل اختيار الماسك</h3>
+      <p>إذا كنت ما زلت تقارن بين أنواع الماسكات أو تحتاج فهمًا أوضح قبل الطلب، يمكنك مراجعة المدونة أو خدمة ماسكات CPAP.</p>
+      <div class="store-help-links">
+        <a href="/blog/" class="btn-ultra btn-secondary-ultra">زيارة المدونة</a>
+        <a href="/services/cpap-masks/" class="btn-ultra btn-secondary-ultra">خدمة ماسكات CPAP</a>
+      </div>
+    </div>
+  </div>
+  <!-- TODO: add direct links here when mask-selection articles are published:
+    /blog/how-to-choose-cpap-mask/
+    /blog/full-face-vs-nasal-mask/
+    /blog/cpap-mask-air-leaks/
+  -->
+</section>
+
+<section class="trust-section scroll-animation">
+  <div class="section-header">
+    <div class="section-badge">لماذا المتجر؟</div>
+    <h2 class="section-title-ultra">ماسكات أصلية مع ترشيح أوضح</h2>
+    <p class="section-description">نساعدك في فهم الفرق بين أنواع الماسكات والمقاسات وملاحظات التوافق قبل اتخاذ قرار الشراء.</p>
+  </div>
+
+  <div class="trust-grid">
+    <article class="trust-card">
+      <div class="trust-icon"><i class="fas fa-certificate"></i></div>
+      <h3>منتجات ResMed أصلية</h3>
+      <p>صور وموديلات رسمية لماسكات ResMed الأصلية مع تفاصيل واضحة لكل نظام ماسك.</p>
+    </article>
+    <article class="trust-card">
+      <div class="trust-icon"><i class="fas fa-headset"></i></div>
+      <h3>مساعدة في اختيار الماسك</h3>
+      <p>نساعدك في فهم الفرق بين Full Face وNasal وNasal Cradle والمقاسات المتاحة.</p>
+    </article>
+    <article class="trust-card">
+      <div class="trust-icon"><i class="fas fa-truck-fast"></i></div>
+      <h3>متابعة بعد الشراء</h3>
+      <p>دعم أوضح بعد الاستلام لمساعدتك في فهم التركيب الأساسي وملاحظات التوافق.</p>
+    </article>
+  </div>
+</section>
+
+<section class="faq-section scroll-animation" id="faq">
+  <div class="section-header">
+    <div class="section-badge">الأسئلة الشائعة</div>
+    <h2 class="section-title-ultra">كل ما تحتاج معرفته قبل طلب الماسك</h2>
+    <p class="section-description">إجابات مباشرة لتسهيل اختيار نوع الماسك والمقاس المناسب وملاحظات التوافق الأساسية.</p>
+  </div>
+
+  <div class="faq-grid">
+    <details class="faq-item" open>
+      <summary>كيف أعرف نوع الماسك المناسب؟</summary>
+      <p>نساعدك في فهم الفرق بين ماسكات Full Face وNasal وNasal Cradle حسب أسلوب تنفسك وراحتك وطبيعة الاستخدام مع جهازك.</p>
+    </details>
+    <details class="faq-item">
+      <summary>هل المقاسات تختلف من ماسك لآخر؟</summary>
+      <p>نعم، كل منتج في المتجر موضح به المقاسات المتاحة، وبعض الأنظمة تشمل مقاسات للكوشن وأخرى للإطار أو الهدباند.</p>
+    </details>
+    <details class="faq-item">
+      <summary>هل كل الماسكات متوافقة مع AirMini؟</summary>
+      <p>لا، بعض الماسكات تحتاج setup pack أو connector خاص، وبعضها غير متوافق مع AirMini أصلًا. ستجد ملاحظات التوافق موضحة داخل صفحة كل منتج.</p>
+    </details>
+  </div>
+</section>
+
+<section class="footer-cta scroll-animation" id="contact-store">
+  <div class="footer-cta-shell">
+    <div class="footer-cta-card">
+      <h2>جاهز تبدأ نوم أفضل؟</h2>
+      <p>تواصل معنا الآن وسنساعدك في اختيار المنتج الأنسب لك مع شرح واضح وخطوات سهلة للطلب.</p>
+      <a href="https://wa.me/?text=%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%D8%A8%D8%B4%D8%A3%D9%86%20%D8%A7%D9%84%D9%85%D8%AA%D8%AC%D8%B1" class="btn-ultra btn-primary-ultra" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i>
+        تواصل معنا الآن
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer-section">
+  <div class="footer-content">
+    <div class="footer-logo">Respira Tech</div>
+    <p class="footer-text">
+      متجر Respira Tech امتداد طبيعي لهوية الموقع: أجهزة أصلية، تجربة شراء واضحة، ومتابعة عملية بعد الاستلام للحفاظ على راحة النوم والتنفس.
+    </p>
+    <nav class="footer-links">
+      <a href="/" class="footer-link">الرئيسية</a>
+      <a href="/about/" class="footer-link">من نحن</a>
+      <a href="/services/" class="footer-link">الخدمات</a>
+      <a href="/store/#products" class="footer-link">المتجر</a>
+      <a href="/blog/" class="footer-link">المدونة</a>
+      <a href="/contact/" class="footer-link">تواصل معنا</a>
+      <a href="/privacy-policy/" class="footer-link">سياسة الخصوصية</a>
+      <a href="/refund-policy/" class="footer-link">سياسة الاسترجاع</a>
+    </nav>
+    <div class="copyright">© 2024 Respira Tech. جميع الحقوق محفوظة.</div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener('click', function (event) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animate');
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.scroll-animation').forEach((section) => {
+  observer.observe(section);
+});
+
+const body = document.body;
+const themeToggles = document.querySelectorAll('.theme-toggle');
+const header = document.querySelector('.floating-header');
+const menuToggle = document.querySelector('.menu-toggle');
+const productsGrid = document.getElementById('productsGrid');
+const filterBar = document.getElementById('filterBar');
+const productsEmpty = document.getElementById('productsEmpty');
+const filterAliases = {
+  cpap: { label: 'أجهزة CPAP', tags: ['cpap'] },
+  bipap: { label: 'أجهزة BiPAP', tags: ['bipap'] },
+  'sleep-apnea': { label: 'انقطاع النفس أثناء النوم', tags: ['sleep-apnea'] },
+  'cpap-masks': { label: 'ماسكات CPAP', tags: ['cpap-masks'] }
+};
+
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getPlaceholderByCategory(category) {
+  const placeholders = {
+    mask: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 320'%3E%3Crect width='420' height='320' rx='36' fill='%23EEF8FD'/%3E%3Cpath d='M210 86C257 86 295 124 295 171V186C295 214 272 237 244 237H176C148 237 125 214 125 186V171C125 124 163 86 210 86Z' fill='white' stroke='%23D3EAF7' stroke-width='6'/%3E%3Cpath d='M165 126H255V182C255 207 235 227 210 227C185 227 165 207 165 182V126Z' fill='%23E3F2FB'/%3E%3Cpath d='M126 171H86' stroke='%2317A2B8' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M334 171H294' stroke='%2317A2B8' stroke-width='12' stroke-linecap='round'/%3E%3Ccircle cx='210' cy='171' r='16' fill='%232563EB'/%3E%3C/svg%3E"
+  };
+
+  return placeholders.mask;
+}
+
+function renderFilters(categories, initialFilter = 'all') {
+  filterBar.innerHTML = '';
+  const normalizedInitial = String(initialFilter || 'all').trim().toLowerCase();
+  const allButton = document.createElement('button');
+  allButton.className = `filter-btn${normalizedInitial === 'all' ? ' is-active' : ''}`;
+  allButton.type = 'button';
+  allButton.dataset.filter = 'all';
+  allButton.textContent = 'الكل';
+  filterBar.appendChild(allButton);
+
+  if (filterAliases[normalizedInitial]) {
+    const aliasButton = document.createElement('button');
+    aliasButton.className = 'filter-btn is-active';
+    aliasButton.type = 'button';
+    aliasButton.dataset.filter = normalizedInitial;
+    aliasButton.textContent = filterAliases[normalizedInitial].label;
+    filterBar.appendChild(aliasButton);
+  }
+
+  categories.forEach((category) => {
+    const button = document.createElement('button');
+    const categoryId = String(category.id || '').trim().toLowerCase();
+    button.className = `filter-btn${categoryId === normalizedInitial ? ' is-active' : ''}`;
+    button.type = 'button';
+    button.dataset.filter = categoryId;
+    button.textContent = category.name_ar || category.name || category.id;
+    filterBar.appendChild(button);
+  });
+}
+
+function createGalleryMarkup(gallery, productName) {
+  if (!Array.isArray(gallery) || !gallery.length) return '';
+  return `
+    <div class="product-gallery">
+      ${gallery.map((image, index) => `<img loading="lazy" src="${escapeHTML(image)}" alt="${escapeHTML(productName)} ${index + 1}">`).join('')}
+    </div>
+  `;
+}
+
+function renderProducts(products, categories) {
+  productsGrid.innerHTML = products.map((product) => {
+    const categoryName = product.category || 'ماسك CPAP';
+    const thumbnail = product.main_image || getPlaceholderByCategory(product.category);
+    const productName = product.name_ar || product.name || '';
+    const englishName = product.name_en || '';
+    const detailsUrl = `/store/${encodeURIComponent(product.slug || product.id)}/`;
+    const whatsappMessage = encodeURIComponent(product.whatsapp_message || `مرحبًا، أريد الاستفسار عن ${productName}`);
+    const whatsappPhone = dataConfig.whatsapp_phone || '201012566955';
+    const filterTags = Array.isArray(product.filter_tags) ? product.filter_tags : [];
+    return `
+      <article class="product-card" data-filters="${escapeHTML(filterTags.join(' '))}" data-url="${escapeHTML(detailsUrl)}" id="product-${escapeHTML(product.id)}">
+        <div class="product-media">
+          <span class="product-badge">${escapeHTML(categoryName)}</span>
+          <img class="product-image" loading="lazy" alt="${escapeHTML(productName)}" src="${escapeHTML(thumbnail)}">
+        </div>
+        <div class="product-body">
+          <div class="product-badges">
+            <span class="product-brand-badge">ResMed</span>
+            <span class="product-category-chip">${escapeHTML(categoryName)}</span>
+          </div>
+          <div class="product-title">${escapeHTML(productName)}</div>
+          ${englishName ? `<div class="product-title-en">${escapeHTML(englishName)}</div>` : ''}
+          <p class="product-description">${escapeHTML(product.short_description_ar || '')}</p>
+          <div class="product-meta"><div class="product-price">${escapeHTML(product.price_text || 'السعر عند التواصل')}</div></div>
+          <div class="product-actions">
+            <a href="${escapeHTML(detailsUrl)}" class="btn-ultra btn-secondary-ultra product-action">عرض التفاصيل</a>
+            <a href="https://wa.me/${encodeURIComponent(whatsappPhone)}?text=${whatsappMessage}" class="btn-ultra btn-primary-ultra product-action" target="_blank" rel="noopener">اطلب عبر واتساب</a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+let dataConfig = { whatsapp_phone: '201012566955' };
+
+function normalizeFilterValue(value) {
+  return String(value || 'all').trim().toLowerCase();
+}
+
+function matchesFilter(cardFilters, filter) {
+  if (filter === 'all') return true;
+  if (filterAliases[filter]) {
+    return filterAliases[filter].tags.some((tag) => cardFilters.includes(tag));
+  }
+  return cardFilters.includes(filter);
+}
+
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  body.setAttribute('data-theme', theme);
+  themeToggles.forEach((toggle) => {
+    const icon = toggle.querySelector('.theme-toggle-icon');
+    if (icon) icon.textContent = isLight ? '🌙' : '☀️';
+  });
+}
+
+applyTheme('light');
+applyTheme(localStorage.getItem('respira-theme') || 'light');
+
+themeToggles.forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const nextTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(nextTheme);
+    localStorage.setItem('respira-theme', nextTheme);
+  });
+});
+
+if (header && menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    const isOpen = header.classList.toggle('is-open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    menuToggle.textContent = isOpen ? '✕' : '☰';
+  });
+  document.querySelectorAll('#siteNav .nav-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      header.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.textContent = '☰';
+    });
+  });
+}
+
+function bindStoreInteractions() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const productCards = document.querySelectorAll('.product-card');
+  const params = new URLSearchParams(window.location.search);
+
+  function applyFilter(rawFilter) {
+    const filter = normalizeFilterValue(rawFilter);
+    filterButtons.forEach((item) => item.classList.toggle('is-active', item.dataset.filter === filter));
+
+    productCards.forEach((card) => {
+      const filters = String(card.dataset.filters || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const match = matchesFilter(filters, filter);
+      card.hidden = !match;
+      card.classList.toggle('is-hidden', !match);
+    });
+
+    if (filter === 'all') {
+      params.delete('filter');
+    } else {
+      params.set('filter', filter);
+    }
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}#products`;
+    window.history.replaceState({}, '', nextUrl);
+    syncEmptyState();
+  }
+
+  function syncEmptyState() {
+    const visibleCount = Array.from(productCards).filter((card) => !card.hidden).length;
+    productsEmpty.classList.toggle('is-visible', visibleCount === 0);
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      applyFilter(button.dataset.filter);
+    });
+  });
+
+  document.querySelectorAll('.product-card').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (event.target.closest('a, button')) return;
+      const url = card.dataset.url;
+      if (url) window.location.href = url;
+    });
+  });
+
+  applyFilter(normalizeFilterValue(params.get('filter') || 'all'));
+}
+
+async function fetchStoreData() {
+  const sources = ['/api/store', '/store-data.json', '/data/store.json'];
+  let lastError = null;
+
+  for (const source of sources) {
+    try {
+      const response = await fetch(source, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Failed to load ${source}: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error('Unable to load store data');
+}
+
+async function initStore() {
+  try {
+    if (window.location.pathname.endsWith('/index.html')) {
+      const targetPath = window.location.pathname.replace(/index\.html$/, '');
+      const finalPath = targetPath.endsWith('/') ? targetPath : `${targetPath}/`;
+      window.location.replace(`${finalPath}${window.location.search}${window.location.hash}`);
+      return;
+    }
+    const data = await fetchStoreData();
+    dataConfig = data.config || dataConfig;
+    const categories = Array.isArray(data.categories) ? data.categories.map((item) => ({ id: item.id, name: item.name || item.name_ar || item.id, name_ar: item.name_ar || item.name || item.id })) : [];
+    const products = Array.isArray(data.products) ? data.products : [];
+    renderFilters(categories, normalizeFilterValue(new URLSearchParams(window.location.search).get('filter') || 'all'));
+    renderProducts(products, categories);
+    bindStoreInteractions();
+  } catch (error) {
+    console.error(error);
+    filtersWrap.innerHTML = '';
+    productGrid.innerHTML = '<div class="empty-state">تعذر تحميل المنتجات الآن. حاول تحديث الصفحة أو تواصل معنا عبر واتساب.</div>';
+  }
+}
+
+initStore();
+</script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Marhey:wght@400;500;600;700&display=swap" rel="stylesheet">
+</body>
+</html>
