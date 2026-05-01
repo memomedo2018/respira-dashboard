@@ -254,8 +254,9 @@ def cleanup_generated_blog_dirs(articles: list[dict]) -> None:
 
 
 def build_layout(*, title: str, meta_description: str, canonical: str, og_type: str, body_class: str, content: str,
-                 site: dict, extra_head: str = "", schema: list[dict] | None = None) -> str:
+                 site: dict, extra_head: str = "", schema: list[dict] | None = None, social_image: str | None = None) -> str:
     default_image = f"{site['base_url']}{site['default_image']}"
+    meta_image = social_image or default_image
     schema_json = json.dumps(schema or [], ensure_ascii=False)
     return f"""<!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -271,11 +272,11 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
   <meta property="og:description" content="{html.escape(meta_description)}">
   <meta property="og:url" content="{html.escape(canonical)}">
   <meta property="og:site_name" content="{html.escape(site['name'])}">
-  <meta property="og:image" content="{html.escape(default_image)}">
+  <meta property="og:image" content="{html.escape(meta_image)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{html.escape(title)}">
   <meta name="twitter:description" content="{html.escape(meta_description)}">
-  <meta name="twitter:image" content="{html.escape(default_image)}">
+  <meta name="twitter:image" content="{html.escape(meta_image)}">
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     :root {{
@@ -647,6 +648,7 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
             site=site,
             extra_head=extra,
             schema=schema,
+            social_image=f"{site['base_url']}{article['featured_image']}",
         ),
     )
 
