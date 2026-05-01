@@ -40,6 +40,7 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / "blog",
     BASE_DIR / "contact",
     BASE_DIR / "dashboard",
+    BASE_DIR / "dashboard-app.js",
     BASE_DIR / "dashboard.js",
     BASE_DIR / "privacy-policy",
     BASE_DIR / "refund-policy",
