@@ -32,3 +32,4 @@ jobs:
           port: 21
           server-dir: public_html/
           local-dir: ./رفع-اللايف/
+          dangerous-clean-slate: true
