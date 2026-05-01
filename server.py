@@ -620,21 +620,38 @@ def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
         except Exception:
             pass
 
+        purge_result = _purge_litespeed_cache(env)
+
         if errors:
-            return {"ok": False, "uploaded": uploaded, "errors": errors[:10]}
-        return {"ok": True, "uploaded": uploaded}
+            return {"ok": False, "uploaded": uploaded, "errors": errors[:10], "cache_purge": purge_result}
+        return {"ok": True, "uploaded": uploaded, "cache_purge": purge_result}
 
     except Exception as exc:
         return {"ok": False, "error": str(exc)}
 
 
-def verify_live_deployment(check_slug: str | None = None) -> dict:
-    env = load_env()
+def _purge_litespeed_cache(env: dict[str, str]) -> dict:
     base_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
+    secret = env.get("CRON_SECRET", "")
     try:
-        resp = requests.get(f"{base_url}/data/store.json", timeout=15)
+        resp = requests.get(
+            f"{base_url}/cache-purge.php",
+            params={"secret": secret},
+            timeout=15,
+        )
+        if resp.status_code == 200:
+            return {"ok": True, "response": resp.text[:200]}
+        return {"ok": False, "http_status": resp.status_code}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+
+
+def verify_live_deployment(check_slug: str | None = None) -> dict:
+    railway_url = "https://perfect-art-production.up.railway.app"
+    try:
+        resp = requests.get(f"{railway_url}/api/store", timeout=15)
         if resp.status_code != 200:
-            return {"ok": False, "error": f"store.json HTTP {resp.status_code}"}
+            return {"ok": False, "error": f"Railway /api/store HTTP {resp.status_code}"}
         products = resp.json().get("products", [])
         result: dict = {"ok": True, "live_product_count": len(products)}
         if check_slug:
@@ -642,7 +659,7 @@ def verify_live_deployment(check_slug: str | None = None) -> dict:
             result["slug_found"] = found
             if not found:
                 result["ok"] = False
-                result["error"] = f"slug '{check_slug}' missing from live store"
+                result["error"] = f"slug '{check_slug}' not in Railway store"
         return result
     except Exception as exc:
         return {"ok": False, "error": str(exc)}
