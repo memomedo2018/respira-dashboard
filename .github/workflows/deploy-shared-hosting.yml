@@ -28,7 +28,7 @@ jobs:
           server: ${{ secrets.SHARED_HOSTING_FTP_SERVER }}
           username: ${{ secrets.SHARED_HOSTING_FTP_USERNAME }}
           password: ${{ secrets.SHARED_HOSTING_FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           port: 21
           server-dir: /public_html/
           local-dir: ./رفع-اللايف/
