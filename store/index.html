@@ -1363,7 +1363,9 @@ function bindStoreInteractions() {
 }
 
 async function fetchStoreData() {
-  const sources = ['/api/store', '/store-data.json', '/data/store.json'];
+  const v = Date.now();
+  const RAILWAY = 'https://perfect-art-production.up.railway.app';
+  const sources = ['/api/store', `${RAILWAY}/api/store`, `/store-data.json?v=${v}`, `/data/store.json?v=${v}`];
   let lastError = null;
 
   for (const source of sources) {
