@@ -300,7 +300,7 @@ async function uploadFiles(files) {
 }
 
 async function saveStore() {
-  await fetch('/api/store/save', {
+  const response = await fetch('/api/store/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -309,6 +309,11 @@ async function saveStore() {
       products: state.products
     })
   });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || 'تعذر حفظ بيانات المتجر');
+  }
+  return response.json();
 }
 
 function collectProductPayload() {
