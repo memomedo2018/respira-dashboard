@@ -35,9 +35,12 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / ".htaccess",
     BASE_DIR / "index.html",
     BASE_DIR / "about",
+    BASE_DIR / "admin",
     BASE_DIR / "assets",
     BASE_DIR / "blog",
     BASE_DIR / "contact",
+    BASE_DIR / "dashboard",
+    BASE_DIR / "dashboard.js",
     BASE_DIR / "privacy-policy",
     BASE_DIR / "refund-policy",
     BASE_DIR / "services",
@@ -46,6 +49,7 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / "sitemap.xml",
     BASE_DIR / "robots.txt",
     BASE_DIR / "llms.txt",
+    BASE_DIR / "داشبورد",
 ]
 
 RELEASE_DATA_PATHS = [
