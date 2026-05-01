@@ -1,4 +1,8 @@
 {
+  "config": {
+    "whatsapp_phone": "your_whatsapp_number_here",
+    "price_text_default": "السعر عند التواصل"
+  },
   "categories": [
     {
       "id": "full-face",
@@ -21,11 +25,37 @@
       "name_ar": "إكسسوارات الماسك"
     }
   ],
-  "config": {
-    "whatsapp_phone": "your_whatsapp_number_here",
-    "price_text_default": "السعر عند التواصل"
-  },
   "products": [
+    {
+      "id": "test",
+      "slug": "test",
+      "name_ar": "test",
+      "name_en": "test",
+      "brand": "ResMed",
+      "category": "",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "test",
+      "long_description_ar": "test",
+      "key_features_ar": [
+        "tedt"
+      ],
+      "included_items_ar": [
+        "test"
+      ],
+      "sizes": [
+        "test"
+      ],
+      "compatibility_notes_ar": "test",
+      "price_text": "السعر عند التواصل",
+      "main_image": "/assets/images/store/respira-tech-logo.png",
+      "gallery_images": [],
+      "whatsapp_message": "مرحبًا، أريد الاستفسار عن test",
+      "seo_title": "",
+      "seo_description": "",
+      "filter_tags": [
+        "full-face"
+      ]
+    },
     {
       "id": "airtouch-f20-codex-dashboard-report-test",
       "slug": "airtouch-f20-codex-dashboard-report-test",
