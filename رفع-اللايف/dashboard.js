@@ -89,8 +89,43 @@ const state = {
   activityLogs: [],
   currentThumbnail: '',
   currentGallery: [],
-  selectedArticle: null
+  selectedArticle: null,
+  uploadsInProgress: 0,
+  productSlugManuallyEdited: false
 };
+
+const DEFAULT_PRODUCT_IMAGE = '/assets/images/store/respira-tech-logo.png';
+
+function publicBaseUrl() {
+  return String(state.settings.site_base_url || 'https://respira-tech.com').trim().replace(/\/+$/, '');
+}
+
+function productPublicUrl(slug) {
+  return `${publicBaseUrl()}/store/${encodeURIComponent(slug)}/`;
+}
+
+function buildProductSlug() {
+  const manualSlug = toSlug(productFields.slug.value);
+  if (manualSlug.length >= 3) return manualSlug;
+  const generatedSlug = toSlug(productFields.nameEn.value || productFields.nameAr.value);
+  if (generatedSlug.length >= 3) return generatedSlug;
+  return '';
+}
+
+function syncProductSlug() {
+  if (state.productSlugManuallyEdited) return;
+  productFields.slug.value = toSlug(productFields.nameEn.value || productFields.nameAr.value);
+}
+
+function setUploadState(active) {
+  state.uploadsInProgress += active ? 1 : -1;
+  if (state.uploadsInProgress < 0) state.uploadsInProgress = 0;
+  const saveButton = document.getElementById('saveProductBtn');
+  if (saveButton) {
+    saveButton.disabled = state.uploadsInProgress > 0;
+    saveButton.textContent = state.uploadsInProgress > 0 ? 'جار رفع الصور...' : 'حفظ المنتج';
+  }
+}
 
 const productFields = {
   editingId: document.getElementById('editingProductId'),
@@ -176,12 +211,13 @@ function renderFilterTags() {
 }
 
 function updateProductPreview() {
-  document.getElementById('thumbnailPreview').src = state.currentThumbnail || '/assets/images/store/respira-tech-logo.png';
+  document.getElementById('thumbnailPreview').src = state.currentThumbnail || DEFAULT_PRODUCT_IMAGE;
   const gallery = document.getElementById('galleryPreview');
   gallery.innerHTML = state.currentGallery.map((src) => `<img src="${escapeHTML(src)}" alt="">`).join('');
 }
 
 function clearProductForm() {
+  state.productSlugManuallyEdited = false;
   productFields.editingId.value = '';
   productFields.nameAr.value = '';
   productFields.nameEn.value = '';
@@ -206,6 +242,7 @@ function clearProductForm() {
 }
 
 function fillProductForm(product) {
+  state.productSlugManuallyEdited = true;
   productFields.editingId.value = product.id || '';
   productFields.nameAr.value = product.name_ar || '';
   productFields.nameEn.value = product.name_en || '';
@@ -255,7 +292,7 @@ function renderProductsList() {
           <div class="mini-card-sub">${escapeHTML(product.category || '')}</div>
           <div class="sizes-preview" style="margin-top:.6rem">${(product.sizes || []).slice(0, 4).map((item) => `<span class="chip">${escapeHTML(item)}</span>`).join('')}</div>
           <div class="mini-actions" style="margin-top:.9rem">
-            <a class="btn" href="/store/${encodeURIComponent(product.slug || product.id)}/" target="_blank" rel="noopener">معاينة</a>
+            <a class="btn" href="${escapeHTML(productPublicUrl(product.slug || product.id))}" target="_blank" rel="noopener">معاينة</a>
             <button class="btn" type="button" data-edit-product="${escapeHTML(product.id)}">تعديل</button>
             <button class="btn btn-danger" type="button" data-delete-product="${escapeHTML(product.id)}">حذف</button>
           </div>
@@ -327,7 +364,7 @@ async function saveStore() {
 }
 
 function collectProductPayload() {
-  const slug = toSlug(productFields.slug.value || productFields.nameEn.value || productFields.nameAr.value);
+  const slug = buildProductSlug();
   const filterTags = Array.from(document.querySelectorAll('[data-filter-tag]:checked')).map((input) => input.value);
   return {
     id: slug,
@@ -344,7 +381,7 @@ function collectProductPayload() {
     sizes: linesToArray(productFields.sizes.value),
     compatibility_notes_ar: productFields.compatibility.value.trim(),
     price_text: state.storeConfig.price_text_default || 'السعر عند التواصل',
-    main_image: state.currentThumbnail || '/assets/images/store/respira-tech-logo.png',
+    main_image: state.currentThumbnail || DEFAULT_PRODUCT_IMAGE,
     gallery_images: state.currentGallery,
     whatsapp_message: `مرحبًا، أريد الاستفسار عن ${productFields.nameAr.value.trim()}`,
     seo_title: productFields.seoTitle.value.trim(),
@@ -668,8 +705,20 @@ async function refreshDashboard() {
 
 document.getElementById('saveProductBtn').addEventListener('click', async () => {
   const payload = collectProductPayload();
-  if (!payload.slug || !payload.name_ar) {
-    window.alert('أدخل اسم المنتج والـ slug على الأقل.');
+  if (state.uploadsInProgress > 0) {
+    window.alert('انتظر حتى يكتمل رفع الصور أولًا.');
+    return;
+  }
+  if (!payload.name_ar) {
+    window.alert('أدخل اسم المنتج بالعربي على الأقل.');
+    return;
+  }
+  if (!payload.slug || payload.slug.length < 3) {
+    window.alert('الـ slug غير صالح. أدخل اسمًا أو slug أوضح.');
+    return;
+  }
+  if (!payload.main_image || payload.main_image === DEFAULT_PRODUCT_IMAGE) {
+    window.alert('ارفع صورة رئيسية للمنتج قبل الحفظ.');
     return;
   }
   const existingId = productFields.editingId.value.trim();
@@ -681,25 +730,36 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
 
 document.getElementById('newProductBtn').addEventListener('click', clearProductForm);
 
-productFields.nameEn.addEventListener('input', () => {
-  if (!productFields.slug.value.trim()) {
-    productFields.slug.value = toSlug(productFields.nameEn.value);
-  }
+productFields.nameAr.addEventListener('input', syncProductSlug);
+productFields.nameEn.addEventListener('input', syncProductSlug);
+productFields.slug.addEventListener('input', () => {
+  state.productSlugManuallyEdited = productFields.slug.value.trim().length > 0;
 });
 
 productFields.thumbnailFile.addEventListener('change', async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
-  const [url] = await uploadFiles([file]);
-  state.currentThumbnail = url || '';
-  updateProductPreview();
+  try {
+    setUploadState(true);
+    const [url] = await uploadFiles([file]);
+    state.currentThumbnail = url || '';
+    updateProductPreview();
+    if (!url) window.alert('فشل رفع الصورة الرئيسية.');
+  } finally {
+    setUploadState(false);
+  }
 });
 
 productFields.galleryFiles.addEventListener('change', async (event) => {
   const files = Array.from(event.target.files || []);
   if (!files.length) return;
-  state.currentGallery = await uploadFiles(files);
-  updateProductPreview();
+  try {
+    setUploadState(true);
+    state.currentGallery = await uploadFiles(files);
+    updateProductPreview();
+  } finally {
+    setUploadState(false);
+  }
 });
 
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
