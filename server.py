@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import os
 import re
@@ -276,6 +277,77 @@ def github_get_branch_tree(repo: str, branch: str, token: str) -> dict[str, str]
     return tree
 
 
+def github_get_branch_head(repo: str, branch: str, token: str) -> tuple[str, str]:
+    branch_url = f"https://api.github.com/repos/{repo}/branches/{quote(branch, safe='')}"
+    branch_response = github_api_request("GET", branch_url, token)
+    if branch_response.status_code >= 400:
+        raise RuntimeError(f"GitHub branch lookup failed: {branch_response.text}")
+
+    branch_data = branch_response.json()
+    commit_sha = ((branch_data.get("commit") or {}).get("sha")) or ""
+    tree_sha = (((branch_data.get("commit") or {}).get("commit") or {}).get("tree") or {}).get("sha") or ""
+    if not commit_sha or not tree_sha:
+        raise RuntimeError("GitHub branch lookup returned no commit/tree sha")
+    return commit_sha, tree_sha
+
+
+def git_blob_sha(content: bytes) -> str:
+    header = f"blob {len(content)}\0".encode("utf-8")
+    return hashlib.sha1(header + content).hexdigest()
+
+
+def github_create_blob(repo: str, token: str, content: bytes) -> str:
+    url = f"https://api.github.com/repos/{repo}/git/blobs"
+    payload = {
+        "content": base64.b64encode(content).decode("ascii"),
+        "encoding": "base64",
+    }
+    response = github_api_request("POST", url, token, payload)
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub blob creation failed: {response.text}")
+    sha = (response.json() or {}).get("sha")
+    if not sha:
+        raise RuntimeError("GitHub blob creation returned no sha")
+    return sha
+
+
+def github_create_tree(repo: str, token: str, base_tree: str, entries: list[dict]) -> str:
+    url = f"https://api.github.com/repos/{repo}/git/trees"
+    payload = {"base_tree": base_tree, "tree": entries}
+    response = github_api_request("POST", url, token, payload)
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub tree creation failed: {response.text}")
+    sha = (response.json() or {}).get("sha")
+    if not sha:
+        raise RuntimeError("GitHub tree creation returned no sha")
+    return sha
+
+
+def github_create_commit(repo: str, token: str, message: str, tree_sha: str, parent_sha: str, author_name: str, author_email: str) -> str:
+    url = f"https://api.github.com/repos/{repo}/git/commits"
+    payload = {
+        "message": message,
+        "tree": tree_sha,
+        "parents": [parent_sha],
+        "author": {"name": author_name, "email": author_email},
+        "committer": {"name": author_name, "email": author_email},
+    }
+    response = github_api_request("POST", url, token, payload)
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub commit creation failed: {response.text}")
+    sha = (response.json() or {}).get("sha")
+    if not sha:
+        raise RuntimeError("GitHub commit creation returned no sha")
+    return sha
+
+
+def github_update_branch_ref(repo: str, branch: str, token: str, commit_sha: str) -> None:
+    url = f"https://api.github.com/repos/{repo}/git/refs/heads/{quote(branch, safe='')}"
+    response = github_api_request("PATCH", url, token, {"sha": commit_sha, "force": False})
+    if response.status_code >= 400:
+        raise RuntimeError(f"GitHub ref update failed: {response.text}")
+
+
 def github_get_file(repo: str, branch: str, relative: str, token: str) -> dict | None:
     url = f"https://api.github.com/repos/{repo}/contents/{quote(relative, safe='/')}?ref={quote(branch, safe='')}"
     response = github_api_request("GET", url, token)
@@ -356,18 +428,24 @@ def sync_changes_via_github_api(
     author_email: str,
 ) -> dict:
     local_files, managed_dirs, managed_files = collect_sync_targets(stage_paths)
+    parent_sha, base_tree_sha = github_get_branch_head(repo, branch, token)
     remote_tree = github_get_branch_tree(repo, branch, token)
 
-    created = 0
-    updated = 0
-    deleted = 0
+    created = updated = deleted = 0
+    tree_entries: list[dict] = []
 
     for relative, local_path in sorted(local_files.items()):
-        result = github_put_file(repo, branch, relative, local_path, token, author_name, author_email, commit_message)
-        if result == "created":
-            created += 1
-        elif result == "updated":
+        content = local_path.read_bytes()
+        local_sha = git_blob_sha(content)
+        remote_sha = remote_tree.get(relative)
+        if remote_sha == local_sha:
+            continue
+        blob_sha = github_create_blob(repo, token, content)
+        tree_entries.append({"path": relative, "mode": "100644", "type": "blob", "sha": blob_sha})
+        if remote_sha:
             updated += 1
+        else:
+            created += 1
 
     remote_managed = {
         relative: sha
@@ -378,11 +456,15 @@ def sync_changes_via_github_api(
     for relative, sha in sorted(remote_managed.items()):
         if relative in local_paths:
             continue
-        github_delete_file(repo, branch, relative, sha, token, author_name, author_email, commit_message)
+        tree_entries.append({"path": relative, "mode": "100644", "type": "blob", "sha": None})
         deleted += 1
 
     if created == 0 and updated == 0 and deleted == 0:
         return {"ok": True, "skipped": True, "reason": "no synced changes"}
+
+    new_tree_sha = github_create_tree(repo, token, base_tree_sha, tree_entries)
+    new_commit_sha = github_create_commit(repo, token, commit_message, new_tree_sha, parent_sha, author_name, author_email)
+    github_update_branch_ref(repo, branch, token, new_commit_sha)
     return {
         "ok": True,
         "pushed": True,
