@@ -27,6 +27,36 @@
   ],
   "products": [
     {
+      "id": "ي",
+      "slug": "ي",
+      "name_ar": "سبيلبي",
+      "name_en": "يبلبي",
+      "brand": "ResMed",
+      "category": "يبلبي",
+      "product_type": "CPAP Mask",
+      "short_description_ar": "ءرؤ",
+      "long_description_ar": "يبل",
+      "key_features_ar": [
+        "ءبؤر"
+      ],
+      "included_items_ar": [
+        "ءبؤلا"
+      ],
+      "sizes": [
+        "رؤء"
+      ],
+      "compatibility_notes_ar": "ءلارؤ",
+      "price_text": "السعر عند التواصل",
+      "main_image": "/assets/images/store/respira-tech-logo.png",
+      "gallery_images": [],
+      "whatsapp_message": "مرحبًا، أريد الاستفسار عن سبيلبي",
+      "seo_title": "يبل",
+      "seo_description": "بي",
+      "filter_tags": [
+        "nasal"
+      ]
+    },
+    {
       "id": "airfit-f20-complete-mask-system",
       "slug": "airfit-f20-complete-mask-system",
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
