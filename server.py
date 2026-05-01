@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import ftplib
 import hashlib
 import json
 import os
@@ -551,6 +552,111 @@ def sync_changes_to_github(commit_message: str, extra_paths: list[Path] | None =
         return {"ok": False, "error": str(exc)}
 
 
+def ftp_deploy_enabled(env: dict[str, str]) -> bool:
+    return (
+        bool(env.get("SHARED_HOSTING_FTP_SERVER"))
+        and bool(env.get("SHARED_HOSTING_FTP_USERNAME"))
+        and bool(env.get("SHARED_HOSTING_FTP_PASSWORD"))
+    )
+
+
+def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
+    env = load_env()
+    if not ftp_deploy_enabled(env):
+        return {"ok": False, "skipped": True, "reason": "FTP not configured"}
+
+    server = env["SHARED_HOSTING_FTP_SERVER"].strip()
+    user = env["SHARED_HOSTING_FTP_USERNAME"].strip()
+    password = env["SHARED_HOSTING_FTP_PASSWORD"].strip()
+    remote_root = (env.get("SHARED_HOSTING_FTP_REMOTE_DIR") or "public_html").strip()
+
+    source = release_dir or (BASE_DIR / "رفع-اللايف")
+    if not source.exists():
+        return {"ok": False, "error": "release directory رفع-اللايف not found"}
+
+    try:
+        ftp = ftplib.FTP()
+        ftp.connect(server, 21, timeout=60)
+        ftp.login(user, password)
+        ftp.encoding = "utf-8"
+        ftp.set_pasv(True)
+
+        created_dirs: set[str] = set()
+
+        def ensure_dir(remote_dir: str) -> None:
+            if remote_dir in created_dirs:
+                return
+            parts = [p for p in remote_dir.split("/") if p]
+            current = ""
+            for part in parts:
+                current = f"{current}/{part}" if current else part
+                if current not in created_dirs:
+                    try:
+                        ftp.mkd(current)
+                    except ftplib.error_perm:
+                        pass
+                    created_dirs.add(current)
+
+        uploaded = 0
+        errors: list[str] = []
+
+        for local_file in sorted(source.rglob("*")):
+            if not local_file.is_file():
+                continue
+            relative = local_file.relative_to(source)
+            parts = list(relative.parts)
+            remote_path = remote_root + "/" + "/".join(parts)
+            if len(parts) > 1:
+                ensure_dir(remote_root + "/" + "/".join(parts[:-1]))
+            try:
+                with local_file.open("rb") as f:
+                    ftp.storbinary(f"STOR {remote_path}", f)
+                uploaded += 1
+            except Exception as exc:
+                errors.append(f"{remote_path}: {exc}")
+
+        try:
+            ftp.quit()
+        except Exception:
+            pass
+
+        if errors:
+            return {"ok": False, "uploaded": uploaded, "errors": errors[:10]}
+        return {"ok": True, "uploaded": uploaded}
+
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+
+
+def verify_live_deployment(check_slug: str | None = None) -> dict:
+    env = load_env()
+    base_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
+    try:
+        resp = requests.get(f"{base_url}/data/store.json", timeout=15)
+        if resp.status_code != 200:
+            return {"ok": False, "error": f"store.json HTTP {resp.status_code}"}
+        products = resp.json().get("products", [])
+        result: dict = {"ok": True, "live_product_count": len(products)}
+        if check_slug:
+            found = check_slug in [p.get("slug") for p in products]
+            result["slug_found"] = found
+            if not found:
+                result["ok"] = False
+                result["error"] = f"slug '{check_slug}' missing from live store"
+        return result
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+
+
+def deploy_to_live(commit_message: str, extra_paths: list[Path] | None = None, verify_slug: str | None = None) -> dict:
+    github = sync_changes_to_github(commit_message, extra_paths)
+    hostinger = ftp_deploy_to_hostinger()
+    result: dict = {"github": github, "hostinger": hostinger}
+    if hostinger.get("ok") and not hostinger.get("skipped"):
+        result["verification"] = verify_live_deployment(verify_slug)
+    return result
+
+
 def dashboard_config() -> dict:
     env = load_env()
     site_data = load_json(SITE_FILE, {})
@@ -579,6 +685,11 @@ def dashboard_config() -> dict:
             "github_repo": env.get("GITHUB_REPO", ""),
             "github_branch": env.get("GITHUB_BRANCH", "main"),
             "github_sync_configured": git_sync_enabled(env),
+            "ftp_server": env.get("SHARED_HOSTING_FTP_SERVER", ""),
+            "ftp_username": env.get("SHARED_HOSTING_FTP_USERNAME", ""),
+            "ftp_password_set": bool(env.get("SHARED_HOSTING_FTP_PASSWORD")),
+            "ftp_remote_dir": env.get("SHARED_HOSTING_FTP_REMOTE_DIR", "public_html"),
+            "ftp_deploy_configured": ftp_deploy_enabled(env),
         },
         "logs": read_blog_logs(),
         "articles": load_articles(),
@@ -742,7 +853,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 products_count=len(payload.get("products", [])) if isinstance(payload, dict) else None,
                 categories_count=len(payload.get("categories", [])) if isinstance(payload, dict) else None,
             )
-            sync = sync_changes_to_github(f"Update store content {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Update store content {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/upload":
@@ -784,7 +895,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             append_activity_log("article_save", slug=article["slug"], article_status=article.get("status"))
-            sync = sync_changes_to_github(f"Save article {article['slug']} {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Save article {article['slug']} {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "article": article, "sync": sync})
 
         if parsed.path == "/api/blog/toggle-status":
@@ -815,7 +926,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             append_activity_log("article_toggle_status", slug=slug, article_status=article.get("status"))
-            sync = sync_changes_to_github(f"Toggle article status {slug} {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Toggle article status {slug} {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "article": normalize_article(article, article), "sync": sync})
 
         if parsed.path == "/api/blog/delete":
@@ -838,7 +949,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             append_activity_log("article_delete", slug=slug)
-            sync = sync_changes_to_github(f"Delete article {slug} {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Delete article {slug} {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/blog/generate":
@@ -862,7 +973,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 generated_count=count,
                 publish_now=payload.get("publish_now"),
             )
-            sync = sync_changes_to_github(f"Generate blog batch {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/seo/gsc/upload":
@@ -917,7 +1028,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 updated_count=result.get("updated_count") if isinstance(result, dict) else None,
                 recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
             )
-            sync = sync_changes_to_github(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state(), "sync": sync})
 
         if parsed.path == "/api/dashboard/config":
@@ -955,6 +1066,18 @@ class StoreHandler(SimpleHTTPRequestHandler):
             github_token = str(payload.get("github_token") or "").strip()
             if github_token:
                 updates["GITHUB_TOKEN"] = github_token
+            ftp_server = str(payload.get("ftp_server") or "").strip()
+            if ftp_server:
+                updates["SHARED_HOSTING_FTP_SERVER"] = ftp_server
+            ftp_username = str(payload.get("ftp_username") or "").strip()
+            if ftp_username:
+                updates["SHARED_HOSTING_FTP_USERNAME"] = ftp_username
+            ftp_password = str(payload.get("ftp_password") or "").strip()
+            if ftp_password:
+                updates["SHARED_HOSTING_FTP_PASSWORD"] = ftp_password
+            ftp_remote_dir = str(payload.get("ftp_remote_dir") or "").strip()
+            if ftp_remote_dir:
+                updates["SHARED_HOSTING_FTP_REMOTE_DIR"] = ftp_remote_dir
             save_env(updates)
 
             site_data = load_json(SITE_FILE, {})
@@ -976,7 +1099,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             append_activity_log("dashboard_settings_update")
-            sync = sync_changes_to_github(f"Update dashboard settings {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Update dashboard settings {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "config": dashboard_config(), "sync": sync})
 
         if parsed.path == "/api/build":
@@ -987,7 +1110,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"build failed: {exc}"}, 500)
             append_activity_log("manual_rebuild")
-            sync = sync_changes_to_github(f"Manual rebuild {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Manual rebuild {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/generate-blog":
@@ -998,7 +1121,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except subprocess.CalledProcessError as exc:
                 return self._send_json({"error": f"generation failed: {exc}"}, 500)
             append_activity_log("cron_generate_blog")
-            sync = sync_changes_to_github(f"Cron generate blog {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "sync": sync})
 
         if parsed.path == "/api/cron/seo-brain":
@@ -1013,8 +1136,17 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 updated_count=result.get("updated_count") if isinstance(result, dict) else None,
                 recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
             )
-            sync = sync_changes_to_github(f"Cron SEO brain {datetime.utcnow().isoformat()}")
+            sync = deploy_to_live(f"Cron SEO brain {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "sync": sync})
+
+        if parsed.path == "/api/deploy":
+            if not self._ensure_admin():
+                return
+            deploy = ftp_deploy_to_hostinger()
+            if deploy.get("ok"):
+                deploy["verification"] = verify_live_deployment()
+            append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
+            return self._send_json({"ok": deploy.get("ok", False), "deploy": deploy})
 
         return self._send_json({"error": "not found"}, 404)
 
