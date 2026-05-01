@@ -2,51 +2,6 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "اختبار صورة منتج 2",
-    "image": [
-      "https://respira-tech.com/assets/images/store/codex-product-test-2-20260501134706290751.png"
-    ],
-    "description": "اختبار مزامنة الصورة بعد الإصلاح.",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "اختبار",
-    "url": "https://respira-tech.com/store/codex-image-check-20260501-b/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "ماسك ResMed AirTouch F20 اختبار تقرير اليوم",
-    "image": [
-      "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
-    ],
-    "description": "اختبار ثاني للتأكد من أن إضافة المنتج تدخل في تقرير اليوم وتُدفع إلى GitHub.",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "Full Face Mask",
-    "url": "https://respira-tech.com/store/airtouch-f20-codex-dashboard-report-test/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "ماسك ResMed AirFit F20 اختبار الداشبورد",
-    "image": [
-      "https://respira-tech.com/assets/images/store/respira-tech-logo.png"
-    ],
-    "description": "منتج اختبار تمت إضافته لمحاكاة الحفظ من الداشبورد مع مزامنة GitHub وتقرير اليوم.",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "Full Face Mask",
-    "url": "https://respira-tech.com/store/airfit-f20-codex-dashboard-test/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
     "name": "ماسك ResMed AirFit F20 كامل الوجه",
     "image": [
       "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"
