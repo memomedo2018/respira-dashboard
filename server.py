@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import subprocess
+import threading
 import requests
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -989,23 +990,25 @@ class StoreHandler(SimpleHTTPRequestHandler):
             try:
                 payload = self._read_json_body()
                 count = max(1, min(5, int(payload.get("count", 1) or 1)))
-                extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true"}
-                if payload.get("publish_now") is True:
-                    extra_env["FORCE_PUBLISH"] = "true"
-                elif payload.get("publish_now") is False:
-                    extra_env["FORCE_PUBLISH"] = "false"
-                run_blog_generator(extra_env)
-            except subprocess.CalledProcessError as exc:
-                return self._send_json({"error": f"generation failed: {exc}"}, 500)
+                publish_now = payload.get("publish_now")
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
-            append_activity_log(
-                "blog_generate_batch",
-                generated_count=count,
-                publish_now=payload.get("publish_now"),
-            )
-            sync = deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
-            return self._send_json({"ok": True, "sync": sync})
+            extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true"}
+            if publish_now is True:
+                extra_env["FORCE_PUBLISH"] = "true"
+            elif publish_now is False:
+                extra_env["FORCE_PUBLISH"] = "false"
+
+            def _run_generation():
+                try:
+                    run_blog_generator(extra_env)
+                    append_activity_log("blog_generate_batch", generated_count=count, publish_now=publish_now)
+                    deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
+                except Exception:
+                    pass
+
+            threading.Thread(target=_run_generation, daemon=True).start()
+            return self._send_json({"ok": True, "started": True, "count": count, "publish_now": publish_now})
 
         if parsed.path == "/api/seo/gsc/upload":
             if not self._ensure_admin():
@@ -1147,13 +1150,15 @@ class StoreHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/cron/generate-blog":
             if not self._cron_authorized():
                 return self._send_json({"error": "unauthorized"}, 401)
-            try:
-                run_blog_generator()
-            except subprocess.CalledProcessError as exc:
-                return self._send_json({"error": f"generation failed: {exc}"}, 500)
-            append_activity_log("cron_generate_blog")
-            sync = deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
-            return self._send_json({"ok": True, "sync": sync})
+            def _run_cron_generation():
+                try:
+                    run_blog_generator()
+                    append_activity_log("cron_generate_blog")
+                    deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
+                except Exception:
+                    pass
+            threading.Thread(target=_run_cron_generation, daemon=True).start()
+            return self._send_json({"ok": True, "started": True})
 
         if parsed.path == "/api/cron/seo-brain":
             if not self._cron_authorized():
