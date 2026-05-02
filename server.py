@@ -874,10 +874,18 @@ class StoreHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
 
         if parsed.path == "/api/store/save":
+            if not self._ensure_admin():
+                return
             try:
                 payload = self._read_json_body()
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
+            if isinstance(payload, dict):
+                incoming_products = payload.get("products", [])
+                existing = load_json(STORE_FILE, {})
+                existing_count = len(existing.get("products", [])) if isinstance(existing, dict) else 0
+                if existing_count > 0 and len(incoming_products) == 0 and not payload.get("confirm_clear"):
+                    return self._send_json({"error": "refusing to save 0 products over existing data; pass confirm_clear:true to override"}, 409)
             save_json(STORE_FILE, payload)
             run_build()
             append_activity_log(
