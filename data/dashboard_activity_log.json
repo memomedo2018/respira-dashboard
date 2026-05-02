@@ -1,5 +1,11 @@
 [
   {
+    "action": "manual_ftp_deploy",
+    "status": "success",
+    "created_at": "2026-05-02T22:29:37.238049",
+    "uploaded": 155
+  },
+  {
     "action": "blog_generate_batch",
     "status": "success",
     "created_at": "2026-05-02T20:33:21.825941",
