@@ -1,5 +1,4 @@
-[phases.setup]
-nixPkgs = ["python311", "nodejs_20"]
+providers = ["python", "node"]
 
 [phases.install]
 cmds = ["pip install -r requirements.txt"]
