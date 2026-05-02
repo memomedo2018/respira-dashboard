@@ -1012,8 +1012,9 @@ class StoreHandler(SimpleHTTPRequestHandler):
                     run_blog_generator(extra_env)
                     append_activity_log("blog_generate_batch", generated_count=count, publish_now=publish_now)
                     deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
-                except Exception:
-                    pass
+                except Exception as exc:
+                    import traceback
+                    append_activity_log("blog_generate_batch", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
 
             threading.Thread(target=_run_generation, daemon=True).start()
             return self._send_json({"ok": True, "started": True, "count": count, "publish_now": publish_now})
