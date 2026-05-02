@@ -721,11 +721,46 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
     window.alert('ارفع صورة رئيسية للمنتج قبل الحفظ.');
     return;
   }
-  const existingId = productFields.editingId.value.trim();
-  state.products = [payload, ...state.products.filter((item) => item.id !== existingId && item.id !== payload.id)];
-  await saveStore();
-  clearProductForm();
-  await refreshDashboard();
+  const btn = document.getElementById('saveProductBtn');
+  const progressEl = document.getElementById('deployProgress');
+  const barFill = document.getElementById('deployBarFill');
+  const statusText = document.getElementById('deployStatusText');
+
+  function setProgress(pct, msg, state) {
+    progressEl.style.display = 'block';
+    barFill.style.width = pct + '%';
+    barFill.className = 'deploy-bar-fill' + (state ? ' ' + state : '');
+    statusText.className = 'deploy-status-text' + (state ? ' ' + state : '');
+    statusText.textContent = msg;
+  }
+
+  btn.disabled = true;
+  setProgress(10, 'جاري الحفظ...', '');
+
+  let fake = 10;
+  const timer = setInterval(() => {
+    if (fake < 72) {
+      fake += Math.random() * 4 + 1;
+      const msg = fake < 35 ? 'جاري الحفظ...' : fake < 60 ? 'جاري النشر على الموقع...' : 'جاري مسح الكاش...';
+      setProgress(Math.min(fake, 72), msg, '');
+    }
+  }, 600);
+
+  try {
+    const existingId = productFields.editingId.value.trim();
+    state.products = [payload, ...state.products.filter((item) => item.id !== existingId && item.id !== payload.id)];
+    await saveStore();
+    clearInterval(timer);
+    setProgress(100, 'تم النشر بنجاح ✓', 'success');
+    clearProductForm();
+    await refreshDashboard();
+    setTimeout(() => { progressEl.style.display = 'none'; barFill.style.width = '0%'; }, 4000);
+  } catch (err) {
+    clearInterval(timer);
+    setProgress(100, 'حدث خطأ أثناء النشر ✗', 'error');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('newProductBtn').addEventListener('click', clearProductForm);
@@ -891,6 +926,22 @@ document.getElementById('generateArticleBtn').addEventListener('click', async ()
 });
 
 document.getElementById('refreshArticlesBtn').addEventListener('click', refreshDashboard);
+
+document.getElementById('deployNowBtn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('deployNowBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري النشر...';
+  try {
+    const res = await adminApi('/api/deploy', { method: 'POST', body: '{}' });
+    const uploaded = res?.deploy?.uploaded ?? res?.uploaded ?? '?';
+    const purged = res?.deploy?.cache_purge?.ok;
+    btn.textContent = `تم النشر ✓ (${uploaded} ملف${purged ? ' + cache' : ''})`;
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 4000);
+  } catch {
+    btn.textContent = 'فشل النشر ✗';
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 3000);
+  }
+});
 
 document.getElementById('saveArticleBtn').addEventListener('click', async () => {
   if (!state.selectedArticle) return;

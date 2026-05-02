@@ -271,6 +271,27 @@
       color: #64748b;
       padding: 2rem 1rem;
     }
+    .adv-details { border: none; }
+    .adv-details summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.3rem; border-bottom: 1px solid transparent; background: rgba(255,255,255,.72); border-radius: 20px; }
+    .adv-details[open] summary { border-bottom-color: rgba(15,23,42,.08); border-radius: 20px 20px 0 0; }
+    .adv-details summary h2 { font-size: 1.15rem; margin: 0; }
+    .adv-details summary::-webkit-details-marker { display: none; }
+    .adv-arrow { font-size: .85rem; color: #64748b; transition: transform .25s; }
+    .adv-details[open] .adv-arrow { transform: rotate(180deg); }
+    .deploy-bar-track {
+      width: 100%; height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 12px;
+    }
+    .deploy-bar-fill {
+      height: 100%; width: 0%; background: #6c63ff; border-radius: 4px;
+      transition: width 0.5s ease; will-change: width;
+    }
+    .deploy-bar-fill.success { background: #22c55e; }
+    .deploy-bar-fill.error   { background: #ef4444; }
+    .deploy-status-text {
+      margin-top: 6px; font-size: 13px; color: #64748b; text-align: right; direction: rtl;
+    }
+    .deploy-status-text.success { color: #16a34a; font-weight: 600; }
+    .deploy-status-text.error   { color: #dc2626; font-weight: 600; }
     @media (max-width: 1180px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -440,6 +461,12 @@
                 <button class="btn btn-primary" id="saveProductBtn" type="button">حفظ المنتج</button>
                 <button class="btn" id="newProductBtn" type="button">منتج جديد</button>
               </div>
+              <div id="deployProgress" style="display:none;">
+                <div class="deploy-bar-track">
+                  <div id="deployBarFill" class="deploy-bar-fill"></div>
+                </div>
+                <p id="deployStatusText" class="deploy-status-text"></p>
+              </div>
             </div>
           </div>
 
@@ -455,104 +482,109 @@
 
     <section class="tab-panel" id="tab-automation">
       <div class="dashboard-grid">
+
         <div class="stack">
+          <!-- Quick Controls -->
           <div class="panel">
-            <div class="panel-head"><h2>إعدادات OpenAI والنشر</h2></div>
+            <div class="panel-head"><h2>التحكم السريع</h2></div>
             <div class="panel-body">
+              <label class="toggle-row">
+                <input id="settingAutoPublish" type="checkbox">
+                <span>نشر المقالات تلقائياً (بدل Draft)</span>
+              </label>
+              <label class="toggle-row">
+                <input id="settingGenerateImages" type="checkbox" checked>
+                <span>توليد صورة مميزة لكل مقال</span>
+              </label>
               <div class="field">
-                <label for="settingOpenAiKey">OPENAI_API_KEY</label>
-                <input id="settingOpenAiKey" type="password" placeholder="الصق المفتاح هنا">
-                <div class="hint">إذا تركته فارغًا سيبقى المفتاح الحالي كما هو.</div>
+                <label for="settingDailyCount">عدد المقالات يومياً</label>
+                <input id="settingDailyCount" type="number" min="1" max="5" value="2">
               </div>
-              <div class="field-row-3">
-                <div class="field">
-                  <label for="settingDailyCount">عدد المقالات يوميًا</label>
-                  <input id="settingDailyCount" type="number" min="1" max="5" value="2">
-                </div>
-                <div class="field">
-                  <label for="settingTextModel">موديل الكتابة</label>
-                  <input id="settingTextModel" type="text" value="gpt-4.1">
-                </div>
-                <div class="field">
-                  <label for="settingImageModel">موديل الصور</label>
-                  <input id="settingImageModel" type="text" value="gpt-image-1">
-                </div>
+              <hr style="border:none;border-top:1px solid rgba(15,23,42,.08);margin:.25rem 0">
+              <div class="field">
+                <label for="manualGenerateCount">عدد المقالات للتشغيل الآن</label>
+                <input id="manualGenerateCount" type="number" min="1" max="5" value="2">
               </div>
-              <label class="toggle-row"><input id="settingAutoPublish" type="checkbox"><span>نشر تلقائي بدل Draft</span></label>
-              <label class="toggle-row"><input id="settingGenerateImages" type="checkbox" checked><span>توليد صورة مميزة لكل مقال</span></label>
+              <div class="toolbar">
+                <button class="btn" id="generateDraftNowBtn" type="button">Draft الآن</button>
+                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
+              </div>
+              <button class="btn" id="deployNowBtn" type="button" style="width:100%;margin-top:.25rem">نشر على الموقع الآن</button>
             </div>
           </div>
 
-          <div class="panel">
-            <div class="panel-head"><h2>إعدادات الموقع والحماية</h2></div>
-            <div class="panel-body">
-              <div class="field-row">
+          <!-- Advanced Settings (collapsed) -->
+          <div class="panel" style="padding:0">
+            <details class="adv-details">
+              <summary>
+                <h2>الإعدادات المتقدمة</h2>
+                <span class="adv-arrow">▼</span>
+              </summary>
+              <div class="panel-body">
                 <div class="field">
-                  <label for="settingWhatsapp">رقم واتساب</label>
-                  <input id="settingWhatsapp" type="text" placeholder="2010...">
+                  <label for="settingOpenAiKey">OPENAI_API_KEY</label>
+                  <input id="settingOpenAiKey" type="password" placeholder="الصق المفتاح هنا">
+                  <div class="hint">اتركه فارغاً لو محفوظ بالفعل.</div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingTextModel">موديل الكتابة</label>
+                    <input id="settingTextModel" type="text" value="gpt-4.1">
+                  </div>
+                  <div class="field">
+                    <label for="settingImageModel">موديل الصور</label>
+                    <input id="settingImageModel" type="text" value="gpt-image-1">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingWhatsapp">رقم واتساب</label>
+                    <input id="settingWhatsapp" type="text" placeholder="2010...">
+                  </div>
+                  <div class="field">
+                    <label for="settingBaseUrl">رابط الموقع</label>
+                    <input id="settingBaseUrl" type="text" placeholder="https://respira-tech.com">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingAdminPassword">كلمة مرور الإدارة</label>
+                    <input id="settingAdminPassword" type="password" placeholder="اختياري">
+                  </div>
+                  <div class="field">
+                    <label for="settingCronSecret">CRON_SECRET</label>
+                    <input id="settingCronSecret" type="password" placeholder="اختياري">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingGithubRepo">GITHUB_REPO</label>
+                    <input id="settingGithubRepo" type="text" placeholder="username/repository">
+                  </div>
+                  <div class="field">
+                    <label for="settingGithubBranch">GITHUB_BRANCH</label>
+                    <input id="settingGithubBranch" type="text" placeholder="main">
+                  </div>
                 </div>
                 <div class="field">
-                  <label for="settingBaseUrl">رابط الموقع الأساسي</label>
-                  <input id="settingBaseUrl" type="text" placeholder="https://respira-tech.com">
+                  <label for="settingGithubToken">GITHUB_TOKEN</label>
+                  <input id="settingGithubToken" type="password" placeholder="اتركه فارغاً إذا كان محفوظاً">
+                </div>
+                <label class="toggle-row">
+                  <input id="settingAutoPushChanges" type="checkbox" checked>
+                  <span>حفظ التغييرات على GitHub وإعادة النشر تلقائياً</span>
+                </label>
+                <div class="toolbar">
+                  <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
+                  <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
                 </div>
               </div>
-              <div class="field-row">
-                <div class="field">
-                  <label for="settingAdminPassword">كلمة مرور الإدارة</label>
-                  <input id="settingAdminPassword" type="password" placeholder="اختياري">
-                </div>
-                <div class="field">
-                  <label for="settingCronSecret">CRON_SECRET</label>
-                  <input id="settingCronSecret" type="password" placeholder="اختياري">
-                </div>
-              </div>
-              <div class="field-row">
-                <div class="field">
-                  <label for="settingGithubRepo">GITHUB_REPO</label>
-                  <input id="settingGithubRepo" type="text" placeholder="username/repository">
-                </div>
-                <div class="field">
-                  <label for="settingGithubBranch">GITHUB_BRANCH</label>
-                  <input id="settingGithubBranch" type="text" placeholder="main">
-                </div>
-              </div>
-              <div class="field">
-                <label for="settingGithubToken">GITHUB_TOKEN</label>
-                <input id="settingGithubToken" type="password" placeholder="اتركه فارغًا إذا كان محفوظًا بالفعل">
-                <div class="hint">لو تركته فارغًا سيبقى التوكن الحالي كما هو على الخادم.</div>
-              </div>
-              <label class="toggle-row"><input id="settingAutoPushChanges" type="checkbox" checked><span>حفظ التغييرات على GitHub وإعادة النشر تلقائيًا</span></label>
-              <div class="toolbar">
-                <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
-                <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
-              </div>
-            </div>
+            </details>
           </div>
         </div>
 
+        <!-- Logs -->
         <div class="stack">
-          <div class="panel">
-            <div class="panel-head"><h2>تشغيل يدوي</h2></div>
-            <div class="panel-body">
-              <div class="field-row">
-                <div class="field">
-                  <label for="manualGenerateCount">عدد المقالات الآن</label>
-                  <input id="manualGenerateCount" type="number" min="1" max="5" value="2">
-                </div>
-                <div class="field">
-                  <label>وقت التشغيل اليومي</label>
-                  <div class="toggle-row"><span>09:00 صباحًا بتوقيت القاهرة</span></div>
-                </div>
-              </div>
-              <div class="toolbar">
-                <button class="btn" id="generateDraftNowBtn" type="button">توليد Draft الآن</button>
-                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
-                <a class="btn" href="/api/cron/generate-blog" target="_blank" rel="noopener">رابط الكرون</a>
-              </div>
-              <div class="hint">الكرون يجب أن يرسل `Authorization: Bearer CRON_SECRET` أو `X-Cron-Secret` مرة يوميًا، والنظام سيوقف نفسه بعد الوصول للحد اليومي.</div>
-            </div>
-          </div>
-
           <div class="panel">
             <div class="panel-head"><h2>سجل التوليد</h2></div>
             <div class="panel-body">
@@ -560,6 +592,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
