@@ -1192,9 +1192,11 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 try:
                     run_blog_generator()
                     append_activity_log("cron_generate_blog")
-                    deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
-                except Exception:
-                    pass
+                    result = deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
+                    hostinger = result.get("hostinger", {})
+                    append_activity_log("manual_ftp_deploy", uploaded=hostinger.get("uploaded"), error=hostinger.get("error"))
+                except Exception as exc:
+                    append_activity_log("cron_generate_blog", status="error", error=str(exc))
             threading.Thread(target=_run_cron_generation, daemon=True).start()
             return self._send_json({"ok": True, "started": True})
 
