@@ -92,17 +92,27 @@ function deriveCategory(topic) {
   return 'نصائح الاستخدام والعناية';
 }
 
-function chooseTopics(topics, articles, neededCount) {
+function chooseTopics(topics, articles, generationLog, neededCount) {
   const usedTitles = new Set(articles.map((a) => a.title_ar));
   const usedSlugs  = new Set(articles.map((a) => a.slug).filter(Boolean));
+  // Also track topics that were already attempted via generation log
+  const usedTopics = new Set();
+  for (const entry of (Array.isArray(generationLog) ? generationLog : [])) {
+    if (Array.isArray(entry.items)) {
+      for (const item of entry.items) {
+        if (item.topic) usedTopics.add(item.topic);
+        if (item.slug)  usedSlugs.add(item.slug);
+      }
+    }
+  }
   const available = topics.filter(
-    (topic) => !usedTitles.has(topic) && !usedSlugs.has(slugify(topic))
+    (topic) => !usedTitles.has(topic) && !usedSlugs.has(slugify(topic)) && !usedTopics.has(topic)
   );
   if (available.length >= neededCount) return available.slice(0, neededCount);
-  // All topics used — fall back but still avoid slug collisions
-  const noSlugCollision = topics.filter((t) => !usedSlugs.has(slugify(t)));
-  const pool = noSlugCollision.length ? noSlugCollision : topics;
-  return pool.slice(0, neededCount);
+  // Fall back: at least avoid slug collisions
+  const noSlugCollision = topics.filter((t) => !usedSlugs.has(slugify(t)) && !usedTopics.has(t));
+  const pool = noSlugCollision.length ? noSlugCollision : topics.filter((t) => !usedTopics.has(t));
+  return (pool.length ? pool : topics).slice(0, neededCount);
 }
 
 function createdTodayCount(articles, cairoDate) {
@@ -455,6 +465,7 @@ async function main() {
   const env = loadEnv();
   const siteData = readJson(SITE_FILE);
   const topics = readJson(TOPICS_FILE, []);
+  const generationLog = readJson(LOG_FILE, []);
   const articleFiles = fs.existsSync(ARTICLES_DIR) ? fs.readdirSync(ARTICLES_DIR).filter((name) => name.endsWith('.json')) : [];
   const articles = articleFiles.map((name) => readJson(path.join(ARTICLES_DIR, name), {})).filter(Boolean);
   const cairoDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date());
@@ -475,7 +486,7 @@ async function main() {
     return;
   }
 
-  const selectedTopics = chooseTopics(topics, articles, remaining);
+  const selectedTopics = chooseTopics(topics, articles, generationLog, remaining);
   if (!selectedTopics.length) {
     appendLog({
       type: 'skipped',
