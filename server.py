@@ -1309,7 +1309,9 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return
             def _run_deploy():
                 try:
-                    deploy = ftp_deploy_to_hostinger()
+                    deploy = sftp_deploy_to_hostinger()
+                    if not deploy.get("ok") and not deploy.get("skipped"):
+                        deploy = ftp_deploy_to_hostinger()
                     if deploy.get("ok"):
                         deploy["verification"] = verify_live_deployment()
                     append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
