@@ -608,14 +608,18 @@ def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
         uploaded = 0
         errors: list[str] = []
 
+        def _remote(parts: list[str]) -> str:
+            joined = "/".join(parts)
+            return f"{remote_root}/{joined}" if remote_root else joined
+
         for local_file in sorted(source.rglob("*")):
             if not local_file.is_file():
                 continue
             relative = local_file.relative_to(source)
             parts = list(relative.parts)
-            remote_path = remote_root + "/" + "/".join(parts)
+            remote_path = _remote(parts)
             if len(parts) > 1:
-                ensure_dir(remote_root + "/" + "/".join(parts[:-1]))
+                ensure_dir(_remote(parts[:-1]))
             try:
                 with local_file.open("rb") as f:
                     ftp.storbinary(f"STOR {remote_path}", f)
