@@ -93,10 +93,16 @@ function deriveCategory(topic) {
 }
 
 function chooseTopics(topics, articles, neededCount) {
-  const used = new Set(articles.map((article) => article.title_ar));
-  const available = topics.filter((topic) => !used.has(topic));
+  const usedTitles = new Set(articles.map((a) => a.title_ar));
+  const usedSlugs  = new Set(articles.map((a) => a.slug).filter(Boolean));
+  const available = topics.filter(
+    (topic) => !usedTitles.has(topic) && !usedSlugs.has(slugify(topic))
+  );
   if (available.length >= neededCount) return available.slice(0, neededCount);
-  return [...available, ...topics.filter((topic) => !available.includes(topic)).slice(0, neededCount - available.length)];
+  // All topics used — fall back but still avoid slug collisions
+  const noSlugCollision = topics.filter((t) => !usedSlugs.has(slugify(t)));
+  const pool = noSlugCollision.length ? noSlugCollision : topics;
+  return pool.slice(0, neededCount);
 }
 
 function createdTodayCount(articles, cairoDate) {
