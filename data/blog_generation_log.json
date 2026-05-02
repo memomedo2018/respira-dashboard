@@ -1,6 +1,19 @@
 [
   {
     "type": "success",
+    "created_at": "2026-05-02T13:31:23.335Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "كيف تختار ماسك CPAP المناسب؟",
+        "slug": "choose-right-cpap-mask",
+        "status": "published",
+        "featured_image": "/assets/images/blog/choose-right-cpap-mask.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-04-30T10:40:32.809Z",
     "generated_count": 2,
     "items": [
