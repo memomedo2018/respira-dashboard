@@ -561,6 +561,92 @@ def ftp_deploy_enabled(env: dict[str, str]) -> bool:
     )
 
 
+def sftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
+    """Deploy via SFTP (SSH port 65002) — more reliable than FTP from cloud IPs.
+
+    Derives credentials from existing FTP env vars:
+      SSH user  = SHARED_HOSTING_FTP_USERNAME split on '.' first token (e.g. u598338404)
+      SSH host  = SHARED_HOSTING_FTP_SERVER
+      SSH pass  = SHARED_HOSTING_FTP_PASSWORD
+      Remote dir = /home/{ssh_user}/domains/{domain}/public_html
+                   where domain comes from SITE_BASE_URL
+    """
+    try:
+        import paramiko
+    except ImportError:
+        return {"ok": False, "skipped": True, "reason": "paramiko not installed"}
+
+    env = load_env()
+    if not ftp_deploy_enabled(env):
+        return {"ok": False, "skipped": True, "reason": "FTP/SFTP not configured"}
+
+    host = env["SHARED_HOSTING_FTP_SERVER"].strip()
+    ftp_user = env["SHARED_HOSTING_FTP_USERNAME"].strip()
+    password = env["SHARED_HOSTING_FTP_PASSWORD"].strip()
+    ssh_port = int(env.get("SHARED_HOSTING_SSH_PORT", "65002") or "65002")
+
+    # Derive SSH username (u598338404 from u598338404.respira-tech.com)
+    ssh_user = ftp_user.split(".")[0] if "." in ftp_user else ftp_user
+
+    # Derive remote path from SITE_BASE_URL
+    site_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
+    domain = site_url.replace("https://", "").replace("http://", "").split("/")[0]
+    remote_root = env.get("SHARED_HOSTING_SFTP_REMOTE_DIR") or f"/home/{ssh_user}/domains/{domain}/public_html"
+
+    source = release_dir or (BASE_DIR / "رفع-اللايف")
+    if not source.exists():
+        return {"ok": False, "error": "release directory رفع-اللايف not found"}
+
+    try:
+        transport = paramiko.Transport((host, ssh_port))
+        transport.connect(username=ssh_user, password=password)
+        sftp = paramiko.SFTPClient.from_transport(transport)
+
+        created_dirs: set[str] = set()
+
+        def ensure_dir(remote_dir: str) -> None:
+            if remote_dir in created_dirs:
+                return
+            parts = [p for p in remote_dir.split("/") if p]
+            current = ""
+            for part in parts:
+                current = f"{current}/{part}"
+                if current not in created_dirs:
+                    try:
+                        sftp.mkdir(current)
+                    except OSError:
+                        pass
+                    created_dirs.add(current)
+
+        uploaded = 0
+        errors: list[str] = []
+
+        for local_file in sorted(source.rglob("*")):
+            if not local_file.is_file():
+                continue
+            relative = local_file.relative_to(source)
+            remote_path = remote_root + "/" + "/".join(relative.parts)
+            remote_dir = remote_root + "/" + "/".join(relative.parts[:-1]) if len(relative.parts) > 1 else remote_root
+            ensure_dir(remote_dir)
+            try:
+                sftp.put(str(local_file), remote_path)
+                uploaded += 1
+            except Exception as exc:
+                errors.append(f"{remote_path}: {exc}")
+
+        sftp.close()
+        transport.close()
+
+        purge_result = _purge_litespeed_cache(env)
+
+        if errors:
+            return {"ok": False, "uploaded": uploaded, "errors": errors[:10], "cache_purge": purge_result}
+        return {"ok": True, "uploaded": uploaded, "cache_purge": purge_result, "method": "sftp"}
+
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+
+
 def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
     env = load_env()
     if not ftp_deploy_enabled(env):
@@ -679,9 +765,12 @@ def verify_live_deployment(check_slug: str | None = None) -> dict:
 
 
 def deploy_to_live(commit_message: str, extra_paths: list[Path] | None = None, verify_slug: str | None = None) -> dict:
-    # FTP first — GitHub push triggers Railway redeploy which kills the process,
-    # so we must finish uploading to Hostinger before pushing to GitHub.
-    hostinger = ftp_deploy_to_hostinger()
+    # Upload to Hostinger first — GitHub push triggers Railway redeploy which
+    # kills the process, so hosting upload must finish before pushing to GitHub.
+    # Try SFTP (port 65002) first — less likely to be rate-limited than FTP.
+    hostinger = sftp_deploy_to_hostinger()
+    if not hostinger.get("ok") and not hostinger.get("skipped"):
+        hostinger = ftp_deploy_to_hostinger()
     github = sync_changes_to_github(commit_message, extra_paths)
     result: dict = {"github": github, "hostinger": hostinger}
     if hostinger.get("ok") and not hostinger.get("skipped"):
