@@ -927,6 +927,22 @@ document.getElementById('generateArticleBtn').addEventListener('click', async ()
 
 document.getElementById('refreshArticlesBtn').addEventListener('click', refreshDashboard);
 
+document.getElementById('deployNowBtn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('deployNowBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري النشر...';
+  try {
+    const res = await adminApi('/api/deploy', { method: 'POST', body: '{}' });
+    const uploaded = res?.deploy?.uploaded ?? res?.uploaded ?? '?';
+    const purged = res?.deploy?.cache_purge?.ok;
+    btn.textContent = `تم النشر ✓ (${uploaded} ملف${purged ? ' + cache' : ''})`;
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 4000);
+  } catch {
+    btn.textContent = 'فشل النشر ✗';
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 3000);
+  }
+});
+
 document.getElementById('saveArticleBtn').addEventListener('click', async () => {
   if (!state.selectedArticle) return;
   const payload = {
