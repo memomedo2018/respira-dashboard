@@ -2,6 +2,25 @@
   {
     "action": "blog_generate_batch",
     "status": "success",
+    "created_at": "2026-05-02T20:33:21.825941",
+    "generated_count": 1,
+    "publish_now": true
+  },
+  {
+    "action": "manual_ftp_deploy",
+    "status": "success",
+    "created_at": "2026-05-02T18:10:03.460910",
+    "error": "timed out"
+  },
+  {
+    "action": "manual_ftp_deploy",
+    "status": "success",
+    "created_at": "2026-05-02T18:00:20.679141",
+    "error": "timed out"
+  },
+  {
+    "action": "blog_generate_batch",
+    "status": "success",
     "created_at": "2026-05-02T17:44:31.259438",
     "generated_count": 1,
     "publish_now": true
