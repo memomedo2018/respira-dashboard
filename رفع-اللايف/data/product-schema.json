@@ -1,1 +1,92 @@
-[]
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit F20 كامل الوجه",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"
+    ],
+    "description": "ماسك كامل الوجه من ResMed مصمم لتوفير ثبات عالي وراحة أثناء النوم، مع كوشن InfinitySeal ومشابك مغناطيسية لسهولة الارتداء والخلع.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Full Face",
+    "url": "https://respira-tech.com/store/airfit-f20-complete-mask-system/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit N20 الأنفي",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-n20-main.jpg"
+    ],
+    "description": "ماسك أنفي مريح من ResMed يوفر ثباتًا جيدًا مع تصميم خفيف ومرن ومشابك مغناطيسية سهلة الاستخدام.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Nasal",
+    "url": "https://respira-tech.com/store/airfit-n20-complete-mask-system/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit F30i كامل الوجه بوصلة علوية",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-f30i-main.jpg"
+    ],
+    "description": "ماسك كامل الوجه بتصميم منخفض ووصلة خرطوم من أعلى الرأس، مناسب لمن يحتاج حرية حركة أكبر أثناء النوم مع تقليل الضغط على جسر الأنف.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Full Face منخفضة التصميم",
+    "url": "https://respira-tech.com/store/airfit-f30i-complete-mask-system/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit N30 الأنفي خفيف التصميم",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-n30-main.jpg"
+    ],
+    "description": "ماسك أنفي صغير وخفيف أسفل الأنف، مناسب للنوم الجانبي ويوفر راحة عالية مع تقليل علامات الضغط على الأنف.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Nasal Cradle",
+    "url": "https://respira-tech.com/store/airfit-n30-complete-mask-system/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit N30i Starter Pack بوصلة علوية",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-n30i-main.jpg"
+    ],
+    "description": "ماسك أنفي أسفل الأنف بوصلة خرطوم من أعلى الرأس، يمنح حرية حركة أكبر وتجربة هادئة، ومناسب لمن ينامون على البطن أو يرتدون نظارة.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Nasal Cradle / Top-of-Head Tube",
+    "url": "https://respira-tech.com/store/airfit-n30i-starter-pack/"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم",
+    "image": [
+      "https://respira-tech.com/assets/images/store/resmed-airfit-f40-main.jpg"
+    ],
+    "description": "ماسك كامل الوجه بتصميم حديث منخفض ومرن، يجمع بين الثبات العالي والراحة وسهولة الاستخدام مع إطار ناعم يتكيف مع الوجه طوال الليل.",
+    "brand": {
+      "@type": "Brand",
+      "name": "ResMed"
+    },
+    "category": "ماسكات Full Face منخفضة التصميم",
+    "url": "https://respira-tech.com/store/airfit-f40-complete-mask-system/"
+  }
+]
