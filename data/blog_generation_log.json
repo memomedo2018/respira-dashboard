@@ -1,6 +1,19 @@
 [
   {
     "type": "success",
+    "created_at": "2026-05-02T22:44:13.337Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "كم ساعة يجب استخدام جهاز CPAP يوميًا؟",
+        "slug": "cpap-daily-usage-hours-guide",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-daily-usage-hours-guide.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-05-02T20:33:21.816Z",
     "generated_count": 1,
     "items": [
