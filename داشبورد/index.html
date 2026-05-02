@@ -271,6 +271,20 @@
       color: #64748b;
       padding: 2rem 1rem;
     }
+    .deploy-bar-track {
+      width: 100%; height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 12px;
+    }
+    .deploy-bar-fill {
+      height: 100%; width: 0%; background: #6c63ff; border-radius: 4px;
+      transition: width 0.5s ease; will-change: width;
+    }
+    .deploy-bar-fill.success { background: #22c55e; }
+    .deploy-bar-fill.error   { background: #ef4444; }
+    .deploy-status-text {
+      margin-top: 6px; font-size: 13px; color: #64748b; text-align: right; direction: rtl;
+    }
+    .deploy-status-text.success { color: #16a34a; font-weight: 600; }
+    .deploy-status-text.error   { color: #dc2626; font-weight: 600; }
     @media (max-width: 1180px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -439,6 +453,12 @@
               <div class="toolbar">
                 <button class="btn btn-primary" id="saveProductBtn" type="button">حفظ المنتج</button>
                 <button class="btn" id="newProductBtn" type="button">منتج جديد</button>
+              </div>
+              <div id="deployProgress" style="display:none;">
+                <div class="deploy-bar-track">
+                  <div id="deployBarFill" class="deploy-bar-fill"></div>
+                </div>
+                <p id="deployStatusText" class="deploy-status-text"></p>
               </div>
             </div>
           </div>
