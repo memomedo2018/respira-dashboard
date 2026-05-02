@@ -27,38 +27,6 @@
   ],
   "products": [
     {
-      "id": "اتلات",
-      "slug": "اتلات",
-      "name_ar": "لاتاات",
-      "name_en": "اتلات",
-      "brand": "ResMed",
-      "category": "التتتا",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "يسسيبل",
-      "long_description_ar": "يبسب",
-      "key_features_ar": [
-        "سربي"
-      ],
-      "included_items_ar": [
-        "يسب"
-      ],
-      "sizes": [
-        "يسبل"
-      ],
-      "compatibility_notes_ar": "يبي",
-      "price_text": "السعر عند التواصل",
-      "main_image": "/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260502073359503398.png",
-      "gallery_images": [
-        "/assets/images/store/chatgpt-image-apr-30-2026-05_48_34-pm-20260502073403424830.png"
-      ],
-      "whatsapp_message": "مرحبًا، أريد الاستفسار عن لاتاات",
-      "seo_title": "",
-      "seo_description": "",
-      "filter_tags": [
-        "nasal"
-      ]
-    },
-    {
       "id": "airfit-f20-complete-mask-system",
       "slug": "airfit-f20-complete-mask-system",
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",

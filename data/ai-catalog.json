@@ -25,21 +25,6 @@
   ],
   "products": [
     {
-      "name_ar": "لاتاات",
-      "name_en": "اتلات",
-      "brand": "ResMed",
-      "category": "التتتا",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "يسسيبل",
-      "long_description_ar": "يبسب",
-      "sizes": [
-        "يسبل"
-      ],
-      "compatibility_notes_ar": "يبي",
-      "url": "https://respira-tech.com/store/%D8%A7%D8%AA%D9%84%D8%A7%D8%AA/",
-      "image": "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260502073359503398.png"
-    },
-    {
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
       "name_en": "AirFit F20 Complete Mask System",
       "brand": "ResMed",

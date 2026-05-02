@@ -2,21 +2,6 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "لاتاات",
-    "image": [
-      "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260502073359503398.png"
-    ],
-    "description": "يسسيبل",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "التتتا",
-    "url": "https://respira-tech.com/store/%D8%A7%D8%AA%D9%84%D8%A7%D8%AA/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
     "name": "ماسك ResMed AirFit F20 كامل الوجه",
     "image": [
       "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"

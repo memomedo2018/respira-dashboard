@@ -2,6 +2,13 @@
   {
     "action": "store_save",
     "status": "success",
+    "created_at": "2026-05-02T07:36:33.421557",
+    "products_count": 6,
+    "categories_count": 5
+  },
+  {
+    "action": "store_save",
+    "status": "success",
     "created_at": "2026-05-02T07:34:05.917161",
     "products_count": 7,
     "categories_count": 5
