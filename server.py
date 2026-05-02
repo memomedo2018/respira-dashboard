@@ -868,6 +868,30 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return
             return self._send_json(seo_brain.current_state())
 
+        if parsed.path == "/api/blog/test-env":
+            if not self._ensure_admin():
+                return
+            import shutil
+            node_path = shutil.which("node")
+            try:
+                result = subprocess.run(["node", "--version"], capture_output=True, text=True, timeout=5)
+                node_version = result.stdout.strip()
+                node_error = result.stderr.strip()
+            except Exception as exc:
+                node_version = None
+                node_error = str(exc)
+            topics_count = len(load_json(BASE_DIR / "data" / "blog_topics.json", []))
+            articles_count = len(list(BLOG_DIR.glob("*.json"))) if BLOG_DIR.exists() else 0
+            return self._send_json({
+                "node_path": node_path,
+                "node_version": node_version,
+                "node_error": node_error,
+                "blog_generator_exists": BLOG_GENERATOR.exists(),
+                "topics_count": topics_count,
+                "articles_count": articles_count,
+                "base_dir": str(BASE_DIR),
+            })
+
         return super().do_GET()
 
     def do_POST(self) -> None:
