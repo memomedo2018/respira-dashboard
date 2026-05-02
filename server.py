@@ -1211,11 +1211,16 @@ class StoreHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/deploy":
             if not self._ensure_admin():
                 return
-            deploy = ftp_deploy_to_hostinger()
-            if deploy.get("ok"):
-                deploy["verification"] = verify_live_deployment()
-            append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
-            return self._send_json({"ok": deploy.get("ok", False), "deploy": deploy})
+            def _run_deploy():
+                try:
+                    deploy = ftp_deploy_to_hostinger()
+                    if deploy.get("ok"):
+                        deploy["verification"] = verify_live_deployment()
+                    append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
+                except Exception as exc:
+                    append_activity_log("manual_ftp_deploy", status="error", error=str(exc))
+            threading.Thread(target=_run_deploy, daemon=True).start()
+            return self._send_json({"ok": True, "started": True})
 
         return self._send_json({"error": "not found"}, 404)
 
