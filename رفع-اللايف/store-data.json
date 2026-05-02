@@ -27,38 +27,6 @@
   ],
   "products": [
     {
-      "id": "تستتت",
-      "slug": "تستتت",
-      "name_ar": "تستت",
-      "name_en": "تستتت",
-      "brand": "ResMed",
-      "category": "تس",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "الااتل",
-      "long_description_ar": "نلان",
-      "key_features_ar": [
-        "نت"
-      ],
-      "included_items_ar": [
-        "تنتاتن"
-      ],
-      "sizes": [
-        "تنا"
-      ],
-      "compatibility_notes_ar": "نتممن",
-      "price_text": "السعر عند التواصل",
-      "main_image": "/assets/images/store/chatgpt-image-may-1-2026-01_38_12-am-20260501224157462201.png",
-      "gallery_images": [
-        "/assets/images/store/chatgpt-image-apr-30-2026-05_45_07-pm-20260501224201949311.png"
-      ],
-      "whatsapp_message": "مرحبًا، أريد الاستفسار عن تستت",
-      "seo_title": "نمتن",
-      "seo_description": "",
-      "filter_tags": [
-        "full-face"
-      ]
-    },
-    {
       "id": "بلاابل",
       "slug": "بلاابل",
       "name_ar": "لا",

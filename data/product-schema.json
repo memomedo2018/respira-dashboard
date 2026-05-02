@@ -2,21 +2,6 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "تستت",
-    "image": [
-      "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-01_38_12-am-20260501224157462201.png"
-    ],
-    "description": "الااتل",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "تس",
-    "url": "https://respira-tech.com/store/%D8%AA%D8%B3%D8%AA%D8%AA%D8%AA/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
     "name": "لا",
     "image": [
       "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260501172728511221.png"

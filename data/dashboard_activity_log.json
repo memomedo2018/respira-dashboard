@@ -2,6 +2,19 @@
   {
     "action": "store_save",
     "status": "success",
+    "created_at": "2026-05-02T07:29:47.848130",
+    "products_count": 7,
+    "categories_count": 5
+  },
+  {
+    "action": "manual_ftp_deploy",
+    "status": "success",
+    "created_at": "2026-05-02T07:28:13.366344",
+    "uploaded": 150
+  },
+  {
+    "action": "store_save",
+    "status": "success",
     "created_at": "2026-05-01T22:42:05.278771",
     "products_count": 8,
     "categories_count": 5

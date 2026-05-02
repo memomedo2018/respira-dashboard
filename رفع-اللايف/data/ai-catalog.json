@@ -25,21 +25,6 @@
   ],
   "products": [
     {
-      "name_ar": "تستت",
-      "name_en": "تستتت",
-      "brand": "ResMed",
-      "category": "تس",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "الااتل",
-      "long_description_ar": "نلان",
-      "sizes": [
-        "تنا"
-      ],
-      "compatibility_notes_ar": "نتممن",
-      "url": "https://respira-tech.com/store/%D8%AA%D8%B3%D8%AA%D8%AA%D8%AA/",
-      "image": "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-01_38_12-am-20260501224157462201.png"
-    },
-    {
       "name_ar": "لا",
       "name_en": "بلاابل",
       "brand": "ResMed",
