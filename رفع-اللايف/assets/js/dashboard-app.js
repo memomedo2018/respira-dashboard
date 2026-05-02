@@ -904,9 +904,114 @@ document.getElementById('rebuildBtn').addEventListener('click', async () => {
 });
 
 async function generateNow(count, publishNow) {
-  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
-  await refreshDashboard();
-  window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال ${publishNow ? 'مع النشر الفوري' : 'كـ Draft'}.`);
+  const bar       = document.getElementById('generateNowBarFill');
+  const statusTxt = document.getElementById('generateNowStatusText');
+  const progress  = document.getElementById('generateNowProgress');
+  const draftBtn  = document.getElementById('generateDraftNowBtn');
+  const genBtn    = document.getElementById('generateNowBtn');
+
+  // Lock buttons, show bar
+  if (draftBtn) draftBtn.disabled = true;
+  if (genBtn)   genBtn.disabled   = true;
+  if (progress) progress.style.display = 'block';
+  if (bar)      { bar.style.width = '5%'; bar.className = 'deploy-bar-fill'; }
+  if (statusTxt) statusTxt.textContent = 'جاري توليد المقالات بـ AI...';
+
+  try {
+    const startedAt = Date.now();
+    await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
+
+    // Phase 1: Poll for blog_generate_batch success (generation takes ~30-90s)
+    if (bar) bar.style.width = '15%';
+    let genDone = false;
+    for (let i = 0; i < 30 && !genDone; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      if (bar) bar.style.width = Math.min(55, 15 + i * 2) + '%';
+      try {
+        const cfg  = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const genLog = logs.find(l =>
+          l.action === 'blog_generate_batch' &&
+          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
+        );
+        if (genLog) {
+          genDone = true;
+          if (genLog.status === 'error') {
+            if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+            if (statusTxt) statusTxt.textContent = 'فشل التوليد: ' + (genLog?.details?.error || '');
+            if (genBtn) { genBtn.textContent = 'فشل التوليد ✗'; }
+            setTimeout(() => {
+              if (draftBtn) draftBtn.disabled = false;
+              if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+              if (progress) progress.style.display = 'none';
+            }, 5000);
+            await refreshDashboard();
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (!publishNow) {
+      // Draft only — no FTP needed
+      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill success'; }
+      if (statusTxt) statusTxt.textContent = `تم توليد ${count} مقال كـ Draft ✓`;
+      await refreshDashboard();
+      setTimeout(() => {
+        if (draftBtn) draftBtn.disabled = false;
+        if (genBtn)   genBtn.disabled = false;
+        if (progress) progress.style.display = 'none';
+      }, 4000);
+      return;
+    }
+
+    // Phase 2: Poll for manual_ftp_deploy (FTP upload takes ~2 min)
+    if (bar) bar.style.width = '60%';
+    if (statusTxt) statusTxt.textContent = 'جاري رفع الملفات على الموقع عبر FTP...';
+    let ftpDone = false;
+    for (let i = 0; i < 30 && !ftpDone; i++) {
+      await new Promise(r => setTimeout(r, 6000));
+      if (bar) bar.style.width = Math.min(90, 60 + i * 2) + '%';
+      if (statusTxt) statusTxt.textContent = `جاري رفع الملفات على الموقع... (${(i+1)*6}ث)`;
+      try {
+        const cfg  = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const ftpLog = logs.find(l =>
+          l.action === 'manual_ftp_deploy' &&
+          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
+        );
+        if (ftpLog) {
+          ftpDone = true;
+          const uploaded = ftpLog?.details?.uploaded ?? '؟';
+          const isErr    = ftpLog?.status === 'error';
+          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
+          if (statusTxt) statusTxt.textContent = isErr
+            ? 'فشل الرفع: ' + (ftpLog?.details?.error || '')
+            : `تم التوليد والنشر ✓ — رُفع ${uploaded} ملف`;
+          if (genBtn) genBtn.textContent = isErr ? 'فشل النشر ✗' : 'تم ✓';
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (!ftpDone) {
+      if (bar) bar.style.width = '100%';
+      if (statusTxt) statusTxt.textContent = 'تم التوليد — تحقق من سجل النشاط للـ FTP';
+    }
+
+    await refreshDashboard();
+    setTimeout(() => {
+      if (draftBtn) draftBtn.disabled = false;
+      if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+      if (progress) progress.style.display = 'none';
+    }, 5000);
+
+  } catch (err) {
+    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+    if (statusTxt) statusTxt.textContent = 'خطأ في الاتصال: ' + (err.message || '');
+    if (draftBtn) draftBtn.disabled = false;
+    if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+    setTimeout(() => { if (progress) progress.style.display = 'none'; }, 5000);
+  }
 }
 
 document.getElementById('generateDraftNowBtn').addEventListener('click', async () => {
