@@ -25,19 +25,6 @@
   ],
   "products": [
     {
-      "name_ar": "لا",
-      "name_en": "بلاابل",
-      "brand": "ResMed",
-      "category": "",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "راتنل",
-      "long_description_ar": "ءؤلا",
-      "sizes": [],
-      "compatibility_notes_ar": "لبا",
-      "url": "https://respira-tech.com/store/%D8%A8%D9%84%D8%A7%D8%A7%D8%A8%D9%84/",
-      "image": "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260501172728511221.png"
-    },
-    {
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",
       "name_en": "AirFit F20 Complete Mask System",
       "brand": "ResMed",

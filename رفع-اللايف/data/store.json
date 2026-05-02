@@ -27,36 +27,6 @@
   ],
   "products": [
     {
-      "id": "بلاابل",
-      "slug": "بلاابل",
-      "name_ar": "لا",
-      "name_en": "بلاابل",
-      "brand": "ResMed",
-      "category": "",
-      "product_type": "CPAP Mask",
-      "short_description_ar": "راتنل",
-      "long_description_ar": "ءؤلا",
-      "key_features_ar": [
-        "بيل"
-      ],
-      "included_items_ar": [
-        "يبل"
-      ],
-      "sizes": [],
-      "compatibility_notes_ar": "لبا",
-      "price_text": "السعر عند التواصل",
-      "main_image": "/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260501172728511221.png",
-      "gallery_images": [
-        "/assets/images/store/chatgpt-image-may-1-2026-01_38_12-am-20260501172735059350.png"
-      ],
-      "whatsapp_message": "مرحبًا، أريد الاستفسار عن لا",
-      "seo_title": "",
-      "seo_description": "",
-      "filter_tags": [
-        "nasal"
-      ]
-    },
-    {
       "id": "airfit-f20-complete-mask-system",
       "slug": "airfit-f20-complete-mask-system",
       "name_ar": "ماسك ResMed AirFit F20 كامل الوجه",

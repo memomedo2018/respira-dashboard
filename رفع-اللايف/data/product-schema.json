@@ -2,21 +2,6 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "لا",
-    "image": [
-      "https://respira-tech.com/assets/images/store/chatgpt-image-may-1-2026-03_20_00-pm-20260501172728511221.png"
-    ],
-    "description": "راتنل",
-    "brand": {
-      "@type": "Brand",
-      "name": "ResMed"
-    },
-    "category": "",
-    "url": "https://respira-tech.com/store/%D8%A8%D9%84%D8%A7%D8%A7%D8%A8%D9%84/"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
     "name": "ماسك ResMed AirFit F20 كامل الوجه",
     "image": [
       "https://respira-tech.com/assets/images/store/resmed-airfit-f20-main.jpg"
