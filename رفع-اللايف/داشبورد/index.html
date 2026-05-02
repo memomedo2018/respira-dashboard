@@ -87,6 +87,11 @@
       color: #fff;
       box-shadow: 0 16px 34px rgba(23,162,184,.22);
     }
+    .btn-secondary {
+      background: linear-gradient(135deg, #6c63ff, #4f46e5);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(108,99,255,.22);
+    }
     .btn-danger {
       color: var(--danger);
       border-color: rgba(185,28,28,.18);
@@ -509,7 +514,13 @@
                 <button class="btn" id="generateDraftNowBtn" type="button">Draft الآن</button>
                 <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
               </div>
-              <button class="btn" id="deployNowBtn" type="button" style="width:100%;margin-top:.25rem">نشر على الموقع الآن</button>
+              <button class="btn btn-secondary" id="deployNowBtn" type="button" style="width:100%;margin-top:.5rem">🚀 نشر على الموقع الآن</button>
+              <div id="deployNowProgress" style="display:none;margin-top:.6rem">
+                <div class="deploy-bar-track">
+                  <div id="deployNowBarFill" class="deploy-bar-fill"></div>
+                </div>
+                <p id="deployNowStatusText" class="deploy-status-text" style="font-size:.8rem;margin-top:.3rem;text-align:center"></p>
+              </div>
             </div>
           </div>
 

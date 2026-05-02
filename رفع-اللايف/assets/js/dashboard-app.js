@@ -929,17 +929,86 @@ document.getElementById('refreshArticlesBtn').addEventListener('click', refreshD
 
 document.getElementById('deployNowBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('deployNowBtn');
+  const bar = document.getElementById('deployNowBarFill');
+  const statusText = document.getElementById('deployNowStatusText');
+  const progress = document.getElementById('deployNowProgress');
+
   btn.disabled = true;
   btn.textContent = 'جاري النشر...';
+  if (progress) progress.style.display = 'block';
+  if (bar) { bar.style.width = '0%'; bar.className = 'deploy-bar-fill'; }
+  if (statusText) statusText.textContent = 'جاري الاتصال بالسيرفر...';
+
+  // Animate bar while waiting (FTP takes ~2 min)
+  let pct = 0;
+  const stages = [
+    [15, 'جاري رفع الملفات عبر FTP...'],
+    [40, 'جاري رفع الملفات عبر FTP...'],
+    [65, 'جاري رفع الملفات عبر FTP...'],
+    [80, 'جاري مسح الكاش...'],
+    [90, 'جاري التحقق من الموقع...'],
+  ];
+  let stageIdx = 0;
+  const ticker = setInterval(() => {
+    if (stageIdx < stages.length) {
+      const [target, msg] = stages[stageIdx];
+      if (pct < target) { pct += 2; if (bar) bar.style.width = pct + '%'; }
+      else { if (statusText) statusText.textContent = msg; stageIdx++; }
+    }
+  }, 2500);
+
   try {
-    const res = await adminApi('/api/deploy', { method: 'POST', body: '{}' });
-    const uploaded = res?.deploy?.uploaded ?? res?.uploaded ?? '?';
-    const purged = res?.deploy?.cache_purge?.ok;
-    btn.textContent = `تم النشر ✓ (${uploaded} ملف${purged ? ' + cache' : ''})`;
-    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 4000);
-  } catch {
+    await adminApi('/api/deploy', { method: 'POST', body: '{}' });
+
+    // Server started background deploy — poll activity log until manual_ftp_deploy appears
+    clearInterval(ticker);
+    if (statusText) statusText.textContent = 'جاري رفع الملفات عبر FTP...';
+    if (bar) bar.style.width = '30%';
+
+    const deployStarted = Date.now();
+    let done = false;
+    for (let i = 0; i < 30 && !done; i++) {
+      await new Promise(r => setTimeout(r, 6000));
+      try {
+        const cfg = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const deployLog = logs.find(l =>
+          l.action === 'manual_ftp_deploy' &&
+          new Date(l.created_at + 'Z').getTime() >= deployStarted - 5000
+        );
+        if (deployLog) {
+          done = true;
+          const uploaded = deployLog?.details?.uploaded ?? '؟';
+          const isErr = deployLog?.status === 'error';
+          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
+          if (statusText) statusText.textContent = isErr
+            ? 'فشل النشر: ' + (deployLog?.details?.error || '')
+            : `تم النشر بنجاح ✓ — رُفع ${uploaded} ملف + مُسح الكاش`;
+          btn.textContent = isErr ? 'فشل النشر ✗' : 'تم النشر ✓';
+          setTimeout(() => {
+            btn.textContent = 'نشر على الموقع الآن';
+            btn.disabled = false;
+            if (progress) progress.style.display = 'none';
+          }, 5000);
+        } else {
+          pct = Math.min(90, 30 + i * 3);
+          if (bar) bar.style.width = pct + '%';
+          if (statusText) statusText.textContent = `جاري رفع الملفات عبر FTP... (${i * 6}ث)`;
+        }
+      } catch { /* ignore polling error */ }
+    }
+    if (!done) {
+      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill'; }
+      if (statusText) statusText.textContent = 'انتهى — تحقق من سجل النشاط';
+      btn.textContent = 'نشر على الموقع الآن';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    clearInterval(ticker);
+    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+    if (statusText) statusText.textContent = 'فشل الاتصال: ' + (err.message || '');
     btn.textContent = 'فشل النشر ✗';
-    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 3000);
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; if (progress) progress.style.display = 'none'; }, 4000);
   }
 });
 
