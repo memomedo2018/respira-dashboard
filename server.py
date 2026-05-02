@@ -679,8 +679,10 @@ def verify_live_deployment(check_slug: str | None = None) -> dict:
 
 
 def deploy_to_live(commit_message: str, extra_paths: list[Path] | None = None, verify_slug: str | None = None) -> dict:
-    github = sync_changes_to_github(commit_message, extra_paths)
+    # FTP first — GitHub push triggers Railway redeploy which kills the process,
+    # so we must finish uploading to Hostinger before pushing to GitHub.
     hostinger = ftp_deploy_to_hostinger()
+    github = sync_changes_to_github(commit_message, extra_paths)
     result: dict = {"github": github, "hostinger": hostinger}
     if hostinger.get("ok") and not hostinger.get("skipped"):
         result["verification"] = verify_live_deployment(verify_slug)
@@ -1035,10 +1037,13 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 try:
                     run_blog_generator(extra_env)
                     append_activity_log("blog_generate_batch", generated_count=count, publish_now=publish_now)
-                    deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
+                    result = deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
+                    hostinger = result.get("hostinger", {})
+                    append_activity_log("manual_ftp_deploy", uploaded=hostinger.get("uploaded"), error=hostinger.get("error"))
                 except Exception as exc:
                     import traceback
                     append_activity_log("blog_generate_batch", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
+                    append_activity_log("manual_ftp_deploy", status="error", error=str(exc))
 
             threading.Thread(target=_run_generation, daemon=True).start()
             return self._send_json({"ok": True, "started": True, "count": count, "publish_now": publish_now})
