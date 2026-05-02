@@ -1315,6 +1315,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                     if deploy.get("ok"):
                         deploy["verification"] = verify_live_deployment()
                     append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
+                    sync_changes_to_github(f"Deploy {datetime.utcnow().isoformat()}")
                 except Exception as exc:
                     append_activity_log("manual_ftp_deploy", status="error", error=str(exc))
             threading.Thread(target=_run_deploy, daemon=True).start()
