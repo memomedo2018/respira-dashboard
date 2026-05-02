@@ -581,6 +581,14 @@ def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
         ftp.encoding = "utf-8"
         ftp.set_pasv(True)
 
+        # Auto-detect: if FTP lands already inside remote_root, don't prepend it again
+        try:
+            cwd = ftp.pwd().strip("/")
+            if remote_root and cwd.endswith(remote_root.strip("/")):
+                remote_root = ""
+        except Exception:
+            pass
+
         created_dirs: set[str] = set()
 
         def ensure_dir(remote_dir: str) -> None:
