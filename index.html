@@ -1,15 +1,887 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/store/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Respira Tech</title>
-  <script>
-    window.location.replace("/store/");
-  </script>
+  <title>Respira Tech | تنفس أهدأ ونوم أفضل</title>
+  <meta name="description" content="Respira Tech تقدم حلول CPAP وBiPAP والماسكات والإكسسوارات مع متابعة منزلية ودعم واضح لتحسين الراحة أثناء النوم والتنفس.">
+  <meta name="theme-color" content="#f3f8fc">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Marhey:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f3f8fc;
+      --surface: rgba(255,255,255,.9);
+      --surface-strong: #ffffff;
+      --border: rgba(15,23,42,.08);
+      --text: #0f172a;
+      --muted: #475569;
+      --soft: #64748b;
+      --blue: #0097b2;
+      --teal: #138496;
+      --teal-strong: #0f766e;
+      --shadow: 0 18px 44px rgba(15,23,42,.08);
+      --shadow-soft: 0 12px 28px rgba(15,23,42,.06);
+      --radius: 28px;
+      --radius-lg: 34px;
+      --container: 1180px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Alexandria', 'Segoe UI', sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(0,151,178,.12), transparent 24%),
+        radial-gradient(circle at top left, rgba(19,132,150,.10), transparent 22%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    body[data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: rgba(15,23,42,.78);
+      --surface-strong: rgba(15,23,42,.94);
+      --border: rgba(255,255,255,.08);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --soft: #94a3b8;
+      --shadow: 0 24px 58px rgba(0,0,0,.28);
+      --shadow-soft: 0 16px 36px rgba(0,0,0,.22);
+      background:
+        radial-gradient(circle at top right, rgba(0,151,178,.18), transparent 24%),
+        radial-gradient(circle at top left, rgba(20,184,166,.12), transparent 22%),
+        var(--bg);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(var(--container), calc(100% - 2rem)); margin: 0 auto; }
+
+    .theme-fab {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1200;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: rgba(255,255,255,.88);
+      color: #0f172a;
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.05rem;
+    }
+
+    body[data-theme="dark"] .theme-fab {
+      background: rgba(15,23,42,.92);
+      color: #f8fafc;
+    }
+
+    .header {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: transparent;
+    }
+
+    .header-inner {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: min(1100px, calc(100% - 8rem));
+      margin: 0 auto;
+      padding: 0 1.4rem;
+      border-radius: 0 0 30px 30px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow: 0 18px 42px rgba(15,23,42,.10);
+      backdrop-filter: blur(16px);
+    }
+
+    body[data-theme="dark"] .header-inner {
+      background: rgba(15,23,42,.78);
+      border-color: rgba(255,255,255,.08);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      object-fit: contain;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,.82);
+      color: var(--text);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .nav a {
+      padding: .75rem 1rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .nav a:hover,
+    .nav a.is-active {
+      color: var(--blue);
+      background: rgba(0,151,178,.08);
+    }
+
+    .hero {
+      padding: 9rem 0 3rem;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-items: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(243,248,252,.10) 0%, rgba(243,248,252,.14) 45%, rgba(243,248,252,.32) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    body[data-theme="dark"] .hero::before {
+      background:
+        linear-gradient(180deg, rgba(15,23,42,.22) 0%, rgba(15,23,42,.36) 44%, rgba(15,23,42,.58) 100%);
+    }
+
+    .hero-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-shell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 220px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-card,
+    .card,
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      border-radius: var(--radius-lg);
+      padding: 2.8rem 3rem;
+      display: grid;
+      align-content: center;
+      width: min(100%, 1000px);
+      text-align: center;
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.14);
+      backdrop-filter: blur(8px);
+    }
+
+    body[data-theme="dark"] .hero-card {
+      background: rgba(15,23,42,.10);
+      border-color: rgba(255,255,255,.05);
+    }
+
+    .hero-badge,
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .7rem 1rem;
+      border-radius: 999px;
+      background: rgba(19,132,150,.1);
+      color: var(--teal-strong);
+      font-size: .9rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .hero-badge {
+      margin-right: auto;
+      margin-left: auto;
+      background: rgba(255,255,255,.82);
+    }
+
+    .hero-title {
+      font-family: 'Marhey', 'Alexandria', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.8rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      color: var(--teal-strong);
+      text-shadow: 0 14px 32px rgba(255,255,255,.18);
+    }
+
+    .hero-subtitle {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 12px 28px rgba(15,23,42,.24);
+    }
+
+    .hero-description {
+      color: rgba(255,255,255,.92);
+      font-size: 1.05rem;
+      max-width: 68ch;
+      margin-bottom: 1.5rem;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: .9rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      min-height: 52px;
+      padding: 0 1.35rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #17a2b8, #138496);
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(19,132,150,.22);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.8);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    body[data-theme="dark"] .btn-secondary {
+      background: rgba(255,255,255,.05);
+    }
+
+    .hero-note {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-weight: 700;
+      margin-right: auto;
+      margin-left: auto;
+      padding: .8rem 1.25rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: var(--text);
+    }
+    .hero-note:hover { transform: translateY(-2px); }
+
+    .section {
+      padding: 2.5rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 2rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.2;
+      margin-bottom: .8rem;
+      color: var(--text);
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .grid-4,
+    .grid-3 {
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: .2s ease;
+    }
+    a.card { display: block; color: inherit; }
+
+    .card:hover { transform: translateY(-4px); }
+
+    .icon-box {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #17a2b8, #138496);
+      color: #fff;
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 14px 32px rgba(19,132,150,.22);
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: .7rem;
+      color: var(--text);
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .98rem;
+    }
+
+    .step-card { position: relative; padding-top: 3.2rem; }
+    .step-index {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      height: 34px;
+      padding: 0 .8rem;
+      border-radius: 999px;
+      background: rgba(0,151,178,.08);
+      color: var(--blue);
+      font-size: .85rem;
+      font-weight: 900;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 2.2rem;
+      color: var(--teal);
+      margin-bottom: .4rem;
+    }
+
+    .stat span { color: var(--muted); font-weight: 700; }
+
+    .socials {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .social {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      padding: 1.4rem;
+      transition: .2s ease;
+    }
+
+    .social:hover { transform: translateY(-4px); }
+    .social strong { display: block; margin-bottom: .4rem; color: var(--text); }
+    .social span { color: var(--muted); font-size: .95rem; }
+
+    .faq-list {
+      display: grid;
+      gap: .9rem;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      padding: 1.1rem 1.2rem;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item p { margin-top: .8rem; color: var(--muted); }
+
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--blue);
+      margin-bottom: .8rem;
+    }
+
+    .footer-text {
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-links a {
+      color: var(--soft);
+      font-weight: 700;
+    }
+
+    .copyright {
+      color: var(--soft);
+      font-size: .92rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    @media (max-width: 1100px) {
+      .header-inner { width: min(100%, calc(100% - 3rem)); }
+      .grid-4,
+      .stats,
+      .socials { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
+      .header { top: 12px; }
+      .header-inner {
+        width: calc(100% - 1.5rem);
+        min-height: auto;
+        padding: .9rem 1rem;
+        border-radius: 28px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: .75rem;
+      }
+      .brand { min-width: 0; gap: .55rem; font-size: 1.25rem; }
+      .brand-mark { width: 34px; height: 34px; }
+      .menu-toggle { display: inline-flex; }
+      .nav {
+        display: none;
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-top: .2rem;
+        padding-top: .35rem;
+        border-top: 1px solid rgba(15,23,42,.08);
+      }
+      .header.is-open .nav { display: grid; gap: .55rem; }
+      .nav a {
+        width: 100%;
+        text-align: center;
+        padding: .85rem 1rem;
+        font-size: 1rem;
+      }
+      .hero { padding-top: 7.2rem; min-height: auto; }
+      .hero-shell { min-height: auto; }
+      .grid-4,
+      .grid-3,
+      .stats,
+      .socials { grid-template-columns: 1fr; }
+      .hero-card,
+      .footer-box { padding: 1.35rem; }
+      .hero-card { width: 100%; padding: 1.25rem 1.1rem; border-radius: 28px; }
+      .hero-title { font-size: clamp(2.2rem, 10vw, 3.3rem); }
+      .hero-subtitle { font-size: 1rem; }
+      .hero-description { font-size: .98rem; }
+      .cta-row { flex-direction: column; }
+      .btn { width: 100%; min-height: 46px; padding: .82rem 1rem; font-size: .92rem; gap: .45rem; }
+    }
+  </style>
 </head>
-<body>
-  <p>جاري تحويلك إلى المتجر...</p>
+<body data-theme="light">
+  <button class="theme-fab" type="button" aria-label="تبديل وضع الألوان" id="themeToggle">☀️</button>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="brand">
+        <img class="brand-mark" src="/assets/images/store/respira-tech-logo.png" alt="Respira Tech logo" loading="eager" decoding="async">
+        Respira Tech
+      </a>
+      <button class="menu-toggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="siteNav" id="menuToggle">☰</button>
+      <nav class="nav" aria-label="التنقل الرئيسي" id="siteNav">
+        <a href="/" class="is-active">الرئيسية</a>
+        <a href="/about/">من نحن</a>
+        <a href="/services/">الخدمات</a>
+        <a href="/store/">المتجر</a>
+        <a href="/blog/">المدونة</a>
+        <a href="/contact/">تواصل معنا</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-video-wrap" aria-hidden="true">
+        <video class="hero-video" autoplay muted loop playsinline preload="metadata">
+          <source src="/video/Man_sleeping_with_CPAP_mask_202604291000.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="container hero-shell">
+        <div class="hero-card">
+          <span class="hero-badge">رواد في مجال العلاج التنفسي</span>
+          <h1 class="hero-title">تنفس أهدأ ونوم أفضل</h1>
+          <div class="hero-subtitle">حلول متخصصة لأجهزة CPAP و BiPAP مع متابعة منزلية ودعم يفهم حالتك</div>
+          <p class="hero-description">
+            إذا كنت تعاني من انقطاع النفس أثناء النوم أو الشخير أو تم ترشيح جهاز علاجي لك،
+            فنحن نساعدك في اختيار الجهاز المناسب، ضبطه بشكل صحيح، ومتابعة استخدامه حتى تصل إلى راحة حقيقية في النوم والتنفس.
+          </p>
+          <div class="cta-row">
+            <a href="/store/" class="btn btn-primary">المتجر</a>
+          </div>
+          <a href="https://wa.me/201012566955?text=%D9%85%D8%B1%D8%AD%D8%A8%D9%8B%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9%20%D9%85%D8%AC%D8%A7%D9%86%D9%8A%D8%A9" class="hero-note" target="_blank" rel="noopener">تواصل معنا لأي استشارة مجانية</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">خدمات متخصصة</span>
+          <h2 class="section-title">حلول واضحة لحالات النوم والتنفس</h2>
+          <p class="section-desc">لا نقدم أجهزة فقط، بل نساعدك على اختيار الحل المناسب لحالتك مع شرح الاستخدام والمتابعة بعد البدء.</p>
+        </div>
+        <div class="grid-4">
+          <a href="/store/?filter=cpap" class="card">
+            <div class="icon-box">CP</div>
+            <h3>أجهزة CPAP</h3>
+            <p>مناسبة للعديد من حالات انقطاع النفس أثناء النوم، مع خيارات ذكية تساعد على ثبات الضغط وراحة أكبر أثناء الاستخدام.</p>
+          </a>
+          <a href="/store/?filter=bipap" class="card">
+            <div class="icon-box">BP</div>
+            <h3>أجهزة BiPAP</h3>
+            <p>لمن يحتاج مرونة أعلى بين الشهيق والزفير، مع إعدادات أدق لتجربة أكثر راحة واستجابة أفضل للحالة.</p>
+          </a>
+          <a href="/store/?filter=cpap-masks" class="card">
+            <div class="icon-box">MS</div>
+            <h3>أقنعة وإكسسوارات أصلية</h3>
+            <p>أقنعة، خراطيم، وفلاتر تساعد على إحكام أفضل وراحة أعلى، لأن نجاح العلاج يعتمد أيضًا على الملحق المناسب.</p>
+          </a>
+          <a href="/store/?filter=sleep-apnea" class="card">
+            <div class="icon-box">24</div>
+            <h3>دعم فني ومتابعة</h3>
+            <p>من أول تشغيل الجهاز حتى الاستمرار عليه يوميًا، نوفر لك المساعدة في الإعدادات والاستخدام والمتابعة المستمرة.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">خطوات بسيطة</span>
+          <h2 class="section-title">كيف نبدأ معك؟</h2>
+          <p class="section-desc">رحلة واضحة من الاستفسار وحتى الاستقرار على الجهاز المناسب.</p>
+        </div>
+        <div class="grid-4">
+          <article class="card step-card">
+            <span class="step-index">01</span>
+            <h3>فهم الحالة</h3>
+            <p>نستمع إلى شكواك أو تقريرك الطبي ونفهم نوع الاحتياج قبل ترشيح أي جهاز.</p>
+          </article>
+          <article class="card step-card">
+            <span class="step-index">02</span>
+            <h3>ترشيح الجهاز</h3>
+            <p>نساعدك على اختيار جهاز CPAP أو BiPAP والملحقات المناسبة لراحتك واستخدامك اليومي.</p>
+          </article>
+          <article class="card step-card">
+            <span class="step-index">03</span>
+            <h3>ضبط وتشغيل</h3>
+            <p>نشرح لك طريقة الاستخدام ونضبط الإعدادات الأساسية بشكل مريح وواضح.</p>
+          </article>
+          <article class="card step-card">
+            <span class="step-index">04</span>
+            <h3>متابعة مستمرة</h3>
+            <p>نظل معك بعد البداية للإجابة على الأسئلة وتحسين تجربة الاستخدام إذا لزم الأمر.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">مميزاتنا</span>
+          <h2 class="section-title">لماذا يثق بنا العملاء؟</h2>
+          <p class="section-desc">لأننا نركز على النتيجة التي يريدها العميل: نوم أكثر راحة، وتنفس أفضل، ودعم واضح بعد بدء العلاج.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>فهم حقيقي للحالة</h3>
+            <p>لا نعرض الأجهزة بشكل عام فقط، بل نساعدك على فهم الفرق بين الحلول واختيار الأنسب لك.</p>
+          </article>
+          <article class="card">
+            <h3>أجهزة وملحقات موثوقة</h3>
+            <p>نهتم بجودة الجهاز والملحقات لأن الراحة اليومية ونجاح العلاج يعتمدان على التفاصيل الصغيرة.</p>
+          </article>
+          <article class="card">
+            <h3>دعم يجاوبك بسرعة</h3>
+            <p>عندما تواجه مشكلة في الاستخدام أو تحتاج تعديلًا في الفهم أو التركيب، تجد من يساعدك بوضوح.</p>
+          </article>
+          <article class="card">
+            <h3>شرح مبسط وسهل</h3>
+            <p>نُسهّل عليك بداية الاستخدام، لأن أكبر عائق في العلاج غالبًا ليس الجهاز بل عدم الارتياح في أول الأيام.</p>
+          </article>
+          <article class="card">
+            <h3>راحة في البيت</h3>
+            <p>نوفر تجربة مناسبة للاستخدام المنزلي مع متابعة تساعدك على الالتزام بالعلاج في حياتك اليومية.</p>
+          </article>
+          <article class="card">
+            <h3>متابعة بعد الشراء</h3>
+            <p>علاقتنا لا تنتهي عند تسليم الجهاز، بل تبدأ من هناك لضمان تجربة أفضل ونتيجة أوضح.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">أرقامنا</span>
+          <h2 class="section-title">إنجازاتنا بالأرقام</h2>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong>5000+</strong><span>استفسار وعميل تمت خدمتهم</span></div>
+          <div class="stat"><strong>10+</strong><span>سنوات خبرة في المجال</span></div>
+          <div class="stat"><strong>99.9%</strong><span>تركيز على راحة العميل</span></div>
+          <div class="stat"><strong>24/7</strong><span>دعم ومتابعة مستمرة</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">ابدأ الآن</span>
+          <h2 class="section-title">هل تريد معرفة الجهاز الأنسب لحالتك؟</h2>
+          <p class="section-desc">اترك لنا وسيلة التواصل أو تواصل معنا مباشرة، وسيساعدك فريقنا في فهم الخيارات المناسبة لك أو لأحد أفراد أسرتك.</p>
+        </div>
+        <div class="cta-row" style="justify-content:center; margin-bottom:1.5rem;">
+          <a href="/contact/" class="btn btn-primary">تحدث مع فريق Respira Tech</a>
+          <a href="/store/" class="btn btn-secondary">تصفح المتجر</a>
+        </div>
+        <div class="socials">
+          <a href="https://www.facebook.com/profile.php?id=61580291109675" class="social" target="_blank" rel="noopener">
+            <strong>Facebook</strong>
+            <span>تابعنا للحصول على أحدث الأخبار والنصائح</span>
+          </a>
+          <a href="https://wa.me/201012566955" class="social" target="_blank" rel="noopener">
+            <strong>WhatsApp</strong>
+            <span>تواصل معنا مباشرة للاستفسار السريع والدعم الأولي</span>
+          </a>
+          <a href="mailto:support@respira-tech.com" class="social">
+            <strong>البريد الإلكتروني</strong>
+            <span>support@respira-tech.com</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">أسئلة شائعة</span>
+          <h2 class="section-title">أسئلة قد تدور في ذهنك</h2>
+          <p class="section-desc">إجابات سريعة تساعدك على فهم الخدمة قبل التواصل.</p>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>ما الفرق بين CPAP و BiPAP؟</summary>
+            <p>CPAP يقدم ضغطًا ثابتًا غالبًا، بينما BiPAP يوفّر مستويين مختلفين للشهيق والزفير حسب الحاجة.</p>
+          </details>
+          <details class="faq-item">
+            <summary>هل سأحتاج إلى مساعدة في التشغيل؟</summary>
+            <p>نعم، ونحن نهتم بشرح الاستخدام والإعدادات الأساسية حتى تبدأ وأنت مرتاح وواثق.</p>
+          </details>
+          <details class="faq-item">
+            <summary>هل القناع مهم مثل الجهاز؟</summary>
+            <p>بالتأكيد، لأن القناع المناسب يؤثر بشكل مباشر على الراحة والالتزام ونتيجة العلاج.</p>
+          </details>
+          <details class="faq-item">
+            <summary>هل توفرون متابعة بعد الاستلام؟</summary>
+            <p>نعم، المتابعة جزء أساسي من الخدمة لمساعدتك على الاستمرار وحل أي عوائق في الاستخدام.</p>
+          </details>
+          <details class="faq-item">
+            <summary>كيف أبدأ؟</summary>
+            <p>ابدأ بالتواصل معنا، وسنوجّهك للخطوة التالية بناءً على حالتك واحتياجك الحالي.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-box">
+      <div class="footer-logo">Respira Tech</div>
+      <p class="footer-text">
+        نقدم حلولًا متخصصة في أجهزة العلاج التنفسي والنوم المنزلي مع دعم واضح، ومتابعة عملية، وتجربة تركز على راحة العميل ونجاح استخدامه اليومي.
+      </p>
+      <nav class="footer-links">
+        <a href="/">الرئيسية</a>
+        <a href="/about/">من نحن</a>
+        <a href="/services/">الخدمات</a>
+        <a href="/store/">المتجر</a>
+        <a href="/blog/">المدونة</a>
+        <a href="/contact/">تواصل معنا</a>
+        <a href="/privacy-policy/">سياسة الخصوصية</a>
+        <a href="/refund-policy/">سياسة الاسترجاع</a>
+      </nav>
+      <div class="copyright">© 2026 Respira Tech. جميع الحقوق محفوظة.</div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.location.pathname.endsWith('/index.html')) {
+      const targetPath = window.location.pathname.replace(/index\.html$/, '');
+      const finalPath = targetPath.endsWith('/') ? targetPath : `${targetPath}/`;
+      window.location.replace(`${finalPath}${window.location.search}${window.location.hash}`);
+    }
+
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const menuToggle = document.getElementById('menuToggle');
+    const header = document.querySelector('.header');
+    const siteNav = document.getElementById('siteNav');
+
+    function applyTheme(theme) {
+      body.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'light' ? '☀️' : '🌙';
+      localStorage.setItem('respira-theme', theme);
+    }
+
+    applyTheme(localStorage.getItem('respira-theme') || 'light');
+
+    themeToggle.addEventListener('click', () => {
+      applyTheme(body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    });
+
+    if (menuToggle && header && siteNav) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = header.classList.toggle('is-open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+        menuToggle.textContent = isOpen ? '✕' : '☰';
+      });
+
+      siteNav.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          header.classList.remove('is-open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          menuToggle.textContent = '☰';
+        });
+      });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (event) => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
 </body>
 </html>
