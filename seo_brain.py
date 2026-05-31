@@ -32,6 +32,17 @@ GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
 BLOG_IMAGES_DIR = BASE_DIR / "assets" / "images" / "blog"
 BUILD_SCRIPT = BASE_DIR / "build_content.py"
 GSC_SCOPES = ["https://www.googleapis.com/auth/webmasters"]
+ARTICLE_MIN_WORDS = int(os.getenv("ARTICLE_MIN_WORDS", os.getenv("BLOG_ARTICLE_MIN_WORDS", "1600")) or "1600")
+ARTICLE_TARGET_WORDS = int(os.getenv("ARTICLE_TARGET_WORDS", os.getenv("BLOG_ARTICLE_TARGET_WORDS", "1800")) or "1800")
+
+INTERNAL_LINK_STRATEGY = [
+    {"url": "/services/cpap/", "anchors": ["أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم", "أجهزة CPAP المنزلية", "جهاز CPAP المناسب لحالتك", "خدمة أجهزة CPAP من Respira Tech"]},
+    {"url": "/services/bipap/", "anchors": ["الفرق بين أجهزة CPAP و BiPAP", "أجهزة BiPAP للحالات التي تحتاج دعم تنفسي أكبر", "متى يكون جهاز BiPAP اختيارًا مناسبًا", "خدمة أجهزة BiPAP المنزلية"]},
+    {"url": "/services/sleep-apnea/", "anchors": ["أعراض انقطاع النفس أثناء النوم", "تشخيص انقطاع النفس أثناء النوم", "الشخير وتوقف التنفس أثناء النوم", "متى تحتاج لتقييم اضطرابات النوم"]},
+    {"url": "/services/cpap-masks/", "anchors": ["اختيار ماسك CPAP المناسب", "حل مشكلة تسريب الهواء من ماسك CPAP", "أنواع ماسكات CPAP وطرق اختيارها", "ماسكات CPAP المريحة للاستخدام اليومي"]},
+    {"url": "/store/", "anchors": ["تصفح أجهزة التنفس وماسكات CPAP المتاحة", "شراء مستلزمات CPAP و BiPAP", "منتجات Respira Tech لأجهزة التنفس المنزلي", "خيارات أجهزة وماسكات التنفس المتوفرة"]},
+    {"url": "/contact/", "anchors": ["استشارة Respira Tech لاختيار الجهاز المناسب", "التواصل مع مختص قبل شراء جهاز CPAP", "مساعدة في اختيار جهاز التنفس المنزلي", "طلب دعم لاختيار الماسك أو الجهاز"]},
+]
 
 AR_STOPWORDS = {
     "في", "من", "على", "إلى", "عن", "أن", "أو", "مع", "هذا", "هذه", "ذلك", "التي", "الذي",
@@ -148,9 +159,63 @@ def seo_score(article: dict) -> int:
         bool(article.get("medical_disclaimer")),
         bool(article.get("category")),
         bool(article.get("slug")),
-        len(strip_markdown(markdown).split()) >= 1200,
+        len(strip_markdown(markdown).split()) >= ARTICLE_MIN_WORDS,
     ]
     return round(sum(100 / len(checks) for item in checks if item))
+
+
+def link_score_for_text(link: dict, text: str) -> int:
+    source = str(text or "").lower()
+    url = link.get("url", "")
+    score = 0
+    if "cpap" in url and "cpap" in source:
+        score += 3
+    if "bipap" in url and "bipap" in source:
+        score += 3
+    if "sleep-apnea" in url and re.search(r"انقطاع|الشخير|النفس|النوم", source):
+        score += 3
+    if "cpap-masks" in url and re.search(r"ماسك|قناع|تسريب|mask", source):
+        score += 3
+    if "store" in url and re.search(r"شراء|سعر|منتج|متجر|اختيار", source):
+        score += 1
+    if "contact" in url:
+        score += 1
+    return score
+
+
+def preferred_anchor(link: dict, topic_text: str, index: int = 0) -> str:
+    options = next((item["anchors"] for item in INTERNAL_LINK_STRATEGY if item["url"] == link.get("url")), None)
+    if not options:
+        return str(link.get("anchor") or "")
+    offset = sum(ord(char) for char in slugify(topic_text))
+    return options[(offset + index) % len(options)]
+
+
+def is_weak_anchor(anchor: str) -> bool:
+    value = str(anchor or "").strip()
+    return (
+        len(value) < 13
+        or re.search(r"^(صفحة|المتجر|تواصل معنا|اضغط هنا|اقرأ المزيد|خدمة العملاء)$", value, re.I) is not None
+        or re.search(r"^صفحة\s+", value, re.I) is not None
+    )
+
+
+def ensure_internal_links(article: dict, site_data: dict, limit: int = 6) -> list[dict]:
+    topic_text = f"{article.get('title_ar','')} {article.get('excerpt','')} {article.get('category','')}"
+    by_url: dict[str, dict] = {}
+    for item in article.get("internal_links") or []:
+        url = item.get("url")
+        if not url:
+            continue
+        core = next((link for link in site_data.get("core_links", []) if link.get("url") == url), item)
+        raw_anchor = str(item.get("anchor") or "")
+        anchor = raw_anchor if not is_weak_anchor(raw_anchor) else preferred_anchor(core, topic_text, len(by_url))
+        by_url[url] = {"anchor": anchor, "url": url}
+    core_links = sorted(site_data.get("core_links", []), key=lambda item: link_score_for_text(item, topic_text), reverse=True)
+    for link in core_links:
+        if link.get("url") not in by_url:
+            by_url[link["url"]] = {"anchor": preferred_anchor(link, topic_text, len(by_url)), "url": link["url"]}
+    return list(by_url.values())[:limit]
 
 
 def list_articles() -> list[dict]:
@@ -205,18 +270,44 @@ def ensure_meta_fallbacks(article: dict, site_data: dict) -> dict:
 
 
 def auto_link_markdown(markdown: str, links: list[dict]) -> str:
-    updated = str(markdown or "")
+    updated = re.sub(
+        r"\[\[([^\]]+)\]\((/[^)]+)\)\]\(https://respira-tech\.com/?[^)]*\)",
+        r"[\1](\2)",
+        str(markdown or ""),
+    )
+    missing_links = []
     for link in links:
         anchor = link.get("anchor")
         url = link.get("url")
         if not anchor or not url:
             continue
-        if f"]({url})" in updated:
+        existing_link = re.search(rf"\[([^\]]+)\]\((?:https://respira-tech\.com)?{re.escape(url)}\)", updated, re.I)
+        if existing_link:
+            if is_weak_anchor(existing_link.group(1)):
+                updated = re.sub(
+                    rf"\[([^\]]+)\]\((?:https://respira-tech\.com)?{re.escape(url)}\)",
+                    f"[{anchor}]({url})",
+                    updated,
+                    count=1,
+                    flags=re.I,
+                )
             continue
         pattern = re.compile(re.escape(anchor), re.I)
-        updated, count = pattern.subn(f"[{anchor}]({url})", updated, count=1)
-        if count:
-            continue
+        if pattern.search(updated):
+            updated, count = pattern.subn(f"[{anchor}]({url})", updated, count=1)
+            if count:
+                continue
+        missing_links.append(link)
+    if missing_links and "## روابط تساعدك على الخطوة التالية" not in updated:
+        lines = ["", "## روابط تساعدك على الخطوة التالية", ""]
+        for link in missing_links[:6]:
+            lines.append(f"- [{link['anchor']}]({link['url']})")
+        insertion = "\n" + "\n".join(lines) + "\n"
+        cta_match = re.search(r"\n##\s+(الخلاصة|هل تحتاج|تواصل|CTA|دعوة)", updated, re.I)
+        if cta_match:
+            updated = f"{updated[:cta_match.start()].rstrip()}{insertion}\n{updated[cta_match.start():].lstrip()}"
+        else:
+            updated = f"{updated.rstrip()}{insertion}"
     return updated
 
 
@@ -443,9 +534,13 @@ def build_article_from_url(source_url: str, publish: bool = False) -> dict:
 
 المطلوب:
 - اكتب مقالًا عربيًا أصليًا ومهنيًا مبنيًا على فهم المصدر، وليس نسخًا منه.
-- لا تقل عن 1200 كلمة.
+- لا تقل عن {ARTICLE_MIN_WORDS} كلمة، والهدف المثالي حوالي {ARTICLE_TARGET_WORDS} كلمة.
 - اجعل المقال مناسبًا للسيو وللقراءة البشرية، وبأسلوب طبيعي جدًا.
+- اجعل كل قسم رئيسي غنيًا: 2 إلى 4 فقرات أو نقاط عملية عند الحاجة.
+- أضف قسمًا للأخطاء الشائعة أو جدول مقارنة Markdown إذا كان مناسبًا للموضوع.
 - أضف روابط داخلية طبيعية إلى: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
+- استخدم anchor text وصفيًا طويلًا، وليس كلمات عامة مثل "اضغط هنا" أو "المتجر" أو "تواصل معنا" فقط.
+- وزع الروابط داخل الفقرات في سياق منطقي.
 - اختم بدعوة للتواصل عبر واتساب.
 - المقال يجب أن يناسب موقع Respira Tech.
 """
@@ -481,7 +576,7 @@ def build_article_from_url(source_url: str, publish: bool = False) -> dict:
     article["created_at"] = now_iso
     article["updated_at"] = now_iso
     article["published_at"] = now_iso if publish else None
-    article["internal_links"] = article.get("internal_links") or site_data.get("core_links", [])[:5]
+    article["internal_links"] = ensure_internal_links(article, site_data)
     article["content_markdown"] = auto_link_markdown(article.get("content_markdown", ""), article["internal_links"])
     article["cta_button_url"] = f"https://wa.me/{env.get('WHATSAPP_NUMBER', site_data['site']['whatsapp_number'])}"
     article["medical_disclaimer"] = site_data["site"]["medical_disclaimer"]
@@ -538,9 +633,7 @@ def refresh_article_links(auto_fix: bool = True) -> dict:
     for article in articles:
         original = json.dumps(article, ensure_ascii=False, sort_keys=True)
         article["internal_links"] = article.get("internal_links") or []
-        for link in site_data.get("core_links", [])[:5]:
-            if not any(item.get("url") == link["url"] for item in article["internal_links"]):
-                article["internal_links"].append(link)
+        article["internal_links"] = ensure_internal_links(article, site_data)
         new_links = suggest_related_article_links(article, articles, site_data)
         article["internal_links"].extend(new_links[:2])
         article["internal_links"] = article["internal_links"][:8]

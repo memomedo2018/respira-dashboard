@@ -11,6 +11,65 @@ const SITE_FILE = path.join(ROOT, 'data', 'site.json');
 const ENV_FILE = path.join(ROOT, '.env');
 const LOG_FILE = path.join(ROOT, 'data', 'blog_generation_log.json');
 const BLOG_IMAGES_DIR = path.join(ROOT, 'assets', 'images', 'blog');
+const DEFAULT_TARGET_WORDS = 1800;
+const DEFAULT_MIN_WORDS = 1600;
+
+const INTERNAL_LINK_STRATEGY = [
+  {
+    url: '/services/cpap/',
+    anchors: [
+      'أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم',
+      'أجهزة CPAP المنزلية',
+      'جهاز CPAP المناسب لحالتك',
+      'خدمة أجهزة CPAP من Respira Tech'
+    ]
+  },
+  {
+    url: '/services/bipap/',
+    anchors: [
+      'الفرق بين أجهزة CPAP و BiPAP',
+      'أجهزة BiPAP للحالات التي تحتاج دعم تنفسي أكبر',
+      'متى يكون جهاز BiPAP اختيارًا مناسبًا',
+      'خدمة أجهزة BiPAP المنزلية'
+    ]
+  },
+  {
+    url: '/services/sleep-apnea/',
+    anchors: [
+      'أعراض انقطاع النفس أثناء النوم',
+      'تشخيص انقطاع النفس أثناء النوم',
+      'الشخير وتوقف التنفس أثناء النوم',
+      'متى تحتاج لتقييم اضطرابات النوم'
+    ]
+  },
+  {
+    url: '/services/cpap-masks/',
+    anchors: [
+      'اختيار ماسك CPAP المناسب',
+      'حل مشكلة تسريب الهواء من ماسك CPAP',
+      'أنواع ماسكات CPAP وطرق اختيارها',
+      'ماسكات CPAP المريحة للاستخدام اليومي'
+    ]
+  },
+  {
+    url: '/store/',
+    anchors: [
+      'تصفح أجهزة التنفس وماسكات CPAP المتاحة',
+      'شراء مستلزمات CPAP و BiPAP',
+      'منتجات Respira Tech لأجهزة التنفس المنزلي',
+      'خيارات أجهزة وماسكات التنفس المتوفرة'
+    ]
+  },
+  {
+    url: '/contact/',
+    anchors: [
+      'استشارة Respira Tech لاختيار الجهاز المناسب',
+      'التواصل مع مختص قبل شراء جهاز CPAP',
+      'مساعدة في اختيار جهاز التنفس المنزلي',
+      'طلب دعم لاختيار الماسك أو الجهاز'
+    ]
+  }
+];
 
 function loadEnv() {
   const env = {};
@@ -77,9 +136,47 @@ function seoScore(article) {
     !!article.medical_disclaimer,
     !!article.category,
     !!article.slug,
-    words >= 1200
+    words >= DEFAULT_MIN_WORDS
   ];
   return Math.round(checks.reduce((sum, ok) => sum + (ok ? 100 / checks.length : 0), 0));
+}
+
+function targetWords(env) {
+  const configured = Number(env.ARTICLE_TARGET_WORDS || env.BLOG_ARTICLE_TARGET_WORDS || DEFAULT_TARGET_WORDS);
+  return Number.isFinite(configured) ? Math.max(DEFAULT_MIN_WORDS, configured) : DEFAULT_TARGET_WORDS;
+}
+
+function minWords(env) {
+  const configured = Number(env.ARTICLE_MIN_WORDS || env.BLOG_ARTICLE_MIN_WORDS || DEFAULT_MIN_WORDS);
+  return Number.isFinite(configured) ? Math.max(1200, configured) : DEFAULT_MIN_WORDS;
+}
+
+function linkScoreForTopic(link, text) {
+  const source = String(text || '').toLowerCase();
+  let score = 0;
+  if (link.url.includes('cpap') && source.includes('cpap')) score += 3;
+  if (link.url.includes('bipap') && source.includes('bipap')) score += 3;
+  if (link.url.includes('sleep-apnea') && /انقطاع|الشخير|النفس|النوم/.test(source)) score += 3;
+  if (link.url.includes('cpap-masks') && /ماسك|قناع|تسريب|mask/.test(source)) score += 3;
+  if (link.url.includes('store') && /شراء|سعر|منتج|متجر|اختيار/.test(source)) score += 1;
+  if (link.url.includes('contact')) score += 1;
+  return score;
+}
+
+function pickAnchor(link, topic, index = 0) {
+  const strategy = INTERNAL_LINK_STRATEGY.find((item) => item.url === link.url);
+  if (!strategy) return link.anchor;
+  const offset = Math.abs(slugify(topic).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0));
+  return strategy.anchors[(offset + index) % strategy.anchors.length];
+}
+
+function isWeakAnchor(anchor = '') {
+  const value = String(anchor).trim();
+  return (
+    value.length < 13 ||
+    /^(صفحة|المتجر|تواصل معنا|اضغط هنا|اقرأ المزيد|خدمة العملاء)$/i.test(value) ||
+    /^صفحة\s+/i.test(value)
+  );
 }
 
 function deriveCategory(topic) {
@@ -123,20 +220,59 @@ function createdTodayCount(articles, cairoDate) {
 }
 
 function ensureInternalLinks(article, siteData) {
-  const links = Array.isArray(article.internal_links) ? article.internal_links.filter((item) => item?.anchor && item?.url) : [];
-  if (links.length >= 3) return links.slice(0, 5);
-  const additions = siteData.core_links.filter((link) => !links.some((item) => item.url === link.url));
-  return [...links, ...additions].slice(0, 5);
+  const topicText = `${article.title_ar || ''} ${article.excerpt || ''} ${article.category || ''}`;
+  const existing = Array.isArray(article.internal_links) ? article.internal_links.filter((item) => item?.url) : [];
+  const byUrl = new Map();
+  for (const item of existing) {
+    const core = siteData.core_links.find((link) => link.url === item.url);
+    const anchor = !isWeakAnchor(item.anchor) ? item.anchor : pickAnchor(core || item, topicText, byUrl.size);
+    byUrl.set(item.url, { anchor, url: item.url });
+  }
+  const rankedCore = [...siteData.core_links].sort((a, b) => linkScoreForTopic(b, topicText) - linkScoreForTopic(a, topicText));
+  for (const link of rankedCore) {
+    if (!byUrl.has(link.url)) {
+      byUrl.set(link.url, { anchor: pickAnchor(link, topicText, byUrl.size), url: link.url });
+    }
+  }
+  return [...byUrl.values()].slice(0, 6);
 }
 
 function autoLinkMarkdown(markdown = '', links = []) {
-  let updated = String(markdown || '');
+  let updated = String(markdown || '').replace(/\[\[([^\]]+)\]\((\/[^)]+)\)\]\(https:\/\/respira-tech\.com\/?[^)]*\)/g, '[$1]($2)');
+  const missingLinks = [];
   for (const link of links) {
     if (!link?.anchor || !link?.url) continue;
-    if (updated.includes(`](${link.url})`)) continue;
+    const urlPattern = link.url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const existingLinkRegex = new RegExp(`\\[([^\\]]+)\\]\\((?:https://respira-tech\\.com)?${urlPattern}\\)`, 'i');
+    const existingMatch = updated.match(existingLinkRegex);
+    if (existingMatch) {
+      if (isWeakAnchor(existingMatch[1])) {
+        updated = updated.replace(existingLinkRegex, `[${link.anchor}](${link.url})`);
+      }
+      continue;
+    }
     const escaped = link.anchor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(escaped, 'i');
-    updated = updated.replace(regex, `[${link.anchor}](${link.url})`);
+    if (regex.test(updated)) {
+      updated = updated.replace(regex, `[${link.anchor}](${link.url})`);
+      continue;
+    }
+    missingLinks.push(link);
+  }
+  if (missingLinks.length && !updated.includes('## روابط تساعدك على الخطوة التالية')) {
+    const lines = [
+      '',
+      '## روابط تساعدك على الخطوة التالية',
+      '',
+      ...missingLinks.slice(0, 6).map((link) => `- [${link.anchor}](${link.url})`)
+    ];
+    const insertion = `\n${lines.join('\n')}\n`;
+    const ctaIndex = updated.search(/\n##\s+(الخلاصة|هل تحتاج|تواصل|CTA|دعوة)/i);
+    if (ctaIndex > -1) {
+      updated = `${updated.slice(0, ctaIndex).trimEnd()}${insertion}\n${updated.slice(ctaIndex).trimStart()}`;
+    } else {
+      updated = `${updated.trimEnd()}${insertion}`;
+    }
   }
   return updated;
 }
@@ -152,9 +288,11 @@ function fallbackArticle(topic, siteData, nowIso) {
 
 هذا المقال يشرح الموضوع بلغة عربية واضحة وطبيعية، كما لو أن مختصًا يكتبه يدويًا للقارئ العربي الذي يبحث عن فهم أفضل قبل اتخاذ قرار يتعلق بالنوم أو أجهزة الدعم التنفسي المنزلي.
 
-## مقدمة
+## مقدمة: لماذا يحتاج القارئ إلى دليل مفصل؟
 
 يبحث كثير من الأشخاص عن معلومات حول اضطرابات النوم أو أجهزة العلاج التنفسي المنزلي، لكن المشكلة ليست فقط في كثرة المعلومات، بل في أن جزءًا كبيرًا منها إما مبالغ فيه أو غير واضح. لهذا نحاول هنا تقديم شرح منظم ومسؤول يساعدك على فهم الفكرة الأساسية، ومتى يكون من المناسب طلب تقييم متخصص.
+
+في الموضوعات المرتبطة بالتنفس أثناء النوم، التفاصيل الصغيرة قد تصنع فرقًا كبيرًا: نوع الأعراض، وقت ظهورها، طريقة النوم، وجود انسداد بالأنف، مستوى الراحة مع الماسك، ومدى الالتزام اليومي باستخدام الجهاز. لذلك لا يكفي أن تعرف اسم الجهاز فقط، بل تحتاج أن تفهم الصورة كاملة بطريقة عملية وهادئة.
 
 ## لماذا يهم هذا الموضوع؟
 
@@ -163,6 +301,18 @@ function fallbackArticle(topic, siteData, nowIso) {
 ## شرح مبسط
 
 في كثير من الحالات، يكون الهدف هو تحسين جودة النوم وتقليل الاضطرابات التي تؤثر على التنفس أثناء الليل. وقد يعتمد ذلك على تقييم الأعراض، ونتائج الفحص أو دراسة النوم عند الحاجة، ثم اختيار الجهاز أو الماسك المناسب بناءً على توصية الطبيب وطبيعة الاستخدام اليومي في المنزل.
+
+## كيف تفكر في القرار بطريقة صحيحة؟
+
+قبل الشراء أو تغيير الجهاز أو الماسك، اسأل نفسك عدة أسئلة: هل المشكلة في التشخيص نفسه أم في الراحة أثناء الاستخدام؟ هل الضغط مزعج؟ هل يوجد تسريب هواء؟ هل تستيقظ بفم جاف؟ هل تستخدم الجهاز عدد ساعات كافيًا؟ الإجابة على هذه الأسئلة تساعد المختص على توجيهك بشكل أدق.
+
+## أخطاء شائعة يجب تجنبها
+
+- الاعتماد على تجربة شخص آخر بدون تقييم حالتك.
+- شراء ماسك بناءً على الشكل فقط دون تجربة المقاس.
+- إيقاف استخدام الجهاز عند أول شعور بعدم الراحة.
+- تجاهل تسريب الهواء أو جفاف الأنف والفم.
+- اعتبار المقالات التعليمية بديلًا عن الطبيب أو دراسة النوم.
 
 ### دور الجهاز أو الماسك
 
@@ -230,6 +380,8 @@ async function generateWithOpenAI({ topic, env, siteData }) {
   if (!env.OPENAI_API_KEY) return null;
 
   const systemPrompt = 'You are an expert Arabic SEO medical content writer for a respiratory therapy company. Write accurate, clear, responsible Arabic content about sleep apnea, CPAP, BiPAP, respiratory therapy, and home breathing support. The content must be educational, trustworthy, and conversion-focused without making unsafe medical claims. Do not diagnose. Do not prescribe treatment. Encourage the reader to consult a doctor or specialist. Use simple Arabic suitable for Egypt and Arabic-speaking audiences. Write naturally so the article feels manually written by a skilled Arabic human editor, with varied sentence structure and no robotic repetition.';
+  const desiredWords = targetWords(env);
+  const requiredWords = minWords(env);
   const schema = {
     type: 'object',
     additionalProperties: false,
@@ -282,6 +434,7 @@ async function generateWithOpenAI({ topic, env, siteData }) {
     body: JSON.stringify({
       model: env.OPENAI_TEXT_MODEL || 'gpt-4.1',
       temperature: 0.75,
+      max_tokens: 6500,
       response_format: {
         type: 'json_schema',
         json_schema: {
@@ -297,17 +450,21 @@ async function generateWithOpenAI({ topic, env, siteData }) {
           content: `اكتب مقالاً عربيًا احترافيًا عن هذا الموضوع: ${topic}
 
 القواعد:
-- المقال لا يقل عن 1200 كلمة عربية.
+- المقال لا يقل عن ${requiredWords} كلمة عربية، والهدف المثالي حوالي ${desiredWords} كلمة.
 - يجب أن يبدو كأنه مكتوب يدويًا بواسطة محرر عربي محترف، وليس نصًا آليًا.
+- لا تختصر: كل H2 يجب أن يحتوي شرحًا فعليًا من 2 إلى 4 فقرات، وليس فقرة واحدة سطحية.
 - استخدم H1 مرة واحدة فقط.
 - استخدم H2 و H3 بشكل منظم.
 - أضف مقدمة واضحة.
 - أضف قسمًا للأعراض عندما يكون ذلك مناسبًا.
 - أضف شرحًا عمليًا.
+- أضف قسمًا للأخطاء الشائعة وقسمًا للخطوات العملية أو جدول مقارنة Markdown عندما يناسب الموضوع.
 - أضف قسم: متى تطلب المساعدة؟
 - أضف FAQ.
 - أضف CTA نهائي.
-- استخدم 3 إلى 5 روابط داخلية طبيعية من هذه الروابط فقط: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
+- استخدم 4 إلى 6 روابط داخلية طبيعية من هذه الروابط فقط: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
+- لا تستخدم أنكور عام مثل "اضغط هنا" أو "المتجر" أو "تواصل معنا" وحده. استخدم عبارات وصفية طويلة مثل "اختيار ماسك CPAP المناسب" أو "أعراض انقطاع النفس أثناء النوم".
+- وزع الروابط داخل الفقرات في أماكن منطقية، وليس كلها في آخر المقال.
 - لا تكرر الكلمات المفتاحية بشكل مصطنع.
 - لا تقل علاج مضمون أو شفاء مضمون.
 - اذكر Respira Tech بشكل طبيعي 2 أو 3 مرات فقط.
