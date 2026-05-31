@@ -12,10 +12,17 @@ jobs:
     steps:
       - name: Generate and publish daily blog article
         run: |
-          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/cron/generate-blog" \
-            -H "Authorization: Bearer ${{ secrets.RESPIRATECH_CRON_SECRET }}"
+          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/blog/generate" \
+            -H "Content-Type: application/json" \
+            -H "X-Admin-Password: ${{ secrets.RESPIRATECH_ADMIN_PASSWORD }}" \
+            --data '{"count":1,"publish_now":true}'
+
+      - name: Wait for generation thread
+        run: sleep 180
 
       - name: Run SEO Brain
         run: |
-          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/cron/seo-brain" \
-            -H "Authorization: Bearer ${{ secrets.RESPIRATECH_CRON_SECRET }}"
+          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/seo/brain" \
+            -H "Content-Type: application/json" \
+            -H "X-Admin-Password: ${{ secrets.RESPIRATECH_ADMIN_PASSWORD }}" \
+            --data '{"action":"full_run"}'
