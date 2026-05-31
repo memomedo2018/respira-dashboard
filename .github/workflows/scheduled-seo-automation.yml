@@ -1,0 +1,21 @@
+name: Scheduled SEO Automation
+
+on:
+  schedule:
+    # 09:00 Africa/Cairo during daylight saving time.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate and publish daily blog article
+        run: |
+          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/cron/generate-blog" \
+            -H "Authorization: Bearer ${{ secrets.RESPIRATECH_CRON_SECRET }}"
+
+      - name: Run SEO Brain
+        run: |
+          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/cron/seo-brain" \
+            -H "Authorization: Bearer ${{ secrets.RESPIRATECH_CRON_SECRET }}"

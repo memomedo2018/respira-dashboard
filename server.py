@@ -18,6 +18,7 @@ from urllib.parse import parse_qs, quote, unquote, urlparse
 import seo_brain
 
 BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_HOSTINGER_REMOTE_DIR = "domains/respira-tech.com/public_html"
 STORE_FILE = BASE_DIR / "data" / "store.json"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
@@ -561,6 +562,13 @@ def ftp_deploy_enabled(env: dict[str, str]) -> bool:
     )
 
 
+def safe_hostinger_remote_dir(value: str | None) -> str:
+    remote_root = (value or "").strip().strip("/")
+    if not remote_root or remote_root == "public_html":
+        return DEFAULT_HOSTINGER_REMOTE_DIR
+    return remote_root
+
+
 def sftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
     """Deploy via SFTP (SSH port 65002) — more reliable than FTP from cloud IPs.
 
@@ -655,7 +663,7 @@ def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
     server = env["SHARED_HOSTING_FTP_SERVER"].strip()
     user = env["SHARED_HOSTING_FTP_USERNAME"].strip()
     password = env["SHARED_HOSTING_FTP_PASSWORD"].strip()
-    remote_root = (env.get("SHARED_HOSTING_FTP_REMOTE_DIR") or "public_html").strip()
+    remote_root = safe_hostinger_remote_dir(env.get("SHARED_HOSTING_FTP_REMOTE_DIR"))
 
     source = release_dir or (BASE_DIR / "رفع-اللايف")
     if not source.exists():
@@ -809,7 +817,7 @@ def dashboard_config() -> dict:
             "ftp_server": env.get("SHARED_HOSTING_FTP_SERVER", ""),
             "ftp_username": env.get("SHARED_HOSTING_FTP_USERNAME", ""),
             "ftp_password_set": bool(env.get("SHARED_HOSTING_FTP_PASSWORD")),
-            "ftp_remote_dir": env.get("SHARED_HOSTING_FTP_REMOTE_DIR", "public_html"),
+            "ftp_remote_dir": safe_hostinger_remote_dir(env.get("SHARED_HOSTING_FTP_REMOTE_DIR")),
             "ftp_deploy_configured": ftp_deploy_enabled(env),
         },
         "logs": read_blog_logs(),
@@ -1279,7 +1287,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": "unauthorized"}, 401)
             def _run_cron_generation():
                 try:
-                    run_blog_generator()
+                    run_blog_generator({"FORCE_PUBLISH": "true", "DAILY_BLOG_POSTS": "1"})
                     append_activity_log("cron_generate_blog")
                     result = deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
                     hostinger = result.get("hostinger", {})

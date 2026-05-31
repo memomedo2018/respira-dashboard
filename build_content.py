@@ -85,7 +85,7 @@ def sync_live_release() -> None:
             continue
         target = LIVE_RELEASE_DIR / source.name
         if source.is_dir():
-            shutil.copytree(source, target, dirs_exist_ok=True)
+            shutil.copytree(source, target, dirs_exist_ok=True, ignore=shutil.ignore_patterns("information.txt"))
         else:
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
