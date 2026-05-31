@@ -1,0 +1,202 @@
+[
+  {
+    "topic": "أفضل جهاز CPAP في مصر: كيف تختار الجهاز المناسب لحالتك؟",
+    "primary_keyword": "أفضل جهاز CPAP في مصر",
+    "secondary_keywords": ["جهاز CPAP للبيع", "سعر جهاز CPAP في مصر", "شراء جهاز CPAP", "أجهزة CPAP المنزلية"],
+    "intent": "commercial",
+    "cluster": "شراء أجهزة CPAP",
+    "priority": 100
+  },
+  {
+    "topic": "سعر جهاز CPAP في مصر: ما العوامل التي تحدد السعر قبل الشراء؟",
+    "primary_keyword": "سعر جهاز CPAP في مصر",
+    "secondary_keywords": ["كم سعر جهاز CPAP", "جهاز CPAP للبيع", "أفضل جهاز CPAP", "شراء CPAP"],
+    "intent": "commercial",
+    "cluster": "شراء أجهزة CPAP",
+    "priority": 99
+  },
+  {
+    "topic": "جهاز CPAP للبيع: أسئلة مهمة قبل شراء جهاز التنفس المنزلي",
+    "primary_keyword": "جهاز CPAP للبيع",
+    "secondary_keywords": ["شراء جهاز CPAP", "أفضل جهاز CPAP", "جهاز تنفس للنوم", "CPAP مصر"],
+    "intent": "transactional",
+    "cluster": "شراء أجهزة CPAP",
+    "priority": 98
+  },
+  {
+    "topic": "أفضل ماسك CPAP في مصر: كيف تختار النوع والمقاس المناسب؟",
+    "primary_keyword": "أفضل ماسك CPAP في مصر",
+    "secondary_keywords": ["ماسك CPAP", "أنواع ماسكات CPAP", "مقاس ماسك CPAP", "تسريب ماسك CPAP"],
+    "intent": "commercial",
+    "cluster": "ماسكات CPAP",
+    "priority": 97
+  },
+  {
+    "topic": "سعر ماسك CPAP في مصر: كيف تختار بدون ما تدفع في نوع غير مناسب؟",
+    "primary_keyword": "سعر ماسك CPAP في مصر",
+    "secondary_keywords": ["ماسك CPAP للبيع", "قناع CPAP", "Full Face Mask CPAP", "Nasal Mask CPAP"],
+    "intent": "commercial",
+    "cluster": "ماسكات CPAP",
+    "priority": 96
+  },
+  {
+    "topic": "أسباب جفاف الفم مع جهاز CPAP وكيف تقلل المشكلة أثناء النوم",
+    "primary_keyword": "جفاف الفم مع جهاز CPAP",
+    "secondary_keywords": ["CPAP يسبب جفاف الفم", "ماسك CPAP وتسريب الهواء", "ترطيب جهاز CPAP", "التنفس من الفم أثناء CPAP"],
+    "intent": "problem-solving",
+    "cluster": "مشاكل استخدام CPAP",
+    "priority": 95
+  },
+  {
+    "topic": "تسريب الهواء من ماسك CPAP: الأسباب والحلول قبل تغيير القناع",
+    "primary_keyword": "تسريب الهواء من ماسك CPAP",
+    "secondary_keywords": ["حل تسريب ماسك CPAP", "ماسك CPAP غير محكم", "جفاف العين مع CPAP", "اختيار ماسك CPAP"],
+    "intent": "problem-solving",
+    "cluster": "مشاكل الماسك",
+    "priority": 94
+  },
+  {
+    "topic": "ضغط جهاز CPAP عالي أو مزعج: ماذا تفعل ومتى تراجع المختص؟",
+    "primary_keyword": "ضغط جهاز CPAP عالي",
+    "secondary_keywords": ["ضغط CPAP غير مناسب", "اختناق من جهاز CPAP", "صعوبة التنفس مع CPAP", "ضبط ضغط جهاز CPAP"],
+    "intent": "problem-solving",
+    "cluster": "مشاكل استخدام CPAP",
+    "priority": 93
+  },
+  {
+    "topic": "لا أستطيع النوم بجهاز CPAP: خطوات عملية للتعود على الجهاز",
+    "primary_keyword": "لا أستطيع النوم بجهاز CPAP",
+    "secondary_keywords": ["التعود على جهاز CPAP", "جهاز CPAP مزعج", "الخوف من ماسك CPAP", "النوم بماسك CPAP"],
+    "intent": "problem-solving",
+    "cluster": "التعود على CPAP",
+    "priority": 92
+  },
+  {
+    "topic": "الفرق بين Auto CPAP و Fixed CPAP: أيهما أنسب لمريض انقطاع النفس؟",
+    "primary_keyword": "الفرق بين Auto CPAP و Fixed CPAP",
+    "secondary_keywords": ["Auto CPAP", "Fixed CPAP", "جهاز CPAP أوتوماتيك", "أفضل نوع CPAP"],
+    "intent": "comparison",
+    "cluster": "مقارنات CPAP",
+    "priority": 91
+  },
+  {
+    "topic": "الفرق بين CPAP و APAP و BiPAP: دليل مبسط قبل اختيار الجهاز",
+    "primary_keyword": "الفرق بين CPAP و APAP و BiPAP",
+    "secondary_keywords": ["CPAP vs BiPAP", "APAP", "BiPAP", "اختيار جهاز تنفس للنوم"],
+    "intent": "comparison",
+    "cluster": "مقارنات الأجهزة",
+    "priority": 90
+  },
+  {
+    "topic": "متى تحتاج جهاز BiPAP بدل CPAP؟ علامات وأسئلة يجب مناقشتها مع الطبيب",
+    "primary_keyword": "متى تحتاج جهاز BiPAP",
+    "secondary_keywords": ["BiPAP بدل CPAP", "جهاز BiPAP للحالات الصعبة", "الفرق بين CPAP و BiPAP", "سعر جهاز BiPAP"],
+    "intent": "informational-commercial",
+    "cluster": "أجهزة BiPAP",
+    "priority": 89
+  },
+  {
+    "topic": "سعر جهاز BiPAP في مصر: لماذا يختلف عن CPAP وما الذي يجب مراجعته؟",
+    "primary_keyword": "سعر جهاز BiPAP في مصر",
+    "secondary_keywords": ["جهاز BiPAP للبيع", "أفضل جهاز BiPAP", "BiPAP مصر", "CPAP أو BiPAP"],
+    "intent": "commercial",
+    "cluster": "أجهزة BiPAP",
+    "priority": 88
+  },
+  {
+    "topic": "أعراض انقطاع النفس أثناء النوم عند الكبار: متى تحتاج فحص نوم؟",
+    "primary_keyword": "أعراض انقطاع النفس أثناء النوم",
+    "secondary_keywords": ["الشخير وانقطاع النفس", "الاختناق أثناء النوم", "النعاس أثناء النهار", "فحص النوم"],
+    "intent": "informational",
+    "cluster": "انقطاع النفس أثناء النوم",
+    "priority": 87
+  },
+  {
+    "topic": "الاستيقاظ من النوم مع اختناق أو كتمة: الأسباب المحتملة والخطوة الصحيحة",
+    "primary_keyword": "الاستيقاظ من النوم مع اختناق",
+    "secondary_keywords": ["كتمة أثناء النوم", "اختناق أثناء النوم", "انقطاع النفس أثناء النوم", "الشخير الشديد"],
+    "intent": "symptom",
+    "cluster": "أعراض النوم",
+    "priority": 86
+  },
+  {
+    "topic": "الشخير العالي مع تعب الصباح: هل يمكن أن يكون انقطاع نفس أثناء النوم؟",
+    "primary_keyword": "الشخير العالي مع تعب الصباح",
+    "secondary_keywords": ["الشخير وانقطاع النفس", "التعب بعد النوم", "صداع صباحي", "فحص اضطرابات النوم"],
+    "intent": "symptom",
+    "cluster": "أعراض النوم",
+    "priority": 85
+  },
+  {
+    "topic": "صداع الصباح والنعاس أثناء النهار: علاقة الأعراض بانقطاع النفس أثناء النوم",
+    "primary_keyword": "صداع الصباح والنعاس أثناء النهار",
+    "secondary_keywords": ["صداع بسبب انقطاع النفس", "النعاس أثناء النهار", "انقطاع النفس أثناء النوم", "اضطرابات النوم"],
+    "intent": "symptom",
+    "cluster": "أعراض النوم",
+    "priority": 84
+  },
+  {
+    "topic": "تنظيف جهاز CPAP يوميًا وأسبوعيًا: جدول عملي يحافظ على الجهاز والماسك",
+    "primary_keyword": "تنظيف جهاز CPAP",
+    "secondary_keywords": ["طريقة تنظيف ماسك CPAP", "تنظيف خرطوم CPAP", "فلتر جهاز CPAP", "صيانة جهاز CPAP"],
+    "intent": "how-to",
+    "cluster": "العناية والصيانة",
+    "priority": 83
+  },
+  {
+    "topic": "فلتر جهاز CPAP: متى يتغير وما علامات انسداده؟",
+    "primary_keyword": "فلتر جهاز CPAP",
+    "secondary_keywords": ["تغيير فلتر CPAP", "صيانة جهاز CPAP", "تنظيف جهاز CPAP", "ضعف هواء CPAP"],
+    "intent": "how-to",
+    "cluster": "العناية والصيانة",
+    "priority": 82
+  },
+  {
+    "topic": "هل يمكن استخدام CPAP مع انسداد الأنف؟ نصائح مهمة قبل تغيير الجهاز",
+    "primary_keyword": "استخدام CPAP مع انسداد الأنف",
+    "secondary_keywords": ["انسداد الأنف مع CPAP", "جفاف الأنف مع CPAP", "ماسك أنف أم وجه كامل", "ترطيب CPAP"],
+    "intent": "problem-solving",
+    "cluster": "مشاكل استخدام CPAP",
+    "priority": 81
+  },
+  {
+    "topic": "Full Face Mask أم Nasal Mask: أي ماسك CPAP أفضل لمن يتنفس من الفم؟",
+    "primary_keyword": "Full Face Mask أم Nasal Mask",
+    "secondary_keywords": ["ماسك CPAP للوجه الكامل", "ماسك أنف CPAP", "التنفس من الفم مع CPAP", "أنواع ماسكات CPAP"],
+    "intent": "comparison",
+    "cluster": "ماسكات CPAP",
+    "priority": 80
+  },
+  {
+    "topic": "أفضل وضعية نوم لمريض انقطاع النفس أثناء النوم ومستخدم جهاز CPAP",
+    "primary_keyword": "أفضل وضعية نوم لانقطاع النفس أثناء النوم",
+    "secondary_keywords": ["النوم على الظهر وانقطاع النفس", "النوم على الجنب", "CPAP ووضعية النوم", "الشخير أثناء النوم"],
+    "intent": "informational",
+    "cluster": "نصائح النوم",
+    "priority": 79
+  },
+  {
+    "topic": "هل جهاز CPAP يقلل الشخير؟ الفرق بين علاج الشخير وعلاج انقطاع النفس",
+    "primary_keyword": "هل جهاز CPAP يقلل الشخير",
+    "secondary_keywords": ["علاج الشخير بجهاز CPAP", "الشخير وانقطاع النفس", "CPAP للشخير", "أسباب الشخير"],
+    "intent": "informational-commercial",
+    "cluster": "الشخير",
+    "priority": 78
+  },
+  {
+    "topic": "تقرير دراسة النوم: كيف تقرأ AHI وضغط الجهاز قبل شراء CPAP؟",
+    "primary_keyword": "تقرير دراسة النوم AHI",
+    "secondary_keywords": ["قراءة تقرير النوم", "AHI", "ضغط جهاز CPAP", "فحص النوم"],
+    "intent": "informational",
+    "cluster": "فحص النوم",
+    "priority": 77
+  },
+  {
+    "topic": "شراء جهاز CPAP مستعمل: المخاطر والأسئلة التي يجب طرحها قبل القرار",
+    "primary_keyword": "شراء جهاز CPAP مستعمل",
+    "secondary_keywords": ["جهاز CPAP مستعمل", "هل أشتري CPAP مستعمل", "صيانة CPAP", "فلتر CPAP"],
+    "intent": "commercial",
+    "cluster": "شراء أجهزة CPAP",
+    "priority": 76
+  }
+]

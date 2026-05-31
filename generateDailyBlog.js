@@ -6,6 +6,7 @@ import { execFileSync } from 'child_process';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 const TOPICS_FILE = path.join(ROOT, 'data', 'blog_topics.json');
+const KEYWORD_PLAN_FILE = path.join(ROOT, 'data', 'blog_keyword_plan.json');
 const ARTICLES_DIR = path.join(ROOT, 'data', 'blog_articles');
 const SITE_FILE = path.join(ROOT, 'data', 'site.json');
 const ENV_FILE = path.join(ROOT, '.env');
@@ -189,7 +190,31 @@ function deriveCategory(topic) {
   return 'نصائح الاستخدام والعناية';
 }
 
-function chooseTopics(topics, articles, generationLog, neededCount) {
+function normalizeTopicItem(item) {
+  if (typeof item === 'string') {
+    return {
+      topic: item,
+      primary_keyword: item,
+      intent: 'informational',
+      priority: 50,
+      cluster: deriveCategory(item)
+    };
+  }
+  return {
+    topic: String(item.topic || item.title || item.primary_keyword || '').trim(),
+    primary_keyword: String(item.primary_keyword || item.topic || '').trim(),
+    secondary_keywords: Array.isArray(item.secondary_keywords) ? item.secondary_keywords : [],
+    intent: String(item.intent || 'informational').trim(),
+    priority: Number.isFinite(Number(item.priority)) ? Number(item.priority) : 50,
+    cluster: String(item.cluster || '').trim()
+  };
+}
+
+function topicKey(item) {
+  return slugify(item.topic || item.primary_keyword || '');
+}
+
+function chooseTopics(topicItems, articles, generationLog, neededCount) {
   const usedTitles = new Set(articles.map((a) => a.title_ar));
   const usedSlugs  = new Set(articles.map((a) => a.slug).filter(Boolean));
   // Also track topics that were already attempted via generation log
@@ -202,14 +227,17 @@ function chooseTopics(topics, articles, generationLog, neededCount) {
       }
     }
   }
-  const available = topics.filter(
-    (topic) => !usedTitles.has(topic) && !usedSlugs.has(slugify(topic)) && !usedTopics.has(topic)
+  const normalized = topicItems.map(normalizeTopicItem).filter((item) => item.topic);
+  const deduped = [...new Map(normalized.map((item) => [topicKey(item), item])).values()]
+    .sort((a, b) => b.priority - a.priority);
+  const available = deduped.filter(
+    (item) => !usedTitles.has(item.topic) && !usedSlugs.has(topicKey(item)) && !usedTopics.has(item.topic)
   );
   if (available.length >= neededCount) return available.slice(0, neededCount);
   // Fall back: at least avoid slug collisions
-  const noSlugCollision = topics.filter((t) => !usedSlugs.has(slugify(t)) && !usedTopics.has(t));
-  const pool = noSlugCollision.length ? noSlugCollision : topics.filter((t) => !usedTopics.has(t));
-  return (pool.length ? pool : topics).slice(0, neededCount);
+  const noSlugCollision = deduped.filter((item) => !usedSlugs.has(topicKey(item)) && !usedTopics.has(item.topic));
+  const pool = noSlugCollision.length ? noSlugCollision : deduped.filter((item) => !usedTopics.has(item.topic));
+  return (pool.length ? pool : deduped).slice(0, neededCount);
 }
 
 function createdTodayCount(articles, cairoDate) {
@@ -376,8 +404,12 @@ function fallbackArticle(topic, siteData, nowIso) {
   };
 }
 
-async function generateWithOpenAI({ topic, env, siteData }) {
+async function generateWithOpenAI({ topicItem, env, siteData }) {
   if (!env.OPENAI_API_KEY) return null;
+  const topic = topicItem.topic;
+  const primaryKeyword = topicItem.primary_keyword || topic;
+  const secondaryKeywords = Array.isArray(topicItem.secondary_keywords) ? topicItem.secondary_keywords : [];
+  const searchIntent = topicItem.intent || 'informational';
 
   const systemPrompt = 'You are an expert Arabic SEO medical content writer for a respiratory therapy company. Write accurate, clear, responsible Arabic content about sleep apnea, CPAP, BiPAP, respiratory therapy, and home breathing support. The content must be educational, trustworthy, and conversion-focused without making unsafe medical claims. Do not diagnose. Do not prescribe treatment. Encourage the reader to consult a doctor or specialist. Use simple Arabic suitable for Egypt and Arabic-speaking audiences. Write naturally so the article feels manually written by a skilled Arabic human editor, with varied sentence structure and no robotic repetition.';
   const desiredWords = targetWords(env);
@@ -449,6 +481,11 @@ async function generateWithOpenAI({ topic, env, siteData }) {
           role: 'user',
           content: `اكتب مقالاً عربيًا احترافيًا عن هذا الموضوع: ${topic}
 
+بيانات السيو:
+- الكلمة المفتاحية الأساسية: ${primaryKeyword}
+- نية البحث: ${searchIntent}
+- كلمات ثانوية داعمة: ${secondaryKeywords.join('، ') || 'غير محدد'}
+
 القواعد:
 - المقال لا يقل عن ${requiredWords} كلمة عربية، والهدف المثالي حوالي ${desiredWords} كلمة.
 - يجب أن يبدو كأنه مكتوب يدويًا بواسطة محرر عربي محترف، وليس نصًا آليًا.
@@ -466,6 +503,8 @@ async function generateWithOpenAI({ topic, env, siteData }) {
 - لا تستخدم أنكور عام مثل "اضغط هنا" أو "المتجر" أو "تواصل معنا" وحده. استخدم عبارات وصفية طويلة مثل "اختيار ماسك CPAP المناسب" أو "أعراض انقطاع النفس أثناء النوم".
 - وزع الروابط داخل الفقرات في أماكن منطقية، وليس كلها في آخر المقال.
 - لا تكرر الكلمات المفتاحية بشكل مصطنع.
+- استخدم الكلمة المفتاحية الأساسية في H1 وفي المقدمة وفي Meta description بشكل طبيعي.
+- ابنِ المقال حول نية البحث المحددة: لو النية شراء/مقارنة فركز على الاختيار والمعايير، ولو مشكلة فركز على السبب والحل، ولو أعراض فركز على متى يراجع الطبيب.
 - لا تقل علاج مضمون أو شفاء مضمون.
 - اذكر Respira Tech بشكل طبيعي 2 أو 3 مرات فقط.
 - اختم بزر واتساب.
@@ -565,10 +604,11 @@ async function generateFeaturedImage({ article, env }) {
   throw new Error(lastError || 'OpenAI image error: no available image model');
 }
 
-async function buildArticle(topic, env, siteData) {
+async function buildArticle(topicItem, env, siteData) {
+  const topic = topicItem.topic || String(topicItem);
   let article = null;
   try {
-    article = await generateWithOpenAI({ topic, env, siteData });
+    article = await generateWithOpenAI({ topicItem: normalizeTopicItem(topicItem), env, siteData });
   } catch (error) {
     appendLog({
       type: 'openai_text_error',
@@ -622,6 +662,11 @@ async function main() {
   const env = loadEnv();
   const siteData = readJson(SITE_FILE);
   const topics = readJson(TOPICS_FILE, []);
+  const keywordPlan = readJson(KEYWORD_PLAN_FILE, []);
+  const topicItems = [
+    ...(Array.isArray(keywordPlan) ? keywordPlan : []),
+    ...(Array.isArray(topics) ? topics : [])
+  ];
   const generationLog = readJson(LOG_FILE, []);
   const articleFiles = fs.existsSync(ARTICLES_DIR) ? fs.readdirSync(ARTICLES_DIR).filter((name) => name.endsWith('.json')) : [];
   const articles = articleFiles.map((name) => readJson(path.join(ARTICLES_DIR, name), {})).filter(Boolean);
@@ -643,7 +688,7 @@ async function main() {
     return;
   }
 
-  const selectedTopics = chooseTopics(topics, articles, generationLog, remaining);
+  const selectedTopics = chooseTopics(topicItems, articles, generationLog, remaining);
   if (!selectedTopics.length) {
     appendLog({
       type: 'skipped',
@@ -655,12 +700,14 @@ async function main() {
   }
 
   const generated = [];
-  for (const topic of selectedTopics) {
-    const article = await buildArticle(topic, env, siteData);
+  for (const topicItem of selectedTopics) {
+    const article = await buildArticle(topicItem, env, siteData);
     const filePath = path.join(ARTICLES_DIR, `${article.slug}.json`);
     writeJson(filePath, article);
     generated.push({
-      topic,
+      topic: topicItem.topic,
+      primary_keyword: topicItem.primary_keyword,
+      intent: topicItem.intent,
       slug: article.slug,
       status: article.status,
       featured_image: article.featured_image
