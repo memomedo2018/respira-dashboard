@@ -1,21 +1,21 @@
 {
-  "created_at": "2026-05-02T22:50:10.340090",
+  "created_at": "2026-05-31T21:01:26.984962",
   "site_base_url": "https://respira-tech.com",
   "pages": [
     {
       "url": "https://respira-tech.com/",
       "status": 200,
-      "load_ms": 511,
-      "html_kb": 0.4,
+      "load_ms": 549,
+      "html_kb": 30.0,
       "has_title": true,
-      "has_meta_description": false,
+      "has_meta_description": true,
       "has_canonical": false,
-      "h1_count": 0
+      "h1_count": 1
     },
     {
       "url": "https://respira-tech.com/store/",
       "status": 200,
-      "load_ms": 525,
+      "load_ms": 519,
       "html_kb": 38.1,
       "has_title": true,
       "has_meta_description": true,
@@ -25,7 +25,7 @@
     {
       "url": "https://respira-tech.com/blog/",
       "status": 200,
-      "load_ms": 495,
+      "load_ms": 503,
       "html_kb": 26.7,
       "has_title": true,
       "has_meta_description": true,
@@ -35,7 +35,7 @@
     {
       "url": "https://respira-tech.com/services/",
       "status": 200,
-      "load_ms": 478,
+      "load_ms": 508,
       "html_kb": 16.6,
       "has_title": true,
       "has_meta_description": true,
@@ -45,7 +45,7 @@
     {
       "url": "https://respira-tech.com/contact/",
       "status": 200,
-      "load_ms": 494,
+      "load_ms": 500,
       "html_kb": 16.2,
       "has_title": true,
       "has_meta_description": true,
@@ -54,72 +54,11 @@
     }
   ],
   "content": {
-    "articles_total": 21,
-    "published_total": 8,
-    "draft_total": 13,
+    "articles_total": 23,
+    "published_total": 9,
+    "draft_total": 14,
     "logo_featured_images": [],
-    "low_score_articles": [
-      {
-        "slug": "cpap-daily-usage-hours-guide",
-        "title": "كم ساعة يجب استخدام جهاز CPAP يوميًا؟ الدليل الشامل لمستخدمي أجهزة التنفس المنزلي",
-        "seo_score": 83
-      },
-      {
-        "slug": "cpap-mask-air-leakage-causes-solutions",
-        "title": "أسباب تسريب الهواء من ماسك جهاز CPAP وكيفية التعامل معها",
-        "seo_score": 75
-      },
-      {
-        "slug": "choose-right-cpap-mask",
-        "title": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمرضى",
-        "seo_score": 83
-      },
-      {
-        "slug": "choose-best-cpap-mask",
-        "title": "كيف تختار ماسك جهاز CPAP المناسب؟ دليلك الشامل للراحة والتنفس السليم",
-        "seo_score": 75
-      },
-      {
-        "slug": "full-face-vs-nasal-mask",
-        "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
-        "seo_score": 83
-      },
-      {
-        "slug": "choose-cpap-mask-guide",
-        "title": "كيف تختار ماسك CPAP المناسب؟ دليلك الكامل لاختيار القناع الأفضل لجهاز التنفس الليلي",
-        "seo_score": 83
-      },
-      {
-        "slug": "cpap-sleep-comfort-egypt",
-        "title": "هل جهاز CPAP مزعج أثناء النوم؟",
-        "seo_score": 75
-      },
-      {
-        "slug": "cpap-sleep-comfort",
-        "title": "هل جهاز CPAP مزعج أثناء النوم؟  حقائق ونصائح وتجارب واقعية",
-        "seo_score": 83
-      },
-      {
-        "slug": "cpap-during-sleep-comfort",
-        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل كامل لفهم التجربة وطرق التكيف",
-        "seo_score": 83
-      },
-      {
-        "slug": "cpap-discomfort-during-sleep",
-        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
-        "seo_score": 83
-      },
-      {
-        "slug": "sleep-apnea-headache-relationship",
-        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
-        "seo_score": 83
-      },
-      {
-        "slug": "sleep-apnea-morning-headache-relationship",
-        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي: فهم الأسباب والحلول العملية",
-        "seo_score": 75
-      }
-    ],
+    "low_score_articles": [],
     "missing_internal_links": []
   },
   "search_console": {
@@ -128,7 +67,6 @@
     "queries": []
   },
   "recommendations": [
-    "12 مقال يحتاج تحسين SEO score أو metadata.",
     "بعض الصفحات الأساسية تحتاج مراجعة structure أو availability."
   ]
 }

@@ -1,5 +1,44 @@
 [
   {
+    "type": "seo_brain_full_run",
+    "created_at": "2026-05-31T21:01:26.990061",
+    "updated_count": 21,
+    "recommendations_count": 1
+  },
+  {
+    "type": "seo_brain_audit",
+    "created_at": "2026-05-31T21:01:26.984962",
+    "recommendations_count": 1
+  },
+  {
+    "type": "seo_brain_refresh_links",
+    "created_at": "2026-05-31T21:01:24.388181",
+    "updated_count": 21,
+    "updated_slugs": [
+      "cpap-daily-usage-hours-guide",
+      "cpap-cleaning-guide",
+      "cpap-mask-air-leakage-causes-solutions",
+      "choose-right-cpap-mask",
+      "choose-best-cpap-mask",
+      "full-face-vs-nasal-mask",
+      "choose-cpap-mask-guide",
+      "cpap-sleep-comfort-egypt",
+      "cpap-sleep-comfort",
+      "how-to-choose-right-cpap-mask",
+      "cpap-during-sleep-comfort",
+      "cpap-discomfort-during-sleep",
+      "sleep-apnea-headache-relationship",
+      "sleep-apnea-morning-headache-relationship",
+      "why-wake-up-tired-after-long-sleep",
+      "causes-sudden-waking-up-shortness-breath-sleep",
+      "sudden-awakening-choking-sleep-causes",
+      "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+      "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+      "difference-between-cpap-and-bipap",
+      "what-is-cpap-and-how-it-helps-sleep-apnea"
+    ]
+  },
+  {
     "type": "seo_brain_audit",
     "created_at": "2026-05-02T22:50:10.340090",
     "recommendations_count": 2

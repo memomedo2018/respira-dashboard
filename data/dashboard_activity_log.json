@@ -1,5 +1,10 @@
 [
   {
+    "action": "seo_full_run",
+    "status": "success",
+    "created_at": "2026-05-31T21:01:26.991417"
+  },
+  {
     "action": "dashboard_settings_update",
     "status": "success",
     "created_at": "2026-05-31T20:53:20.327522"
