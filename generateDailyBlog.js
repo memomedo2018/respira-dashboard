@@ -607,9 +607,11 @@ async function generateFeaturedImage({ article, env }) {
 async function buildArticle(topicItem, env, siteData) {
   const topic = topicItem.topic || String(topicItem);
   let article = null;
+  let textGenerationError = null;
   try {
     article = await generateWithOpenAI({ topicItem: normalizeTopicItem(topicItem), env, siteData });
   } catch (error) {
+    textGenerationError = error;
     appendLog({
       type: 'openai_text_error',
       topic,
@@ -619,6 +621,12 @@ async function buildArticle(topicItem, env, siteData) {
   }
 
   if (!article) {
+    const allowFallback = String(env.ALLOW_FALLBACK_ARTICLES || 'false').toLowerCase() === 'true';
+    const forcePublish = String(env.FORCE_PUBLISH || '').toLowerCase();
+    const wouldPublish = forcePublish === 'true' || (forcePublish !== 'false' && String(env.AUTO_PUBLISH_BLOGS).toLowerCase() === 'true');
+    if (wouldPublish && !allowFallback) {
+      throw new Error(`OpenAI article generation failed; refusing to publish fallback article. ${textGenerationError?.message || ''}`.trim());
+    }
     article = fallbackArticle(topic, siteData, new Date().toISOString());
   }
 
