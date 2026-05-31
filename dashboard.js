@@ -18,6 +18,15 @@ function adminPassword() {
   return '';
 }
 
+const API_ORIGIN = window.location.hostname === 'respira-tech.com'
+  ? 'https://perfect-art-production.up.railway.app'
+  : '';
+
+function apiUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_ORIGIN}${path}`;
+}
+
 async function adminApi(path, options = {}) {
   const password = adminPassword();
   const headers = {
@@ -25,7 +34,7 @@ async function adminApi(path, options = {}) {
     'X-Admin-Password': password,
     ...(options.headers || {})
   };
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch(apiUrl(path), { ...options, headers });
   if (response.status === 401) {
     window.localStorage.removeItem('respiratech_admin_password');
     throw new Error('كلمة المرور غير صحيحة');
@@ -38,7 +47,7 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
-  const response = await fetch(path, options);
+  const response = await fetch(apiUrl(path), options);
   if (!response.ok) throw new Error('تعذر تحميل البيانات');
   return response.json();
 }
@@ -337,7 +346,7 @@ async function uploadFiles(files) {
     filename: file.name,
     content: await readFileAsDataURL(file)
   })));
-  const response = await fetch('/api/upload', {
+  const response = await fetch(apiUrl('/api/upload'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ files: encodedFiles })
@@ -347,7 +356,7 @@ async function uploadFiles(files) {
 }
 
 async function saveStore() {
-  const response = await fetch('/api/store/save', {
+  const response = await fetch(apiUrl('/api/store/save'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -845,9 +854,10 @@ document.getElementById('uploadGscBtn').addEventListener('click', async () => {
 
 document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
   const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'https://respira-tech.com';
+  const normalizedSiteUrl = siteUrl.replace(/\/+$/, '');
   const response = await adminApi('/api/seo/gsc/submit-sitemap', {
     method: 'POST',
-    body: JSON.stringify({ site_url: siteUrl, sitemap_url: `${siteUrl.replace(/\\/$/, '')}/sitemap.xml` })
+    body: JSON.stringify({ site_url: normalizedSiteUrl, sitemap_url: `${normalizedSiteUrl}/sitemap.xml` })
   });
   await refreshDashboard();
   window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
