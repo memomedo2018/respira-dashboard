@@ -247,7 +247,15 @@ def get_published_articles() -> list[dict]:
         article["seo_score"] = seo_check(article)
         articles.append(article)
     articles.sort(key=lambda item: item.get("published_at") or item.get("created_at") or "", reverse=True)
-    return articles
+    deduped = []
+    seen_slugs: set[str] = set()
+    for article in articles:
+        slug = article.get("slug")
+        if not slug or slug in seen_slugs:
+            continue
+        seen_slugs.add(slug)
+        deduped.append(article)
+    return deduped
 
 
 def cleanup_generated_blog_dirs(articles: list[dict]) -> None:
