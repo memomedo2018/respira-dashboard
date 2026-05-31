@@ -864,15 +864,27 @@ class StoreHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(BASE_DIR), **kwargs)
 
+    def _send_cors_headers(self) -> None:
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Admin-Password, X-Cron-Secret")
+        self.send_header("Access-Control-Max-Age", "86400")
+
     def _send_json(self, payload: dict | list, status: int = 200) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self._send_cors_headers()
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self) -> None:
+        self.send_response(204)
+        self._send_cors_headers()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def _read_json_body(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
