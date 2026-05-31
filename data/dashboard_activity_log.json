@@ -1,5 +1,11 @@
 [
   {
+    "action": "seo_refresh_links",
+    "status": "success",
+    "created_at": "2026-05-31T22:45:04.223574",
+    "updated_count": 21
+  },
+  {
     "action": "article_toggle_status",
     "status": "success",
     "created_at": "2026-05-31T21:46:58.810489",
