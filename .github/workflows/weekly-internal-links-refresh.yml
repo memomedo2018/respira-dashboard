@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Refresh internal links across all articles
         run: |
-          curl --fail-with-body -X POST "https://perfect-art-production.up.railway.app/api/seo/brain" \
+          curl --fail-with-body --retry 3 --retry-all-errors --retry-delay 60 --max-time 300 \
+            -X POST "https://perfect-art-production.up.railway.app/api/seo/brain" \
             -H "Content-Type: application/json" \
             -H "X-Admin-Password: ${{ secrets.RESPIRATECH_ADMIN_PASSWORD }}" \
             --data '{"action":"refresh_links"}'
