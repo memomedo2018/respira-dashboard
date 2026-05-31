@@ -31,6 +31,7 @@ SEO_LOG_FILE = BASE_DIR / "data" / "seo_brain_log.json"
 GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
 BLOG_IMAGES_DIR = BASE_DIR / "assets" / "images" / "blog"
 BUILD_SCRIPT = BASE_DIR / "build_content.py"
+GSC_SCOPES = ["https://www.googleapis.com/auth/webmasters"]
 
 AR_STOPWORDS = {
     "في", "من", "على", "إلى", "عن", "أن", "أو", "مع", "هذا", "هذه", "ذلك", "التي", "الذي",
@@ -71,6 +72,41 @@ def append_log(entry: dict) -> None:
     logs = logs if isinstance(logs, list) else []
     logs.insert(0, entry)
     save_json(SEO_LOG_FILE, logs[:200])
+
+
+def google_service_account_email() -> str:
+    credentials = load_json(GSC_CREDENTIALS_FILE, {})
+    if not isinstance(credentials, dict):
+        return ""
+    return str(credentials.get("client_email") or "")
+
+
+def _gsc_service():
+    if not GSC_CREDENTIALS_FILE.exists():
+        raise RuntimeError("Google Search Console credentials غير مرفوعة بعد.")
+    if service_account is None or google_build is None:
+        raise RuntimeError("مكتبات Google Search Console غير متاحة في البيئة الحالية.")
+    creds = service_account.Credentials.from_service_account_file(
+        str(GSC_CREDENTIALS_FILE),
+        scopes=GSC_SCOPES,
+    )
+    return google_build("searchconsole", "v1", credentials=creds, cache_discovery=False)
+
+
+def submit_sitemap(site_url: str | None = None, sitemap_url: str | None = None) -> dict:
+    env = load_env()
+    site_url = (site_url or env.get("GSC_SITE_URL") or env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
+    sitemap_url = sitemap_url or f"{site_url}/sitemap.xml"
+    service = _gsc_service()
+    service.sitemaps().submit(siteUrl=site_url, feedpath=sitemap_url).execute()
+    result = {
+        "submitted": True,
+        "site_url": site_url,
+        "sitemap_url": sitemap_url,
+        "submitted_at": datetime.utcnow().isoformat(),
+    }
+    append_log({"type": "gsc_sitemap_submit", **result})
+    return result
 
 
 def run_build() -> None:
@@ -564,11 +600,7 @@ def search_console_summary(site_url: str) -> dict:
             "queries": [],
         }
     try:
-        creds = service_account.Credentials.from_service_account_file(
-            str(GSC_CREDENTIALS_FILE),
-            scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
-        )
-        service = google_build("searchconsole", "v1", credentials=creds, cache_discovery=False)
+        service = _gsc_service()
         today = datetime.now(timezone.utc).date()
         start_date = (today - timedelta(days=28)).isoformat()
         end_date = (today - timedelta(days=1)).isoformat()
@@ -683,6 +715,10 @@ def audit_site() -> dict:
 def full_run() -> dict:
     link_result = refresh_article_links(auto_fix=True)
     audit = audit_site()
+    try:
+        sitemap_submission = submit_sitemap()
+    except Exception as exc:
+        sitemap_submission = {"submitted": False, "error": str(exc)}
     result = {
         "created_at": datetime.utcnow().isoformat(),
         "links": link_result,
@@ -691,6 +727,7 @@ def full_run() -> dict:
             "logo_featured_images": len(audit.get("content", {}).get("logo_featured_images", [])),
             "low_score_articles": len(audit.get("content", {}).get("low_score_articles", [])),
         },
+        "gsc_sitemap": sitemap_submission,
     }
     append_log({
         "type": "seo_brain_full_run",
@@ -709,6 +746,7 @@ def current_state() -> dict:
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", "https://respira-tech.com")),
             "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
+            "gsc_service_account_email": google_service_account_email(),
         },
         "audit": load_json(SEO_AUDIT_FILE, {}),
         "logs": load_json(SEO_LOG_FILE, []),

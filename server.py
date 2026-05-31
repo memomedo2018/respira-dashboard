@@ -1161,7 +1161,24 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": f"invalid JSON: {exc}"}, 400)
             save_json(GSC_CREDENTIALS_FILE, parsed_json)
             append_activity_log("gsc_credentials_upload")
-            return self._send_json({"ok": True})
+            return self._send_json({"ok": True, "service_account_email": parsed_json.get("client_email")})
+
+        if parsed.path == "/api/seo/gsc/submit-sitemap":
+            if not self._ensure_admin():
+                return
+            try:
+                payload = self._read_json_body()
+            except ValueError:
+                payload = {}
+            try:
+                result = seo_brain.submit_sitemap(
+                    site_url=str(payload.get("site_url") or "").strip() or None,
+                    sitemap_url=str(payload.get("sitemap_url") or "").strip() or None,
+                )
+            except Exception as exc:
+                return self._send_json({"ok": False, "error": str(exc)}, 400)
+            append_activity_log("gsc_sitemap_submit", sitemap_url=result.get("sitemap_url"))
+            return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state()})
 
         if parsed.path == "/api/seo/brain":
             if not self._ensure_admin():

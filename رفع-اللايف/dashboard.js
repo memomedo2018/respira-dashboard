@@ -836,10 +836,21 @@ document.getElementById('generateFromUrlPublishBtn').addEventListener('click', a
 document.getElementById('uploadGscBtn').addEventListener('click', async () => {
   const content = document.getElementById('gscCredentialsJson').value.trim();
   if (!content) return window.alert('الصق JSON أولًا.');
-  await adminApi('/api/seo/gsc/upload', { method: 'POST', body: JSON.stringify({ content }) });
+  const response = await adminApi('/api/seo/gsc/upload', { method: 'POST', body: JSON.stringify({ content }) });
   document.getElementById('gscCredentialsJson').value = '';
   await refreshDashboard();
-  window.alert('تم حفظ Google Search Console credentials.');
+  const email = response.service_account_email ? `\nService account: ${response.service_account_email}` : '';
+  window.alert(`تم حفظ Google Search Console credentials.${email}\nأضف هذا الإيميل كـ user في Search Console ثم اضغط إرسال Sitemap لجوجل.`);
+});
+
+document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
+  const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'https://respira-tech.com';
+  const response = await adminApi('/api/seo/gsc/submit-sitemap', {
+    method: 'POST',
+    body: JSON.stringify({ site_url: siteUrl, sitemap_url: `${siteUrl.replace(/\\/$/, '')}/sitemap.xml` })
+  });
+  await refreshDashboard();
+  window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
 });
 
 document.getElementById('saveSeoSettingsBtn').addEventListener('click', async () => {
