@@ -47,9 +47,24 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
-  const response = await fetch(apiUrl(path), options);
-  if (!response.ok) throw new Error('تعذر تحميل البيانات');
-  return response.json();
+  try {
+    const response = await fetch(apiUrl(path), options);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  } catch (error) {
+    if (path === '/api/store') {
+      const fallback = await fetch('/data/store.json', { cache: 'no-store' });
+      if (fallback.ok) return fallback.json();
+    }
+    throw new Error(`تعذر تحميل البيانات من ${path}: ${error.message}`);
+  }
+}
+
+function setSystemStatus(message, type = 'info') {
+  const wrap = document.getElementById('systemStatus');
+  if (!wrap) return;
+  wrap.className = `system-status ${type}`;
+  wrap.innerHTML = message ? `<span>${escapeHTML(message)}</span>` : '';
 }
 
 function linesToArray(value) {
@@ -679,10 +694,15 @@ function renderArticleChecklist(article) {
 }
 
 async function refreshDashboard() {
-  const [storeData, dashboardData] = await Promise.all([
-    publicApi('/api/store'),
-    adminApi('/api/dashboard/config')
-  ]);
+  setSystemStatus('جاري تحميل بيانات الداشبورد...', 'info');
+  const storeData = await publicApi('/api/store');
+  let dashboardData;
+  try {
+    dashboardData = await adminApi('/api/dashboard/config');
+  } catch (error) {
+    setSystemStatus(`تم تحميل المتجر، لكن بيانات الإدارة لم تحمل: ${error.message}`, 'error');
+    dashboardData = { settings: {}, logs: [], articles: [], seo_brain: { settings: {}, audit: {}, logs: [] }, activity_logs: [] };
+  }
 
   state.storeConfig = storeData.config || {};
   state.categories = Array.isArray(storeData.categories) ? storeData.categories : [];
@@ -709,6 +729,11 @@ async function refreshDashboard() {
     selectArticle(state.articles[0]);
   } else {
     renderArticleChecklist({});
+  }
+  if (!dashboardData.settings || !Object.keys(dashboardData.settings).length) {
+    setSystemStatus('بيانات المتجر ظاهرة، لكن وظائف الإدارة تحتاج كلمة مرور صحيحة واتصال Railway.', 'error');
+  } else {
+    setSystemStatus('الداشبورد جاهز ومتصل بالـ API.', 'success');
   }
 }
 
@@ -955,5 +980,12 @@ document.getElementById('deleteArticleBtn').addEventListener('click', async () =
 renderTabs();
 clearProductForm();
 refreshDashboard().catch((error) => {
-  document.getElementById('metrics').innerHTML = `<div class="metric"><span class="label">خطأ</span><strong>${escapeHTML(error.message)}</strong></div>`;
+  setSystemStatus(error.message, 'error');
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric error-metric">
+      <span class="label">خطأ تحميل</span>
+      <strong>راجع الاتصال</strong>
+      <small>${escapeHTML(error.message)}</small>
+    </div>
+  `;
 });
