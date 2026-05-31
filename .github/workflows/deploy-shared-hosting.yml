@@ -30,6 +30,6 @@ jobs:
           password: ${{ secrets.SHARED_HOSTING_FTP_PASSWORD }}
           protocol: ftp
           port: 21
-          server-dir: public_html/
+          server-dir: ./
           local-dir: ./رفع-اللايف/
           dangerous-clean-slate: true
