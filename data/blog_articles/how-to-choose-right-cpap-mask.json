@@ -57,12 +57,12 @@
       "url": "/services/sleep-apnea/"
     },
     {
-      "anchor": "كيف تختار ماسك جهاز CPAP المناسب؟ دليلك الشامل للراحة والتنفس السليم",
-      "url": "/blog/choose-best-cpap-mask/"
-    },
-    {
       "anchor": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمرضى",
       "url": "/blog/choose-right-cpap-mask/"
+    },
+    {
+      "anchor": "كيف تختار ماسك جهاز CPAP المناسب؟ دليلك الشامل للراحة والتنفس السليم",
+      "url": "/blog/choose-best-cpap-mask/"
     }
   ],
   "cta_text": "لا تدع اختيار الماسك المناسب يعيق راحتك وصحتك! تواصل مع Respira Tech الآن عبر واتساب للحصول على استشارة متخصصة ومساعدة شخصية.",
@@ -74,11 +74,11 @@
   "cta_button_url": "https://wa.me/201012566955",
   "author": "فريق Respira Tech",
   "created_at": "2026-04-29T17:56:37.440Z",
-  "updated_at": "2026-05-31T22:48:21.154656",
+  "updated_at": "2026-05-31T23:13:35.098532",
   "published_at": null,
   "status": "draft",
   "reading_time": 5,
   "seo_score": 92,
   "id": "how-to-choose-right-cpap-mask",
-  "_path": "/app/data/blog_articles/how-to-choose-right-cpap-mask.json"
+  "_path": "/Users/mac/Documents/projects/respiratech/المعدل/data/blog_articles/how-to-choose-right-cpap-mask.json"
 }

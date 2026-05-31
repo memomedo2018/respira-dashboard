@@ -61,12 +61,12 @@
       "url": "/store/"
     },
     {
-      "anchor": "كم ساعة يجب استخدام جهاز CPAP يوميًا؟ الدليل الشامل لمستخدمي أجهزة التنفس المنزلي",
-      "url": "/blog/cpap-daily-usage-hours-guide/"
+      "anchor": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمرضى",
+      "url": "/blog/choose-right-cpap-mask/"
     },
     {
-      "anchor": "طريقة تنظيف جهاز CPAP والماسك بشكل صحيح: دليلك للحفاظ على صحتك وجودة نومك",
-      "url": "/blog/cpap-cleaning-guide/"
+      "anchor": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+      "url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/"
     }
   ],
   "cta_text": "هل ترغب في معرفة المزيد عن أجهزة CPAP أو تحتاج لدعم شخصي؟ تواصل مع Respira Tech الآن واحصل على استشارة مجانية لمساعدتك في اختيار الجهاز الأمثل.",
@@ -78,11 +78,11 @@
   "cta_button_url": "https://wa.me/201012566955",
   "author": "فريق Respira Tech",
   "created_at": "2026-04-29T17:57:14.442Z",
-  "updated_at": "2026-05-31T22:48:21.153878",
+  "updated_at": "2026-05-31T23:13:35.097125",
   "published_at": null,
   "status": "draft",
   "reading_time": 5,
   "seo_score": 92,
   "id": "cpap-sleep-comfort",
-  "_path": "/app/data/blog_articles/cpap-sleep-comfort.json"
+  "_path": "/Users/mac/Documents/projects/respiratech/المعدل/data/blog_articles/cpap-sleep-comfort.json"
 }
