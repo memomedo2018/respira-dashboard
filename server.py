@@ -1329,6 +1329,30 @@ class StoreHandler(SimpleHTTPRequestHandler):
             sync = deploy_to_live(f"Cron SEO brain {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "sync": sync})
 
+        if parsed.path == "/api/cron/refresh-internal-links":
+            if not self._cron_authorized():
+                return self._send_json({"error": "unauthorized"}, 401)
+
+            def _run_refresh_links():
+                try:
+                    result = seo_brain.refresh_article_links(auto_fix=True)
+                    append_activity_log(
+                        "cron_refresh_internal_links",
+                        updated_count=result.get("updated_count") if isinstance(result, dict) else None,
+                    )
+                    sync = deploy_to_live(f"Cron refresh internal links {datetime.utcnow().isoformat()}")
+                    hostinger = sync.get("hostinger", {}) if isinstance(sync, dict) else {}
+                    append_activity_log(
+                        "manual_ftp_deploy",
+                        uploaded=hostinger.get("uploaded"),
+                        error=hostinger.get("error"),
+                    )
+                except Exception as exc:
+                    append_activity_log("cron_refresh_internal_links", status="error", error=str(exc))
+
+            threading.Thread(target=_run_refresh_links, daemon=True).start()
+            return self._send_json({"ok": True, "started": True})
+
         if parsed.path == "/api/deploy":
             if not self._ensure_admin():
                 return
