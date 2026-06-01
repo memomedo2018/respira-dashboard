@@ -34,6 +34,7 @@ AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
 
 RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / ".htaccess",
+    BASE_DIR / "favicon.ico",
     BASE_DIR / "index.html",
     BASE_DIR / "about",
     BASE_DIR / "admin",
@@ -49,6 +50,7 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / "store",
     BASE_DIR / "terms",
     BASE_DIR / "sitemap.xml",
+    BASE_DIR / "site.webmanifest",
     BASE_DIR / "robots.txt",
     BASE_DIR / "llms.txt",
     BASE_DIR / "video",
@@ -296,6 +298,12 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
   <meta name="twitter:title" content="{html.escape(title)}">
   <meta name="twitter:description" content="{html.escape(meta_description)}">
   <meta name="twitter:image" content="{html.escape(meta_image)}">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/respira-icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/respira-icon-512.png">
+  <link rel="apple-touch-icon" href="/assets/icons/respira-icon-192.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#f3f8fc">
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     :root {{
@@ -492,7 +500,7 @@ def org_schema(site_data: dict) -> list[dict]:
             "@type": "Organization",
             "name": site["name"],
             "url": site["base_url"],
-            "logo": f"{site['base_url']}{site['default_image']}",
+            "logo": f"{site['base_url']}/assets/icons/respira-icon-512.png",
             "sameAs": org["same_as"],
         },
         {
