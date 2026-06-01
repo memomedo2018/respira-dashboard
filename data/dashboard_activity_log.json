@@ -1,5 +1,10 @@
 [
   {
+    "action": "dashboard_settings_update",
+    "status": "success",
+    "created_at": "2026-06-01T13:01:58.584962"
+  },
+  {
     "action": "cron_refresh_internal_links",
     "status": "success",
     "created_at": "2026-06-01T12:45:05.540133",
