@@ -463,6 +463,8 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     api_key = env.get("OPENAI_API_KEY")
     if not api_key or str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() == "false":
         return fallback_featured_image(slug or title_ar)
+    if str(env.get("OPENAI_IMAGE_MODEL", "")).lower() == "dall-e-3":
+        return fallback_featured_image(slug or title_ar)
     prompt = (
         f"Clean white medical website image, Arabic SEO article cover about {title_ar}, "
         f"{category}, CPAP/BiPAP respiratory therapy, modern bedroom or consultation setting, "

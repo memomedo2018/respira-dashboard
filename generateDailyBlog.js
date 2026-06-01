@@ -564,6 +564,9 @@ async function generateFeaturedImage({ article, env }) {
   if (String(env.GENERATE_BLOG_IMAGES || 'true').toLowerCase() === 'false') {
     return fallbackFeaturedImage(article.slug || article.title_ar);
   }
+  if (String(env.OPENAI_IMAGE_MODEL || '').toLowerCase() === 'dall-e-3') {
+    return fallbackFeaturedImage(article.slug || article.title_ar);
+  }
 
   fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
   const fileName = `${article.slug}.png`;
