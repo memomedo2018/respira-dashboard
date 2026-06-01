@@ -25,6 +25,7 @@ except Exception:  # pragma: no cover
 BASE_DIR = Path(__file__).resolve().parent
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 SITE_FILE = BASE_DIR / "data" / "site.json"
+FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 TOPICS_FILE = BASE_DIR / "data" / "blog_topics.json"
 ENV_FILE = BASE_DIR / ".env"
 SEO_AUDIT_FILE = BASE_DIR / "data" / "seo_audit.json"
@@ -45,6 +46,7 @@ FALLBACK_BLOG_IMAGES = [
     "/assets/images/store/resmed-airsense-10-autoset.jpg",
     "/assets/images/store/yuwell-auto-cpap.png",
 ]
+_fallback_catalog_cache: list[dict] | None = None
 
 INTERNAL_LINK_STRATEGY = [
     {"url": "/services/cpap/", "anchors": ["أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم", "أجهزة CPAP المنزلية", "جهاز CPAP المناسب لحالتك", "خدمة أجهزة CPAP من Respira Tech"]},
@@ -180,9 +182,25 @@ def estimate_reading_time(markdown: str) -> int:
     return max(1, round(words / 180))
 
 
+def fallback_catalog() -> list[dict]:
+    global _fallback_catalog_cache
+    if _fallback_catalog_cache is not None:
+        return _fallback_catalog_cache
+    catalog = load_json(FALLBACK_CATALOG_FILE, [])
+    if isinstance(catalog, list) and catalog:
+        _fallback_catalog_cache = [item for item in catalog if isinstance(item, dict) and item.get("url")]
+    else:
+        _fallback_catalog_cache = [
+            {"url": url, "source": "Respira Tech local fallback library", "creator": "Respira Tech"}
+            for url in FALLBACK_BLOG_IMAGES
+        ]
+    return _fallback_catalog_cache
+
+
 def fallback_featured_image(seed: str = "") -> str:
-    index = sum(ord(char) for char in str(seed or "")) % len(FALLBACK_BLOG_IMAGES)
-    return FALLBACK_BLOG_IMAGES[index]
+    catalog = fallback_catalog()
+    index = sum(ord(char) for char in str(seed or "")) % len(catalog)
+    return catalog[index].get("url") or FALLBACK_BLOG_IMAGES[index % len(FALLBACK_BLOG_IMAGES)]
 
 
 def image_search_query(title: str = "", category: str = "") -> str:
@@ -548,18 +566,19 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     stock_file_name = f"{slug}.jpg"
     stock_file_path = BLOG_IMAGES_DIR / stock_file_name
-    try:
-        credit = fetch_pexels_image(slug, title_ar, category, stock_file_path, env)
-        if credit:
-            return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
-    except Exception as exc:
-        append_log({"type": "pexels_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
-    try:
-        credit = fetch_openverse_image(slug, title_ar, category, stock_file_path)
-        if credit:
-            return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
-    except Exception as exc:
-        append_log({"type": "openverse_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
+    if str(env.get("STOCK_IMAGES_ENABLED", "true")).lower() != "false":
+        try:
+            credit = fetch_pexels_image(slug, title_ar, category, stock_file_path, env)
+            if credit:
+                return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
+        except Exception as exc:
+            append_log({"type": "pexels_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
+        try:
+            credit = fetch_openverse_image(slug, title_ar, category, stock_file_path)
+            if credit:
+                return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
+        except Exception as exc:
+            append_log({"type": "openverse_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
 
     api_key = env.get("OPENAI_API_KEY")
     if not api_key or str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() == "false":

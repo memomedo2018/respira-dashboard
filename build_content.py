@@ -15,6 +15,7 @@ LIVE_RELEASE_DIR = BASE_DIR / "رفع-اللايف"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 STORE_FILE = BASE_DIR / "data" / "store.json"
+FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 BLOG_INDEX_FILE = BASE_DIR / "blog" / "index.html"
 BLOG_OUTPUT_DIR = BASE_DIR / "blog"
 ROBOTS_FILE = BASE_DIR / "robots.txt"
@@ -57,6 +58,7 @@ RELEASE_TOP_LEVEL_PATHS = [
 RELEASE_DATA_PATHS = [
     STORE_FILE,
     SITE_FILE,
+    FALLBACK_CATALOG_FILE,
     BASE_DIR / "data" / "product-schema.json",
     AI_CATALOG_FILE,
 ]

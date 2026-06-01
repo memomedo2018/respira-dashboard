@@ -9,6 +9,7 @@ const TOPICS_FILE = path.join(ROOT, 'data', 'blog_topics.json');
 const KEYWORD_PLAN_FILE = path.join(ROOT, 'data', 'blog_keyword_plan.json');
 const ARTICLES_DIR = path.join(ROOT, 'data', 'blog_articles');
 const SITE_FILE = path.join(ROOT, 'data', 'site.json');
+const FALLBACK_CATALOG_FILE = path.join(ROOT, 'data', 'blog_fallback_images.json');
 const ENV_FILE = path.join(ROOT, '.env');
 const LOG_FILE = path.join(ROOT, 'data', 'blog_generation_log.json');
 const BLOG_IMAGES_DIR = path.join(ROOT, 'assets', 'images', 'blog');
@@ -24,6 +25,7 @@ const FALLBACK_BLOG_IMAGES = [
   '/assets/images/store/resmed-airsense-10-autoset.jpg',
   '/assets/images/store/yuwell-auto-cpap.png'
 ];
+let fallbackCatalogCache = null;
 
 const INTERNAL_LINK_STRATEGY = [
   {
@@ -132,9 +134,27 @@ function readingTime(markdown = '') {
   return Math.max(1, Math.round(stripMarkdown(markdown).length / 180));
 }
 
-function fallbackFeaturedImage(seed = '') {
+function fallbackCatalog() {
+  if (fallbackCatalogCache) return fallbackCatalogCache;
+  const catalog = readJson(FALLBACK_CATALOG_FILE, []);
+  fallbackCatalogCache = Array.isArray(catalog) && catalog.length
+    ? catalog.filter((item) => item?.url)
+    : FALLBACK_BLOG_IMAGES.map((url) => ({ url, source: 'Respira Tech local fallback library', creator: 'Respira Tech' }));
+  return fallbackCatalogCache;
+}
+
+function fallbackFeaturedImage(seed = '', article = null) {
+  const catalog = fallbackCatalog();
   const hash = Array.from(String(seed || '')).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return FALLBACK_BLOG_IMAGES[hash % FALLBACK_BLOG_IMAGES.length];
+  const item = catalog[hash % catalog.length];
+  if (article && item?.source) {
+    article.featured_image_credit = {
+      source: item.source,
+      creator: item.creator || '',
+      url: item.credit_url || ''
+    };
+  }
+  return item?.url || FALLBACK_BLOG_IMAGES[hash % FALLBACK_BLOG_IMAGES.length];
 }
 
 function imageSearchQuery(article = {}) {
@@ -635,27 +655,30 @@ async function generateFeaturedImage({ article, env }) {
   fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
   const fileName = `${article.slug}.jpg`;
   const filePath = path.join(BLOG_IMAGES_DIR, fileName);
+  const stockImagesEnabled = String(env.STOCK_IMAGES_ENABLED || 'true').toLowerCase() !== 'false';
 
-  try {
-    const pexelsImage = await fetchPexelsImage({ article, env, filePath });
-    if (pexelsImage) return pexelsImage;
-  } catch (error) {
-    appendLog({ type: 'pexels_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
+  if (stockImagesEnabled) {
+    try {
+      const pexelsImage = await fetchPexelsImage({ article, env, filePath });
+      if (pexelsImage) return pexelsImage;
+    } catch (error) {
+      appendLog({ type: 'pexels_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
+    }
+
+    try {
+      const openverseImage = await fetchOpenverseImage({ article, filePath });
+      if (openverseImage) return openverseImage;
+    } catch (error) {
+      appendLog({ type: 'openverse_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
+    }
   }
 
-  try {
-    const openverseImage = await fetchOpenverseImage({ article, filePath });
-    if (openverseImage) return openverseImage;
-  } catch (error) {
-    appendLog({ type: 'openverse_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
-  }
-
-  if (!env.OPENAI_API_KEY) return fallbackFeaturedImage(article.slug || article.title_ar);
+  if (!env.OPENAI_API_KEY) return fallbackFeaturedImage(article.slug || article.title_ar, article);
   if (String(env.GENERATE_BLOG_IMAGES || 'true').toLowerCase() === 'false') {
-    return fallbackFeaturedImage(article.slug || article.title_ar);
+    return fallbackFeaturedImage(article.slug || article.title_ar, article);
   }
   if (String(env.OPENAI_IMAGE_MODEL || '').toLowerCase() === 'dall-e-3') {
-    return fallbackFeaturedImage(article.slug || article.title_ar);
+    return fallbackFeaturedImage(article.slug || article.title_ar, article);
   }
 
   const aiFileName = `${article.slug}.png`;
@@ -760,7 +783,7 @@ async function buildArticle(topicItem, env, siteData) {
   try {
     article.featured_image = await generateFeaturedImage({ article, env });
   } catch (error) {
-    article.featured_image = fallbackFeaturedImage(article.slug || topic);
+    article.featured_image = fallbackFeaturedImage(article.slug || topic, article);
     appendLog({
       type: 'openai_image_error',
       topic,

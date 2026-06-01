@@ -26,6 +26,7 @@ STORE_FILE = BASE_DIR / "data" / "store.json"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 BLOG_LOG_FILE = BASE_DIR / "data" / "blog_generation_log.json"
+FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 IMAGES_DIR = BASE_DIR / "assets" / "images" / "store"
 BLOG_IMAGES_DIR = BASE_DIR / "assets" / "images" / "blog"
 ENV_FILE = BASE_DIR / ".env"
@@ -46,6 +47,7 @@ SYNC_PATHS = [
     SITE_FILE,
     BLOG_DIR,
     BLOG_LOG_FILE,
+    FALLBACK_CATALOG_FILE,
     IMAGES_DIR,
     BLOG_IMAGES_DIR,
     SEO_AUDIT_FILE,
