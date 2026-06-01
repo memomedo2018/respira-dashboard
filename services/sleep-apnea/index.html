@@ -61,6 +61,9 @@
     .nav-link:hover, .nav-link.is-active { color: var(--theme-accent); background: var(--theme-accent-soft); }
     .menu-toggle { display: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 16px; border: 1px solid var(--theme-border); background: rgba(255,255,255,.82); color: #0f172a; font-size: 1.2rem; font-weight: 900; box-shadow: 0 12px 30px rgba(15,23,42,.14); cursor: pointer; }
     .theme-fab { position: fixed; top: 18px; left: 18px; z-index: 1200; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.42); background: rgba(255,255,255,.82); backdrop-filter: blur(12px); color: #0f172a; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(15,23,42,.14); }
+    .whatsapp-fab { position: fixed; right: 18px; bottom: 18px; z-index: 1250; width: 58px; height: 58px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #25d366; color: #fff; box-shadow: 0 18px 38px rgba(37,211,102,.32); transition: transform .2s ease, box-shadow .2s ease; }
+    .whatsapp-fab:hover { transform: translateY(-3px); box-shadow: 0 24px 48px rgba(37,211,102,.4); }
+    .whatsapp-fab svg { width: 30px; height: 30px; fill: currentColor; }
     body[data-theme="dark"] .theme-fab { background: rgba(15,23,42,.92); color: #f8fafc; border-color: rgba(255,255,255,.08); }
     body[data-theme="dark"] .menu-toggle { background: rgba(15,23,42,.92); color: #f8fafc; }
     .page-shell { padding: calc(var(--header-offset) + 1.5rem) 0 0; min-height: 60vh; }
@@ -96,6 +99,7 @@
     @media (max-width: 768px) {
       :root { --header-offset: 100px; }
       .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
+      .whatsapp-fab { right: 14px; bottom: 14px; width: 54px; height: 54px; }
       .floating-header { top: 12px; width: calc(100vw - 16px); padding: .9rem 1rem; border-radius: 28px; }
       .header-content { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; }
       .brand-logo { min-width: 0; font-size: 1.25rem; gap: .55rem; }
@@ -129,13 +133,16 @@
     </nav>
   </header>
   <button class="theme-fab" type="button" aria-label="تبديل وضع الألوان">🌙</button>
+  <a class="whatsapp-fab" href="https://wa.me/201012566955?text=%D9%85%D8%B1%D8%AD%D8%A8%D9%8B%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.02 3.2A12.68 12.68 0 0 0 5.07 22.28L3.2 29l6.88-1.8A12.67 12.67 0 1 0 16.02 3.2Zm0 22.94a10.18 10.18 0 0 1-5.2-1.43l-.37-.22-4.08 1.07 1.09-3.98-.24-.41a10.2 10.2 0 1 1 8.8 4.97Zm5.6-7.62c-.3-.15-1.8-.89-2.08-.99-.28-.1-.49-.15-.69.15-.2.3-.79.99-.96 1.19-.18.2-.36.22-.67.07-.3-.15-1.29-.47-2.46-1.5-.91-.8-1.53-1.8-1.7-2.1-.18-.3-.02-.47.13-.62.14-.13.3-.36.46-.54.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.69-1.66-.94-2.27-.25-.6-.5-.51-.69-.52h-.59c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.21 5.08 4.5.71.3 1.26.49 1.69.62.71.23 1.36.2 1.88.12.57-.08 1.8-.73 2.05-1.44.25-.71.25-1.31.18-1.44-.08-.13-.28-.2-.59-.35Z"/></svg>
+  </a>
   <div class="page-shell"><section class='hero-strip'><div class='hero-card'><h1>خدمة انقطاع النفس أثناء النوم</h1><p>محتوى وخدمات لدعم فهم انقطاع النفس أثناء النوم، وأهمية التقييم الطبي قبل اختيار الجهاز.</p></div></section><section class='content-wrap'><div class='content-card' style='padding:1.5rem;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:32px;box-shadow:0 18px 40px rgba(15,23,42,.06)'><p>محتوى وخدمات لدعم فهم انقطاع النفس أثناء النوم، وأهمية التقييم الطبي قبل اختيار الجهاز.</p><div class='disclaimer-box'>هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص.</div></div></section></div>
   <section class="footer-cta">
     <div class="footer-cta-shell">
       <div class="footer-cta-card">
         <h2>هل تحتاج مساعدة في اختيار الجهاز المناسب؟</h2>
         <p>فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب.</p>
-        <a class="btn btn-primary" href="https://wa.me/your_whatsapp_number_here" target="_blank" rel="noopener">تواصل معنا عبر واتساب</a>
+        <a class="btn btn-primary" href="https://wa.me/201012566955" target="_blank" rel="noopener">تواصل معنا عبر واتساب</a>
         <div class="disclaimer-box">هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص.</div>
       </div>
     </div>
