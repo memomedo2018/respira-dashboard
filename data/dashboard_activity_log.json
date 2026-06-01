@@ -1,5 +1,11 @@
 [
   {
+    "action": "cron_refresh_internal_links",
+    "status": "success",
+    "created_at": "2026-06-01T01:35:13.028806",
+    "updated_count": 22
+  },
+  {
     "action": "dashboard_settings_update",
     "status": "success",
     "created_at": "2026-06-01T01:20:11.866728"
