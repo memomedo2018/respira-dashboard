@@ -1318,6 +1318,36 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
             action = str(payload.get("action") or "").strip()
+            if payload.get("async"):
+                def _run_seo_action_async():
+                    try:
+                        if action == "audit":
+                            result = seo_brain.audit_site()
+                        elif action == "refresh_links":
+                            result = seo_brain.refresh_article_links(auto_fix=True)
+                        elif action == "full_run":
+                            result = seo_brain.full_run()
+                        elif action == "from_url":
+                            source_url = str(payload.get("url") or "").strip()
+                            if not source_url:
+                                raise RuntimeError("missing url")
+                            result = seo_brain.build_article_from_url(source_url, publish=bool(payload.get("publish_now")))
+                        else:
+                            raise RuntimeError("unknown action")
+                        append_activity_log(
+                            f"seo_{action}",
+                            slug=result.get("slug") if isinstance(result, dict) else None,
+                            updated_count=result.get("updated_count") if isinstance(result, dict) else None,
+                            recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
+                        )
+                        deploy_to_live(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
+                    except Exception as exc:
+                        import traceback
+                        append_activity_log(f"seo_{action or 'unknown'}", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
+
+                threading.Thread(target=_run_seo_action_async, daemon=True).start()
+                return self._send_json({"ok": True, "started": True, "action": action})
+
             try:
                 if action == "audit":
                     result = seo_brain.audit_site()
