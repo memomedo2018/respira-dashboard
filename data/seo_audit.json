@@ -1,32 +1,32 @@
 {
-  "created_at": "2026-06-01T00:53:25.612580",
+  "created_at": "2026-06-01T12:44:21.230456",
   "site_base_url": "https://respira-tech.com",
   "pages": [
     {
       "url": "https://respira-tech.com/",
       "status": 200,
-      "load_ms": 598,
-      "html_kb": 30.0,
+      "load_ms": 534,
+      "html_kb": 31.1,
       "has_title": true,
       "has_meta_description": true,
-      "has_canonical": false,
+      "has_canonical": true,
       "h1_count": 1
     },
     {
       "url": "https://respira-tech.com/store/",
       "status": 200,
-      "load_ms": 531,
-      "html_kb": 38.1,
+      "load_ms": 529,
+      "html_kb": 39.1,
       "has_title": true,
       "has_meta_description": true,
-      "has_canonical": false,
-      "h1_count": 0
+      "has_canonical": true,
+      "h1_count": 1
     },
     {
       "url": "https://respira-tech.com/blog/",
       "status": 200,
-      "load_ms": 514,
-      "html_kb": 29.5,
+      "load_ms": 498,
+      "html_kb": 30.9,
       "has_title": true,
       "has_meta_description": true,
       "has_canonical": true,
@@ -35,7 +35,7 @@
     {
       "url": "https://respira-tech.com/services/",
       "status": 200,
-      "load_ms": 502,
+      "load_ms": 508,
       "html_kb": 16.6,
       "has_title": true,
       "has_meta_description": true,
@@ -45,7 +45,7 @@
     {
       "url": "https://respira-tech.com/contact/",
       "status": 200,
-      "load_ms": 496,
+      "load_ms": 482,
       "html_kb": 16.3,
       "has_title": true,
       "has_meta_description": true,
@@ -54,12 +54,10 @@
     }
   ],
   "content": {
-    "articles_total": 22,
-    "published_total": 10,
+    "articles_total": 23,
+    "published_total": 11,
     "draft_total": 12,
-    "logo_featured_images": [
-      "best-cpap-machine-egypt"
-    ],
+    "logo_featured_images": [],
     "low_score_articles": [],
     "missing_internal_links": []
   },
@@ -68,8 +66,5 @@
     "message": "Google Search Console غير مربوط بعد. ارفع ملف service account JSON وامنح الإيميل صلاحية على الـ property.",
     "queries": []
   },
-  "recommendations": [
-    "1 مقال ما زال يستخدم لوجو الموقع بدل صورة مميزة.",
-    "بعض الصفحات الأساسية تحتاج مراجعة structure أو availability."
-  ]
+  "recommendations": []
 }

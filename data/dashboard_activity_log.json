@@ -1,5 +1,16 @@
 [
   {
+    "action": "cron_refresh_internal_links",
+    "status": "success",
+    "created_at": "2026-06-01T12:45:05.540133",
+    "updated_count": 23
+  },
+  {
+    "action": "seo_audit",
+    "status": "success",
+    "created_at": "2026-06-01T12:44:21.232216"
+  },
+  {
     "action": "blog_generate_batch",
     "status": "success",
     "created_at": "2026-06-01T11:25:37.891254",
