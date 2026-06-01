@@ -809,7 +809,8 @@ def dashboard_config() -> dict:
             "seo_brain_auto": str(env.get("SEO_BRAIN_AUTO", "true")).lower() != "false",
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", site.get("base_url", "https://respira-tech.com"))),
-            "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
+            "gsc_credentials_set": seo_brain.gsc_credentials_available(),
+            "gsc_service_account_email": seo_brain.google_service_account_email(),
             "auto_push_changes": str(env.get("AUTO_PUSH_CHANGES", "true")).lower() != "false",
             "github_repo": env.get("GITHUB_REPO", ""),
             "github_branch": env.get("GITHUB_BRANCH", "main"),
@@ -1172,6 +1173,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except json.JSONDecodeError as exc:
                 return self._send_json({"error": f"invalid JSON: {exc}"}, 400)
             save_json(GSC_CREDENTIALS_FILE, parsed_json)
+            encoded_credentials = base64.b64encode(json.dumps(parsed_json, ensure_ascii=False).encode("utf-8")).decode("ascii")
+            save_env({"GSC_CREDENTIALS_JSON_B64": encoded_credentials})
             append_activity_log("gsc_credentials_upload")
             return self._send_json({"ok": True, "service_account_email": parsed_json.get("client_email")})
 

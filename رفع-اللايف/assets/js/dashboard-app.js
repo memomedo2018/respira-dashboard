@@ -931,6 +931,19 @@ document.getElementById('saveSeoSettingsBtn').addEventListener('click', async ()
   window.alert('تم حفظ إعدادات SEO Brain.');
 });
 
+document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
+  const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'sc-domain:respira-tech.com';
+  const response = await adminApi('/api/seo/gsc/submit-sitemap', {
+    method: 'POST',
+    body: JSON.stringify({
+      site_url: siteUrl,
+      sitemap_url: `${publicBaseUrl()}/sitemap.xml`
+    })
+  });
+  await refreshDashboard();
+  window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
+});
+
 document.getElementById('rebuildBtn').addEventListener('click', async () => {
   await adminApi('/api/build', { method: 'POST', body: '{}' });
   await refreshDashboard();

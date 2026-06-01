@@ -4,6 +4,7 @@ import json
 import os
 import re
 import subprocess
+import base64
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
@@ -86,19 +87,42 @@ def append_log(entry: dict) -> None:
 
 
 def google_service_account_email() -> str:
-    credentials = load_json(GSC_CREDENTIALS_FILE, {})
+    credentials = gsc_credentials_info()
     if not isinstance(credentials, dict):
         return ""
     return str(credentials.get("client_email") or "")
 
 
+def gsc_credentials_info() -> dict:
+    env = load_env()
+    raw = env.get("GSC_CREDENTIALS_JSON") or ""
+    if raw:
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            pass
+    encoded = env.get("GSC_CREDENTIALS_JSON_B64") or ""
+    if encoded:
+        try:
+            return json.loads(base64.b64decode(encoded).decode("utf-8"))
+        except Exception:
+            pass
+    credentials = load_json(GSC_CREDENTIALS_FILE, {})
+    return credentials if isinstance(credentials, dict) else {}
+
+
+def gsc_credentials_available() -> bool:
+    return bool(gsc_credentials_info().get("client_email"))
+
+
 def _gsc_service():
-    if not GSC_CREDENTIALS_FILE.exists():
+    credentials = gsc_credentials_info()
+    if not credentials:
         raise RuntimeError("Google Search Console credentials غير مرفوعة بعد.")
     if service_account is None or google_build is None:
         raise RuntimeError("مكتبات Google Search Console غير متاحة في البيئة الحالية.")
-    creds = service_account.Credentials.from_service_account_file(
-        str(GSC_CREDENTIALS_FILE),
+    creds = service_account.Credentials.from_service_account_info(
+        credentials,
         scopes=GSC_SCOPES,
     )
     return google_build("searchconsole", "v1", credentials=creds, cache_discovery=False)
@@ -107,7 +131,8 @@ def _gsc_service():
 def submit_sitemap(site_url: str | None = None, sitemap_url: str | None = None) -> dict:
     env = load_env()
     site_url = (site_url or env.get("GSC_SITE_URL") or env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
-    sitemap_url = sitemap_url or f"{site_url}/sitemap.xml"
+    public_base_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
+    sitemap_url = sitemap_url or f"{public_base_url}/sitemap.xml"
     service = _gsc_service()
     service.sitemaps().submit(siteUrl=site_url, feedpath=sitemap_url).execute()
     result = {
@@ -680,7 +705,7 @@ def page_health(url: str) -> dict:
 
 
 def search_console_summary(site_url: str) -> dict:
-    if not GSC_CREDENTIALS_FILE.exists():
+    if not gsc_credentials_available():
         return {
             "configured": False,
             "message": "Google Search Console غير مربوط بعد. ارفع ملف service account JSON وامنح الإيميل صلاحية على الـ property.",
@@ -838,7 +863,7 @@ def current_state() -> dict:
             "seo_brain_auto": str(env.get("SEO_BRAIN_AUTO", "true")).lower() != "false",
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", "https://respira-tech.com")),
-            "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
+            "gsc_credentials_set": gsc_credentials_available(),
             "gsc_service_account_email": google_service_account_email(),
         },
         "audit": load_json(SEO_AUDIT_FILE, {}),
