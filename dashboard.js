@@ -417,7 +417,7 @@ function collectProductPayload() {
 function renderSettings() {
   document.getElementById('settingDailyCount').value = state.settings.daily_blog_posts || 2;
   document.getElementById('settingTextModel').value = state.settings.openai_text_model || 'gpt-4.1';
-  document.getElementById('settingImageModel').value = state.settings.openai_image_model || 'dall-e-3';
+  document.getElementById('settingImageModel').value = state.settings.openai_image_model || 'gpt-image-1-mini';
   document.getElementById('settingAutoPublish').checked = !!state.settings.auto_publish_blogs;
   document.getElementById('settingGenerateImages').checked = state.settings.generate_blog_images !== false;
   document.getElementById('settingWhatsapp').value = state.settings.whatsapp_number || '';

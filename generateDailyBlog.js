@@ -14,6 +14,16 @@ const LOG_FILE = path.join(ROOT, 'data', 'blog_generation_log.json');
 const BLOG_IMAGES_DIR = path.join(ROOT, 'assets', 'images', 'blog');
 const DEFAULT_TARGET_WORDS = 1800;
 const DEFAULT_MIN_WORDS = 1600;
+const FALLBACK_BLOG_IMAGES = [
+  '/assets/images/blog/cpap-daily-usage-hours-guide.png',
+  '/assets/images/blog/cpap-cleaning-guide.png',
+  '/assets/images/blog/choose-cpap-mask-guide.png',
+  '/assets/images/blog/cpap-sleep-comfort.png',
+  '/assets/images/blog/cpap-mask-air-leakage-causes-solutions.png',
+  '/assets/images/store/resmed-airsense-11-autoset.jpg',
+  '/assets/images/store/resmed-airsense-10-autoset.jpg',
+  '/assets/images/store/yuwell-auto-cpap.png'
+];
 
 const INTERNAL_LINK_STRATEGY = [
   {
@@ -120,6 +130,11 @@ function stripMarkdown(markdown = '') {
 
 function readingTime(markdown = '') {
   return Math.max(1, Math.round(stripMarkdown(markdown).length / 180));
+}
+
+function fallbackFeaturedImage(seed = '') {
+  const hash = Array.from(String(seed || '')).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return FALLBACK_BLOG_IMAGES[hash % FALLBACK_BLOG_IMAGES.length];
 }
 
 function seoScore(article) {
@@ -375,7 +390,7 @@ function fallbackArticle(topic, siteData, nowIso) {
     excerpt: `مقال عربي مبسط يشرح: ${topic}`,
     category,
     tags: [category, 'Respira Tech', 'أجهزة النوم'],
-    featured_image: '/assets/images/store/respira-tech-logo.png',
+    featured_image: fallbackFeaturedImage(slug || topic),
     featured_image_prompt: buildImagePrompt(topic, category),
     content_html: '',
     content_markdown,
@@ -528,7 +543,7 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
   return {
     ...parsed,
     slug: slugify(parsed.slug || parsed.title_ar || topic),
-    featured_image: '/assets/images/store/respira-tech-logo.png',
+    featured_image: fallbackFeaturedImage(parsed.slug || parsed.title_ar || topic),
     featured_image_prompt: buildImagePrompt(parsed.title_ar || topic, category),
     content_html: '',
     cta_button_url: `https://wa.me/${env.WHATSAPP_NUMBER || siteData.site.whatsapp_number}`,
@@ -545,16 +560,17 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
 }
 
 async function generateFeaturedImage({ article, env }) {
-  if (!env.OPENAI_API_KEY) return '/assets/images/store/respira-tech-logo.png';
+  if (!env.OPENAI_API_KEY) return fallbackFeaturedImage(article.slug || article.title_ar);
   if (String(env.GENERATE_BLOG_IMAGES || 'true').toLowerCase() === 'false') {
-    return '/assets/images/store/respira-tech-logo.png';
+    return fallbackFeaturedImage(article.slug || article.title_ar);
   }
 
   fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
   const fileName = `${article.slug}.png`;
   const filePath = path.join(BLOG_IMAGES_DIR, fileName);
-  const preferred = env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
-  const modelCandidates = [preferred, 'dall-e-3'].filter((model, index, arr) => model && arr.indexOf(model) === index);
+  const preferred = env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini';
+  const modelCandidates = [preferred, 'gpt-image-1-mini', 'gpt-image-1', 'dall-e-3']
+    .filter((model, index, arr) => model && arr.indexOf(model) === index);
 
   let lastError = null;
   for (const model of modelCandidates) {
@@ -650,7 +666,7 @@ async function buildArticle(topicItem, env, siteData) {
   try {
     article.featured_image = await generateFeaturedImage({ article, env });
   } catch (error) {
-    article.featured_image = '/assets/images/store/respira-tech-logo.png';
+    article.featured_image = fallbackFeaturedImage(article.slug || topic);
     appendLog({
       type: 'openai_image_error',
       topic,

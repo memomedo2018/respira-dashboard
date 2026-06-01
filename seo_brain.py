@@ -35,6 +35,16 @@ BUILD_SCRIPT = BASE_DIR / "build_content.py"
 GSC_SCOPES = ["https://www.googleapis.com/auth/webmasters"]
 ARTICLE_MIN_WORDS = int(os.getenv("ARTICLE_MIN_WORDS", os.getenv("BLOG_ARTICLE_MIN_WORDS", "1600")) or "1600")
 ARTICLE_TARGET_WORDS = int(os.getenv("ARTICLE_TARGET_WORDS", os.getenv("BLOG_ARTICLE_TARGET_WORDS", "1800")) or "1800")
+FALLBACK_BLOG_IMAGES = [
+    "/assets/images/blog/cpap-daily-usage-hours-guide.png",
+    "/assets/images/blog/cpap-cleaning-guide.png",
+    "/assets/images/blog/choose-cpap-mask-guide.png",
+    "/assets/images/blog/cpap-sleep-comfort.png",
+    "/assets/images/blog/cpap-mask-air-leakage-causes-solutions.png",
+    "/assets/images/store/resmed-airsense-11-autoset.jpg",
+    "/assets/images/store/resmed-airsense-10-autoset.jpg",
+    "/assets/images/store/yuwell-auto-cpap.png",
+]
 
 INTERNAL_LINK_STRATEGY = [
     {"url": "/services/cpap/", "anchors": ["أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم", "أجهزة CPAP المنزلية", "جهاز CPAP المناسب لحالتك", "خدمة أجهزة CPAP من Respira Tech"]},
@@ -168,6 +178,11 @@ def strip_markdown(markdown: str) -> str:
 def estimate_reading_time(markdown: str) -> int:
     words = len(strip_markdown(markdown).split())
     return max(1, round(words / 180))
+
+
+def fallback_featured_image(seed: str = "") -> str:
+    index = sum(ord(char) for char in str(seed or "")) % len(FALLBACK_BLOG_IMAGES)
+    return FALLBACK_BLOG_IMAGES[index]
 
 
 def seo_score(article: dict) -> int:
@@ -447,7 +462,7 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     env = load_env()
     api_key = env.get("OPENAI_API_KEY")
     if not api_key or str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() == "false":
-        return "/assets/images/store/respira-tech-logo.png"
+        return fallback_featured_image(slug or title_ar)
     prompt = (
         f"Clean white medical website image, Arabic SEO article cover about {title_ar}, "
         f"{category}, CPAP/BiPAP respiratory therapy, modern bedroom or consultation setting, "
@@ -457,8 +472,8 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     file_name = f"{slug}.png"
     file_path = BLOG_IMAGES_DIR / file_name
     models = []
-    preferred = env.get("OPENAI_IMAGE_MODEL", "dall-e-3")
-    for model in [preferred, "dall-e-3", "gpt-image-1"]:
+    preferred = env.get("OPENAI_IMAGE_MODEL", "gpt-image-1-mini")
+    for model in [preferred, "gpt-image-1-mini", "gpt-image-1", "dall-e-3"]:
         if model and model not in models:
             models.append(model)
     last_error = None
@@ -496,7 +511,7 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
         "error": last_error or "image generation failed",
         "slug": slug,
     })
-    return "/assets/images/store/respira-tech-logo.png"
+    return fallback_featured_image(slug or title_ar)
 
 
 def build_article_from_url(source_url: str, publish: bool = False) -> dict:
