@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-01T11:25:37.883Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "سعر جهاز CPAP في مصر: ما العوامل التي تحدد السعر قبل الشراء؟",
+        "primary_keyword": "سعر جهاز CPAP في مصر",
+        "intent": "commercial",
+        "slug": "cpap-price-egypt-factors",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-price-egypt-factors.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-01T00:50:51.390Z",
     "generated_count": 1,
     "items": [
