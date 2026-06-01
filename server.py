@@ -105,6 +105,13 @@ def load_env() -> dict[str, str]:
     return values
 
 
+def clean_whatsapp_number(value: str | None) -> str:
+    candidate = str(value or "").strip()
+    if not candidate or "your_whatsapp" in candidate.lower():
+        return "201012566955"
+    return "".join(char for char in candidate if char.isdigit()) or "201012566955"
+
+
 def save_env(updates: dict[str, str]) -> None:
     current = {}
     if ENV_FILE.exists():
@@ -891,6 +898,12 @@ def dashboard_config() -> dict:
     site = site_data.get("site", {})
     store_data = load_json(STORE_FILE, {"config": {}})
     store_config = store_data.get("config", {}) if isinstance(store_data, dict) else {}
+    whatsapp_number = clean_whatsapp_number(
+        env.get("WHATSAPP_NUMBER")
+        or site.get("whatsapp_number")
+        or store_config.get("whatsapp_phone")
+        or "201012566955"
+    )
     return {
         "settings": {
             "openai_api_key_set": bool(env.get("OPENAI_API_KEY")),
@@ -901,7 +914,7 @@ def dashboard_config() -> dict:
             "generate_blog_images": str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() != "false",
             "openai_text_model": env.get("OPENAI_TEXT_MODEL", "gpt-4.1"),
             "openai_image_model": env.get("OPENAI_IMAGE_MODEL", "gpt-image-1-mini"),
-            "whatsapp_number": env.get("WHATSAPP_NUMBER", site.get("whatsapp_number", store_config.get("whatsapp_phone", "201012566955"))),
+            "whatsapp_number": whatsapp_number,
             "site_base_url": env.get("SITE_BASE_URL", site.get("base_url", "https://respira-tech.com")),
             "admin_password_set": bool(env.get("ADMIN_PASSWORD")),
             "cron_secret_set": bool(env.get("CRON_SECRET")),
@@ -955,7 +968,9 @@ def normalize_article(payload: dict, existing: dict | None = None) -> dict:
     article["internal_links"] = article.get("internal_links") or site_data.get("core_links", [])[:5]
     article["cta_text"] = article.get("cta_text") or "فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب."
     article["cta_button_text"] = article.get("cta_button_text") or "تواصل معنا عبر واتساب"
-    whatsapp_number = load_env().get("WHATSAPP_NUMBER") or site.get("whatsapp_number", "201012566955")
+    whatsapp_number = clean_whatsapp_number(load_env().get("WHATSAPP_NUMBER") or site.get("whatsapp_number", "201012566955"))
+    if "your_whatsapp" in str(article.get("cta_button_url") or "").lower():
+        article["cta_button_url"] = ""
     article["cta_button_url"] = article.get("cta_button_url") or f"https://wa.me/{whatsapp_number}"
     article["medical_disclaimer"] = article.get("medical_disclaimer") or site.get("medical_disclaimer", "هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص.")
     article["status"] = article.get("status") or "draft"
@@ -1055,7 +1070,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 payload.setdefault("config", {})
                 if isinstance(payload["config"], dict):
                     env = load_env()
-                    payload["config"]["whatsapp_phone"] = env.get("WHATSAPP_NUMBER", payload["config"].get("whatsapp_phone", "201012566955"))
+                    payload["config"]["whatsapp_phone"] = clean_whatsapp_number(env.get("WHATSAPP_NUMBER") or payload["config"].get("whatsapp_phone", "201012566955"))
             return self._send_json(payload)
 
         if parsed.path == "/api/health":

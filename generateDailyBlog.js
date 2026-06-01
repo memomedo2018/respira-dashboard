@@ -97,6 +97,16 @@ function loadEnv() {
   return { ...env, ...process.env };
 }
 
+function cleanWhatsappNumber(value) {
+  const candidate = String(value || '').trim();
+  if (!candidate || candidate.toLowerCase().includes('your_whatsapp')) return '201012566955';
+  return candidate.replace(/\D/g, '') || '201012566955';
+}
+
+function whatsappNumber(env, siteData) {
+  return cleanWhatsappNumber(env?.WHATSAPP_NUMBER || siteData?.site?.whatsapp_number);
+}
+
 function readJson(file, fallback = null) {
   if (!fs.existsSync(file)) return fallback;
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -419,6 +429,7 @@ function buildImagePrompt(topic, category) {
 function fallbackArticle(topic, siteData, nowIso) {
   const category = deriveCategory(topic);
   const slug = slugify(topic);
+  const contactNumber = cleanWhatsappNumber(siteData.site.whatsapp_number);
   const content_markdown = `# ${topic}
 
 هذا المقال يشرح الموضوع بلغة عربية واضحة وطبيعية، كما لو أن مختصًا يكتبه يدويًا للقارئ العربي الذي يبحث عن فهم أفضل قبل اتخاذ قرار يتعلق بالنوم أو أجهزة الدعم التنفسي المنزلي.
@@ -469,7 +480,7 @@ function fallbackArticle(topic, siteData, nowIso) {
 
 فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب.
 
-[تواصل معنا عبر واتساب](https://wa.me/${siteData.site.whatsapp_number})
+[تواصل معنا عبر واتساب](https://wa.me/${contactNumber})
 
 > ${siteData.site.medical_disclaimer}
 `;
@@ -499,7 +510,7 @@ function fallbackArticle(topic, siteData, nowIso) {
     internal_links: siteData.core_links.slice(0, 5),
     cta_text: 'فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب.',
     cta_button_text: 'تواصل معنا عبر واتساب',
-    cta_button_url: `https://wa.me/${siteData.site.whatsapp_number}`,
+    cta_button_url: `https://wa.me/${contactNumber}`,
     author: siteData.site.author,
     status: 'draft',
     published_at: null,
@@ -638,7 +649,7 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
     featured_image: fallbackFeaturedImage(parsed.slug || parsed.title_ar || topic),
     featured_image_prompt: buildImagePrompt(parsed.title_ar || topic, category),
     content_html: '',
-    cta_button_url: `https://wa.me/${env.WHATSAPP_NUMBER || siteData.site.whatsapp_number}`,
+    cta_button_url: `https://wa.me/${whatsappNumber(env, siteData)}`,
     author: siteData.site.author,
     created_at: nowIso,
     updated_at: nowIso,
@@ -767,7 +778,10 @@ async function buildArticle(topicItem, env, siteData) {
   article.internal_links = ensureInternalLinks(article, siteData);
   article.content_markdown = autoLinkMarkdown(article.content_markdown || '', article.internal_links);
   article.cta_button_text = article.cta_button_text || 'تواصل معنا عبر واتساب';
-  article.cta_button_url = article.cta_button_url || `https://wa.me/${env.WHATSAPP_NUMBER || siteData.site.whatsapp_number}`;
+  if (article.cta_button_url && article.cta_button_url.includes('your_whatsapp')) {
+    article.cta_button_url = '';
+  }
+  article.cta_button_url = article.cta_button_url || `https://wa.me/${whatsappNumber(env, siteData)}`;
   const forcePublish = String(env.FORCE_PUBLISH || '').toLowerCase();
   if (forcePublish === 'true') {
     article.status = 'published';
