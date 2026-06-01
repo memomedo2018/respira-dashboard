@@ -428,6 +428,14 @@ function renderSettings() {
   document.getElementById('settingOpenAiKey').placeholder = state.settings.openai_api_key_set ? 'المفتاح محفوظ بالفعل' : 'الصق المفتاح هنا';
   document.getElementById('settingPexelsKey').placeholder = state.settings.pexels_api_key_set ? 'مفتاح Pexels محفوظ بالفعل' : 'الصق مفتاح Pexels هنا';
   document.getElementById('settingGithubToken').placeholder = state.settings.github_sync_configured ? 'التوكن محفوظ بالفعل' : 'الصق التوكن هنا';
+  document.getElementById('settingAlertsEnabled').checked = state.settings.alerts_enabled !== false;
+  document.getElementById('settingAlertEmailTo').value = state.settings.alert_email_to || 'alihessien0@gmail.com';
+  document.getElementById('settingSmtpHost').value = state.settings.smtp_host || '';
+  document.getElementById('settingSmtpPort').value = state.settings.smtp_port || '587';
+  document.getElementById('settingSmtpUsername').value = state.settings.smtp_username || '';
+  document.getElementById('settingSmtpFrom').value = state.settings.smtp_from || state.settings.smtp_username || '';
+  document.getElementById('settingSmtpSsl').checked = !!state.settings.smtp_ssl;
+  document.getElementById('settingSmtpPassword').placeholder = state.settings.smtp_password_set ? 'باسورد SMTP محفوظ بالفعل' : 'الصق باسورد SMTP هنا';
 }
 
 function renderLogs() {
@@ -849,6 +857,14 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
     github_branch: document.getElementById('settingGithubBranch').value.trim(),
     github_token: document.getElementById('settingGithubToken').value.trim(),
     auto_push_changes: document.getElementById('settingAutoPushChanges').checked,
+    alerts_enabled: document.getElementById('settingAlertsEnabled').checked,
+    alert_email_to: document.getElementById('settingAlertEmailTo').value.trim(),
+    smtp_host: document.getElementById('settingSmtpHost').value.trim(),
+    smtp_port: document.getElementById('settingSmtpPort').value.trim(),
+    smtp_username: document.getElementById('settingSmtpUsername').value.trim(),
+    smtp_password: document.getElementById('settingSmtpPassword').value.trim(),
+    smtp_from: document.getElementById('settingSmtpFrom').value.trim(),
+    smtp_ssl: document.getElementById('settingSmtpSsl').checked,
     seo_brain_auto: document.getElementById('settingSeoBrainAuto')?.checked,
     seo_brain_runs_per_day: Number(document.getElementById('settingSeoRuns')?.value) || 2,
     gsc_site_url: document.getElementById('settingGscSiteUrl')?.value.trim()
@@ -859,8 +875,22 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
   document.getElementById('settingAdminPassword').value = '';
   document.getElementById('settingCronSecret').value = '';
   document.getElementById('settingGithubToken').value = '';
+  document.getElementById('settingSmtpPassword').value = '';
   await refreshDashboard();
   window.alert('تم حفظ الإعدادات.');
+});
+
+document.getElementById('testAlertsBtn').addEventListener('click', async () => {
+  const response = await adminApi('/api/alerts/test', {
+    method: 'POST',
+    body: JSON.stringify({ action: 'manual_alert_read_error_test' })
+  });
+  const latest = Array.isArray(response.alert_logs) ? response.alert_logs[0] : null;
+  const status = latest?.status ? `\nحالة آخر تنبيه: ${latest.status}` : '';
+  const reason = latest?.result?.reason ? `\nالسبب: ${latest.result.reason}` : '';
+  const error = latest?.result?.error ? `\nخطأ الإرسال: ${latest.result.error}` : '';
+  await refreshDashboard();
+  window.alert(`تم تشغيل خطأ قراءة اختباري.${status}${reason}${error}`);
 });
 
 async function runSeoBrain(action, extra = {}) {

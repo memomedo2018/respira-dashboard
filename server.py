@@ -7,10 +7,13 @@ import json
 import os
 import re
 import shutil
+import smtplib
+import ssl
 import subprocess
 import threading
 import requests
 from datetime import datetime
+from email.message import EmailMessage
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
@@ -32,6 +35,7 @@ GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
 SEO_AUDIT_FILE = BASE_DIR / "data" / "seo_audit.json"
 SEO_BRAIN_LOG_FILE = BASE_DIR / "data" / "seo_brain_log.json"
 ACTIVITY_LOG_FILE = BASE_DIR / "data" / "dashboard_activity_log.json"
+ALERT_LOG_FILE = BASE_DIR / "data" / "alert_log.json"
 PRODUCT_SCHEMA_FILE = BASE_DIR / "data" / "product-schema.json"
 AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
 SITEMAP_FILE = BASE_DIR / "sitemap.xml"
@@ -47,6 +51,7 @@ SYNC_PATHS = [
     SEO_AUDIT_FILE,
     SEO_BRAIN_LOG_FILE,
     ACTIVITY_LOG_FILE,
+    ALERT_LOG_FILE,
     PRODUCT_SCHEMA_FILE,
     AI_CATALOG_FILE,
     BASE_DIR / "blog",
@@ -192,6 +197,96 @@ def read_activity_logs(limit: int = 100) -> list[dict]:
     return logs[:limit]
 
 
+def append_alert_log(entry: dict) -> dict:
+    logs = load_json(ALERT_LOG_FILE, [])
+    if not isinstance(logs, list):
+        logs = []
+    payload = {"created_at": datetime.utcnow().isoformat(), **entry}
+    logs.insert(0, payload)
+    save_json(ALERT_LOG_FILE, logs[:200])
+    return payload
+
+
+def _public_env(env: dict[str, str]) -> dict[str, str]:
+    hidden = ("KEY", "TOKEN", "SECRET", "PASSWORD", "CREDENTIAL")
+    return {key: ("***" if any(part in key.upper() for part in hidden) else value) for key, value in env.items()}
+
+
+def send_email_alert(subject: str, message: str, env: dict[str, str] | None = None) -> dict:
+    env = env or load_env()
+    if str(env.get("ALERTS_ENABLED", "true")).lower() == "false":
+        return {"ok": False, "skipped": True, "reason": "alerts disabled"}
+
+    recipients = [
+        item.strip()
+        for item in str(env.get("ALERT_EMAIL_TO") or "alihessien0@gmail.com").split(",")
+        if item.strip()
+    ]
+    smtp_host = str(env.get("SMTP_HOST") or "").strip()
+    smtp_user = str(env.get("SMTP_USERNAME") or "").strip()
+    smtp_password = str(env.get("SMTP_PASSWORD") or "").strip()
+    smtp_from = str(env.get("SMTP_FROM") or smtp_user or "alerts@respira-tech.com").strip()
+    smtp_port = int(env.get("SMTP_PORT") or ("465" if env.get("SMTP_SSL") == "true" else "587"))
+
+    if not recipients:
+        return {"ok": False, "skipped": True, "reason": "missing ALERT_EMAIL_TO"}
+    if not smtp_host or not smtp_user or not smtp_password:
+        return {"ok": False, "skipped": True, "reason": "SMTP not configured"}
+
+    email = EmailMessage()
+    email["Subject"] = subject
+    email["From"] = smtp_from
+    email["To"] = ", ".join(recipients)
+    email.set_content(message)
+
+    if str(env.get("SMTP_SSL", "false")).lower() == "true" or smtp_port == 465:
+        with smtplib.SMTP_SSL(smtp_host, smtp_port, context=ssl.create_default_context(), timeout=30) as smtp:
+            smtp.login(smtp_user, smtp_password)
+            smtp.send_message(email)
+    else:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as smtp:
+            smtp.ehlo()
+            smtp.starttls(context=ssl.create_default_context())
+            smtp.login(smtp_user, smtp_password)
+            smtp.send_message(email)
+
+    return {"ok": True, "recipients": recipients}
+
+
+def notify_error_alert(action: str, details: dict) -> dict:
+    env = load_env()
+    if str(env.get("ALERTS_ENABLED", "true")).lower() == "false":
+        result = {"ok": False, "skipped": True, "reason": "alerts disabled"}
+        append_alert_log({"action": action, "status": "skipped", "result": result})
+        return result
+
+    safe_details = {
+        key: value
+        for key, value in details.items()
+        if key not in {"password", "token", "secret", "api_key", "credentials"}
+    }
+    subject = f"[Respira Tech] Error: {action}"
+    body = "\n".join([
+        "Respira Tech automatic alert",
+        f"Action: {action}",
+        f"Time UTC: {datetime.utcnow().isoformat()}",
+        "",
+        "Details:",
+        json.dumps(safe_details, ensure_ascii=False, indent=2)[:6000],
+        "",
+        "Public env snapshot:",
+        json.dumps(_public_env({k: env.get(k, '') for k in ['SITE_BASE_URL', 'GITHUB_REPO', 'GITHUB_BRANCH', 'SHARED_HOSTING_FTP_SERVER']}), ensure_ascii=False, indent=2),
+    ])
+    try:
+        result = send_email_alert(subject, body, env)
+        append_alert_log({"action": action, "status": "sent" if result.get("ok") else "failed", "result": result})
+        return result
+    except Exception as exc:
+        result = {"ok": False, "error": str(exc)}
+        append_alert_log({"action": action, "status": "failed", "result": result})
+        return result
+
+
 def append_activity_log(action: str, status: str = "success", **details) -> dict:
     logs = load_json(ACTIVITY_LOG_FILE, [])
     if not isinstance(logs, list):
@@ -207,6 +302,8 @@ def append_activity_log(action: str, status: str = "success", **details) -> dict
         entry[key] = value
     logs.insert(0, entry)
     save_json(ACTIVITY_LOG_FILE, logs[:200])
+    if status == "error" or details.get("error") or details.get("errors"):
+        notify_error_alert(action, entry)
     return entry
 
 
@@ -821,11 +918,20 @@ def dashboard_config() -> dict:
             "ftp_password_set": bool(env.get("SHARED_HOSTING_FTP_PASSWORD")),
             "ftp_remote_dir": safe_hostinger_remote_dir(env.get("SHARED_HOSTING_FTP_REMOTE_DIR")),
             "ftp_deploy_configured": ftp_deploy_enabled(env),
+            "alerts_enabled": str(env.get("ALERTS_ENABLED", "true")).lower() != "false",
+            "alert_email_to": env.get("ALERT_EMAIL_TO", "alihessien0@gmail.com"),
+            "smtp_host": env.get("SMTP_HOST", ""),
+            "smtp_port": env.get("SMTP_PORT", "587"),
+            "smtp_username": env.get("SMTP_USERNAME", ""),
+            "smtp_password_set": bool(env.get("SMTP_PASSWORD")),
+            "smtp_from": env.get("SMTP_FROM", env.get("SMTP_USERNAME", "")),
+            "smtp_ssl": str(env.get("SMTP_SSL", "false")).lower() == "true",
         },
         "logs": read_blog_logs(),
         "articles": load_articles(),
         "seo_brain": seo_brain.current_state(),
         "activity_logs": read_activity_logs(),
+        "alert_logs": load_json(ALERT_LOG_FILE, [])[:50] if isinstance(load_json(ALERT_LOG_FILE, []), list) else [],
     }
 
 
@@ -1004,6 +1110,12 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 "articles_count": articles_count,
                 "base_dir": str(BASE_DIR),
             })
+
+        if parsed.path == "/api/alerts/logs":
+            if not self._ensure_admin():
+                return
+            logs = load_json(ALERT_LOG_FILE, [])
+            return self._send_json({"logs": logs[:50] if isinstance(logs, list) else []})
 
         return super().do_GET()
 
@@ -1262,6 +1374,26 @@ class StoreHandler(SimpleHTTPRequestHandler):
             pexels_api_key = str(payload.get("pexels_api_key") or "").strip()
             if pexels_api_key and pexels_api_key != "********":
                 updates["PEXELS_API_KEY"] = pexels_api_key
+            updates["ALERTS_ENABLED"] = "true" if payload.get("alerts_enabled", True) else "false"
+            alert_email_to = str(payload.get("alert_email_to") or "alihessien0@gmail.com").strip()
+            if alert_email_to:
+                updates["ALERT_EMAIL_TO"] = alert_email_to
+            smtp_host = str(payload.get("smtp_host") or "").strip()
+            if smtp_host:
+                updates["SMTP_HOST"] = smtp_host
+            smtp_port = str(payload.get("smtp_port") or "").strip()
+            if smtp_port:
+                updates["SMTP_PORT"] = smtp_port
+            smtp_username = str(payload.get("smtp_username") or "").strip()
+            if smtp_username:
+                updates["SMTP_USERNAME"] = smtp_username
+            smtp_password = str(payload.get("smtp_password") or "").strip()
+            if smtp_password and smtp_password != "********":
+                updates["SMTP_PASSWORD"] = smtp_password
+            smtp_from = str(payload.get("smtp_from") or "").strip()
+            if smtp_from:
+                updates["SMTP_FROM"] = smtp_from
+            updates["SMTP_SSL"] = "true" if payload.get("smtp_ssl") else "false"
             admin_password = str(payload.get("admin_password") or "").strip()
             if admin_password:
                 updates["ADMIN_PASSWORD"] = admin_password
@@ -1306,6 +1438,27 @@ class StoreHandler(SimpleHTTPRequestHandler):
             append_activity_log("dashboard_settings_update")
             sync = deploy_to_live(f"Update dashboard settings {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "config": dashboard_config(), "sync": sync})
+
+        if parsed.path == "/api/alerts/test":
+            if not self._ensure_admin():
+                return
+            try:
+                payload = self._read_json_body()
+            except ValueError:
+                payload = {}
+            action = str(payload.get("action") or "manual_test_error").strip()
+            try:
+                # Deliberate read error for end-to-end alert verification.
+                (BASE_DIR / "data" / "__missing_alert_read_test__.json").read_text(encoding="utf-8")
+            except Exception as exc:
+                entry = append_activity_log(
+                    action,
+                    status="error",
+                    error=f"deliberate read error test: {exc}",
+                    traceback="Intentional test from /api/alerts/test",
+                )
+                return self._send_json({"ok": True, "alert_triggered": True, "activity": entry, "alert_logs": load_json(ALERT_LOG_FILE, [])[:5]})
+            return self._send_json({"ok": False, "error": "test did not fail as expected"}, 500)
 
         if parsed.path == "/api/build":
             if not self._ensure_admin():

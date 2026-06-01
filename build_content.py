@@ -50,6 +50,7 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / "sitemap.xml",
     BASE_DIR / "robots.txt",
     BASE_DIR / "llms.txt",
+    BASE_DIR / "video",
     BASE_DIR / "داشبورد",
 ]
 

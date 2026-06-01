@@ -27,6 +27,13 @@ function apiUrl(path) {
   return `${API_ORIGIN}${path}`;
 }
 
+function setSystemStatus(message, type = 'info') {
+  const wrap = document.getElementById('systemStatus');
+  if (!wrap) return;
+  wrap.className = `system-status ${type}`;
+  wrap.innerHTML = message ? `<span>${escapeHTML(message)}</span>` : '';
+}
+
 async function adminApi(path, options = {}) {
   const password = adminPassword();
   const headers = {
@@ -58,13 +65,6 @@ async function publicApi(path, options = {}) {
     }
     throw new Error(`تعذر تحميل البيانات من ${path}: ${error.message}`);
   }
-}
-
-function setSystemStatus(message, type = 'info') {
-  const wrap = document.getElementById('systemStatus');
-  if (!wrap) return;
-  wrap.className = `system-status ${type}`;
-  wrap.innerHTML = message ? `<span>${escapeHTML(message)}</span>` : '';
 }
 
 function linesToArray(value) {
@@ -428,6 +428,14 @@ function renderSettings() {
   document.getElementById('settingOpenAiKey').placeholder = state.settings.openai_api_key_set ? 'المفتاح محفوظ بالفعل' : 'الصق المفتاح هنا';
   document.getElementById('settingPexelsKey').placeholder = state.settings.pexels_api_key_set ? 'مفتاح Pexels محفوظ بالفعل' : 'الصق مفتاح Pexels هنا';
   document.getElementById('settingGithubToken').placeholder = state.settings.github_sync_configured ? 'التوكن محفوظ بالفعل' : 'الصق التوكن هنا';
+  document.getElementById('settingAlertsEnabled').checked = state.settings.alerts_enabled !== false;
+  document.getElementById('settingAlertEmailTo').value = state.settings.alert_email_to || 'alihessien0@gmail.com';
+  document.getElementById('settingSmtpHost').value = state.settings.smtp_host || '';
+  document.getElementById('settingSmtpPort').value = state.settings.smtp_port || '587';
+  document.getElementById('settingSmtpUsername').value = state.settings.smtp_username || '';
+  document.getElementById('settingSmtpFrom').value = state.settings.smtp_from || state.settings.smtp_username || '';
+  document.getElementById('settingSmtpSsl').checked = !!state.settings.smtp_ssl;
+  document.getElementById('settingSmtpPassword').placeholder = state.settings.smtp_password_set ? 'باسورد SMTP محفوظ بالفعل' : 'الصق باسورد SMTP هنا';
 }
 
 function renderLogs() {
@@ -756,11 +764,46 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
     window.alert('ارفع صورة رئيسية للمنتج قبل الحفظ.');
     return;
   }
-  const existingId = productFields.editingId.value.trim();
-  state.products = [payload, ...state.products.filter((item) => item.id !== existingId && item.id !== payload.id)];
-  await saveStore();
-  clearProductForm();
-  await refreshDashboard();
+  const btn = document.getElementById('saveProductBtn');
+  const progressEl = document.getElementById('deployProgress');
+  const barFill = document.getElementById('deployBarFill');
+  const statusText = document.getElementById('deployStatusText');
+
+  function setProgress(pct, msg, state) {
+    progressEl.style.display = 'block';
+    barFill.style.width = pct + '%';
+    barFill.className = 'deploy-bar-fill' + (state ? ' ' + state : '');
+    statusText.className = 'deploy-status-text' + (state ? ' ' + state : '');
+    statusText.textContent = msg;
+  }
+
+  btn.disabled = true;
+  setProgress(10, 'جاري الحفظ...', '');
+
+  let fake = 10;
+  const timer = setInterval(() => {
+    if (fake < 72) {
+      fake += Math.random() * 4 + 1;
+      const msg = fake < 35 ? 'جاري الحفظ...' : fake < 60 ? 'جاري النشر على الموقع...' : 'جاري مسح الكاش...';
+      setProgress(Math.min(fake, 72), msg, '');
+    }
+  }, 600);
+
+  try {
+    const existingId = productFields.editingId.value.trim();
+    state.products = [payload, ...state.products.filter((item) => item.id !== existingId && item.id !== payload.id)];
+    await saveStore();
+    clearInterval(timer);
+    setProgress(100, 'تم النشر بنجاح ✓', 'success');
+    clearProductForm();
+    await refreshDashboard();
+    setTimeout(() => { progressEl.style.display = 'none'; barFill.style.width = '0%'; }, 4000);
+  } catch (err) {
+    clearInterval(timer);
+    setProgress(100, 'حدث خطأ أثناء النشر ✗', 'error');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('newProductBtn').addEventListener('click', clearProductForm);
@@ -814,6 +857,14 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
     github_branch: document.getElementById('settingGithubBranch').value.trim(),
     github_token: document.getElementById('settingGithubToken').value.trim(),
     auto_push_changes: document.getElementById('settingAutoPushChanges').checked,
+    alerts_enabled: document.getElementById('settingAlertsEnabled').checked,
+    alert_email_to: document.getElementById('settingAlertEmailTo').value.trim(),
+    smtp_host: document.getElementById('settingSmtpHost').value.trim(),
+    smtp_port: document.getElementById('settingSmtpPort').value.trim(),
+    smtp_username: document.getElementById('settingSmtpUsername').value.trim(),
+    smtp_password: document.getElementById('settingSmtpPassword').value.trim(),
+    smtp_from: document.getElementById('settingSmtpFrom').value.trim(),
+    smtp_ssl: document.getElementById('settingSmtpSsl').checked,
     seo_brain_auto: document.getElementById('settingSeoBrainAuto')?.checked,
     seo_brain_runs_per_day: Number(document.getElementById('settingSeoRuns')?.value) || 2,
     gsc_site_url: document.getElementById('settingGscSiteUrl')?.value.trim()
@@ -824,8 +875,22 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
   document.getElementById('settingAdminPassword').value = '';
   document.getElementById('settingCronSecret').value = '';
   document.getElementById('settingGithubToken').value = '';
+  document.getElementById('settingSmtpPassword').value = '';
   await refreshDashboard();
   window.alert('تم حفظ الإعدادات.');
+});
+
+document.getElementById('testAlertsBtn').addEventListener('click', async () => {
+  const response = await adminApi('/api/alerts/test', {
+    method: 'POST',
+    body: JSON.stringify({ action: 'manual_alert_read_error_test' })
+  });
+  const latest = Array.isArray(response.alert_logs) ? response.alert_logs[0] : null;
+  const status = latest?.status ? `\nحالة آخر تنبيه: ${latest.status}` : '';
+  const reason = latest?.result?.reason ? `\nالسبب: ${latest.result.reason}` : '';
+  const error = latest?.result?.error ? `\nخطأ الإرسال: ${latest.result.error}` : '';
+  await refreshDashboard();
+  window.alert(`تم تشغيل خطأ قراءة اختباري.${status}${reason}${error}`);
 });
 
 async function runSeoBrain(action, extra = {}) {
@@ -873,22 +938,10 @@ document.getElementById('generateFromUrlPublishBtn').addEventListener('click', a
 document.getElementById('uploadGscBtn').addEventListener('click', async () => {
   const content = document.getElementById('gscCredentialsJson').value.trim();
   if (!content) return window.alert('الصق JSON أولًا.');
-  const response = await adminApi('/api/seo/gsc/upload', { method: 'POST', body: JSON.stringify({ content }) });
+  await adminApi('/api/seo/gsc/upload', { method: 'POST', body: JSON.stringify({ content }) });
   document.getElementById('gscCredentialsJson').value = '';
   await refreshDashboard();
-  const email = response.service_account_email ? `\nService account: ${response.service_account_email}` : '';
-  window.alert(`تم حفظ Google Search Console credentials.${email}\nأضف هذا الإيميل كـ user في Search Console ثم اضغط إرسال Sitemap لجوجل.`);
-});
-
-document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
-  const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'https://respira-tech.com';
-  const normalizedSiteUrl = siteUrl.replace(/\/+$/, '');
-  const response = await adminApi('/api/seo/gsc/submit-sitemap', {
-    method: 'POST',
-    body: JSON.stringify({ site_url: normalizedSiteUrl, sitemap_url: `${normalizedSiteUrl}/sitemap.xml` })
-  });
-  await refreshDashboard();
-  window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
+  window.alert('تم حفظ Google Search Console credentials.');
 });
 
 document.getElementById('saveSeoSettingsBtn').addEventListener('click', async () => {
@@ -911,6 +964,19 @@ document.getElementById('saveSeoSettingsBtn').addEventListener('click', async ()
   window.alert('تم حفظ إعدادات SEO Brain.');
 });
 
+document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
+  const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'sc-domain:respira-tech.com';
+  const response = await adminApi('/api/seo/gsc/submit-sitemap', {
+    method: 'POST',
+    body: JSON.stringify({
+      site_url: siteUrl,
+      sitemap_url: `${publicBaseUrl()}/sitemap.xml`
+    })
+  });
+  await refreshDashboard();
+  window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
+});
+
 document.getElementById('rebuildBtn').addEventListener('click', async () => {
   await adminApi('/api/build', { method: 'POST', body: '{}' });
   await refreshDashboard();
@@ -918,9 +984,114 @@ document.getElementById('rebuildBtn').addEventListener('click', async () => {
 });
 
 async function generateNow(count, publishNow) {
-  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
-  await refreshDashboard();
-  window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال ${publishNow ? 'مع النشر الفوري' : 'كـ Draft'}.`);
+  const bar       = document.getElementById('generateNowBarFill');
+  const statusTxt = document.getElementById('generateNowStatusText');
+  const progress  = document.getElementById('generateNowProgress');
+  const draftBtn  = document.getElementById('generateDraftNowBtn');
+  const genBtn    = document.getElementById('generateNowBtn');
+
+  // Lock buttons, show bar
+  if (draftBtn) draftBtn.disabled = true;
+  if (genBtn)   genBtn.disabled   = true;
+  if (progress) progress.style.display = 'block';
+  if (bar)      { bar.style.width = '5%'; bar.className = 'deploy-bar-fill'; }
+  if (statusTxt) statusTxt.textContent = 'جاري توليد المقالات بـ AI...';
+
+  try {
+    const startedAt = Date.now();
+    await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
+
+    // Phase 1: Poll for blog_generate_batch success (generation takes ~30-90s)
+    if (bar) bar.style.width = '15%';
+    let genDone = false;
+    for (let i = 0; i < 30 && !genDone; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      if (bar) bar.style.width = Math.min(55, 15 + i * 2) + '%';
+      try {
+        const cfg  = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const genLog = logs.find(l =>
+          l.action === 'blog_generate_batch' &&
+          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
+        );
+        if (genLog) {
+          genDone = true;
+          if (genLog.status === 'error') {
+            if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+            if (statusTxt) statusTxt.textContent = 'فشل التوليد: ' + (genLog?.details?.error || '');
+            if (genBtn) { genBtn.textContent = 'فشل التوليد ✗'; }
+            setTimeout(() => {
+              if (draftBtn) draftBtn.disabled = false;
+              if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+              if (progress) progress.style.display = 'none';
+            }, 5000);
+            await refreshDashboard();
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (!publishNow) {
+      // Draft only — no FTP needed
+      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill success'; }
+      if (statusTxt) statusTxt.textContent = `تم توليد ${count} مقال كـ Draft ✓`;
+      await refreshDashboard();
+      setTimeout(() => {
+        if (draftBtn) draftBtn.disabled = false;
+        if (genBtn)   genBtn.disabled = false;
+        if (progress) progress.style.display = 'none';
+      }, 4000);
+      return;
+    }
+
+    // Phase 2: Poll for manual_ftp_deploy (FTP upload takes ~2 min)
+    if (bar) bar.style.width = '60%';
+    if (statusTxt) statusTxt.textContent = 'جاري رفع الملفات على الموقع عبر FTP...';
+    let ftpDone = false;
+    for (let i = 0; i < 30 && !ftpDone; i++) {
+      await new Promise(r => setTimeout(r, 6000));
+      if (bar) bar.style.width = Math.min(90, 60 + i * 2) + '%';
+      if (statusTxt) statusTxt.textContent = `جاري رفع الملفات على الموقع... (${(i+1)*6}ث)`;
+      try {
+        const cfg  = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const ftpLog = logs.find(l =>
+          l.action === 'manual_ftp_deploy' &&
+          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
+        );
+        if (ftpLog) {
+          ftpDone = true;
+          const uploaded = ftpLog?.details?.uploaded ?? '؟';
+          const isErr    = ftpLog?.status === 'error';
+          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
+          if (statusTxt) statusTxt.textContent = isErr
+            ? 'فشل الرفع: ' + (ftpLog?.details?.error || '')
+            : `تم التوليد والنشر ✓ — رُفع ${uploaded} ملف`;
+          if (genBtn) genBtn.textContent = isErr ? 'فشل النشر ✗' : 'تم ✓';
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (!ftpDone) {
+      if (bar) bar.style.width = '100%';
+      if (statusTxt) statusTxt.textContent = 'تم التوليد — تحقق من سجل النشاط للـ FTP';
+    }
+
+    await refreshDashboard();
+    setTimeout(() => {
+      if (draftBtn) draftBtn.disabled = false;
+      if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+      if (progress) progress.style.display = 'none';
+    }, 5000);
+
+  } catch (err) {
+    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+    if (statusTxt) statusTxt.textContent = 'خطأ في الاتصال: ' + (err.message || '');
+    if (draftBtn) draftBtn.disabled = false;
+    if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
+    setTimeout(() => { if (progress) progress.style.display = 'none'; }, 5000);
+  }
 }
 
 document.getElementById('generateDraftNowBtn').addEventListener('click', async () => {
@@ -940,6 +1111,91 @@ document.getElementById('generateArticleBtn').addEventListener('click', async ()
 });
 
 document.getElementById('refreshArticlesBtn').addEventListener('click', refreshDashboard);
+
+document.getElementById('deployNowBtn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('deployNowBtn');
+  const bar = document.getElementById('deployNowBarFill');
+  const statusText = document.getElementById('deployNowStatusText');
+  const progress = document.getElementById('deployNowProgress');
+
+  btn.disabled = true;
+  btn.textContent = 'جاري النشر...';
+  if (progress) progress.style.display = 'block';
+  if (bar) { bar.style.width = '0%'; bar.className = 'deploy-bar-fill'; }
+  if (statusText) statusText.textContent = 'جاري الاتصال بالسيرفر...';
+
+  // Animate bar while waiting (FTP takes ~2 min)
+  let pct = 0;
+  const stages = [
+    [15, 'جاري رفع الملفات عبر FTP...'],
+    [40, 'جاري رفع الملفات عبر FTP...'],
+    [65, 'جاري رفع الملفات عبر FTP...'],
+    [80, 'جاري مسح الكاش...'],
+    [90, 'جاري التحقق من الموقع...'],
+  ];
+  let stageIdx = 0;
+  const ticker = setInterval(() => {
+    if (stageIdx < stages.length) {
+      const [target, msg] = stages[stageIdx];
+      if (pct < target) { pct += 2; if (bar) bar.style.width = pct + '%'; }
+      else { if (statusText) statusText.textContent = msg; stageIdx++; }
+    }
+  }, 2500);
+
+  try {
+    await adminApi('/api/deploy', { method: 'POST', body: '{}' });
+
+    // Server started background deploy — poll activity log until manual_ftp_deploy appears
+    clearInterval(ticker);
+    if (statusText) statusText.textContent = 'جاري رفع الملفات عبر FTP...';
+    if (bar) bar.style.width = '30%';
+
+    const deployStarted = Date.now();
+    let done = false;
+    for (let i = 0; i < 30 && !done; i++) {
+      await new Promise(r => setTimeout(r, 6000));
+      try {
+        const cfg = await adminApi('/api/dashboard/config');
+        const logs = cfg?.activity_logs || [];
+        const deployLog = logs.find(l =>
+          l.action === 'manual_ftp_deploy' &&
+          new Date(l.created_at + 'Z').getTime() >= deployStarted - 5000
+        );
+        if (deployLog) {
+          done = true;
+          const uploaded = deployLog?.details?.uploaded ?? '؟';
+          const isErr = deployLog?.status === 'error';
+          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
+          if (statusText) statusText.textContent = isErr
+            ? 'فشل النشر: ' + (deployLog?.details?.error || '')
+            : `تم النشر بنجاح ✓ — رُفع ${uploaded} ملف + مُسح الكاش`;
+          btn.textContent = isErr ? 'فشل النشر ✗' : 'تم النشر ✓';
+          setTimeout(() => {
+            btn.textContent = 'نشر على الموقع الآن';
+            btn.disabled = false;
+            if (progress) progress.style.display = 'none';
+          }, 5000);
+        } else {
+          pct = Math.min(90, 30 + i * 3);
+          if (bar) bar.style.width = pct + '%';
+          if (statusText) statusText.textContent = `جاري رفع الملفات عبر FTP... (${i * 6}ث)`;
+        }
+      } catch { /* ignore polling error */ }
+    }
+    if (!done) {
+      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill'; }
+      if (statusText) statusText.textContent = 'انتهى — تحقق من سجل النشاط';
+      btn.textContent = 'نشر على الموقع الآن';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    clearInterval(ticker);
+    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
+    if (statusText) statusText.textContent = 'فشل الاتصال: ' + (err.message || '');
+    btn.textContent = 'فشل النشر ✗';
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; if (progress) progress.style.display = 'none'; }, 4000);
+  }
+});
 
 document.getElementById('saveArticleBtn').addEventListener('click', async () => {
   if (!state.selectedArticle) return;
@@ -983,12 +1239,5 @@ document.getElementById('deleteArticleBtn').addEventListener('click', async () =
 renderTabs();
 clearProductForm();
 refreshDashboard().catch((error) => {
-  setSystemStatus(error.message, 'error');
-  document.getElementById('metrics').innerHTML = `
-    <div class="metric error-metric">
-      <span class="label">خطأ تحميل</span>
-      <strong>راجع الاتصال</strong>
-      <small>${escapeHTML(error.message)}</small>
-    </div>
-  `;
+  document.getElementById('metrics').innerHTML = `<div class="metric"><span class="label">خطأ</span><strong>${escapeHTML(error.message)}</strong></div>`;
 });

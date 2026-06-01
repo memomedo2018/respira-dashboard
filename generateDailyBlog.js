@@ -139,10 +139,17 @@ function fallbackFeaturedImage(seed = '') {
 
 function imageSearchQuery(article = {}) {
   const source = `${article.title_ar || ''} ${article.category || ''}`.toLowerCase();
-  if (source.includes('mask') || source.includes('ماسك') || source.includes('قناع')) return 'CPAP mask';
-  if (source.includes('bipap')) return 'BiPAP machine';
-  if (source.includes('sleep') || source.includes('نوم') || source.includes('انقطاع')) return 'CPAP sleep apnea therapy';
-  return 'CPAP machine medical';
+  if (source.includes('mask') || source.includes('ماسك') || source.includes('قناع')) return 'sleep apnea mask';
+  if (source.includes('bipap')) return 'CPAP';
+  if (source.includes('sleep') || source.includes('نوم') || source.includes('انقطاع')) return 'sleep apnea';
+  return 'CPAP';
+}
+
+function imageExtension(contentType, fallback = '.jpg') {
+  if (contentType.includes('png')) return '.png';
+  if (contentType.includes('jpeg') || contentType.includes('jpg')) return '.jpg';
+  if (contentType.includes('webp')) return '.webp';
+  return fallback;
 }
 
 async function downloadRemoteImage(imageUrl, filePath) {
@@ -150,7 +157,10 @@ async function downloadRemoteImage(imageUrl, filePath) {
   if (!response.ok) throw new Error(`image download HTTP ${response.status}`);
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.startsWith('image/')) throw new Error(`not an image: ${contentType}`);
-  fs.writeFileSync(filePath, Buffer.from(await response.arrayBuffer()));
+  const ext = imageExtension(contentType, path.extname(filePath) || '.jpg');
+  const targetPath = filePath.replace(/\.[^.]+$/, ext);
+  fs.writeFileSync(targetPath, Buffer.from(await response.arrayBuffer()));
+  return targetPath;
 }
 
 async function fetchPexelsImage({ article, env, filePath }) {
@@ -164,31 +174,39 @@ async function fetchPexelsImage({ article, env, filePath }) {
   const payload = await response.json();
   const photo = (payload.photos || []).find((item) => item?.src?.large2x || item?.src?.large || item?.src?.original);
   if (!photo) return null;
-  await downloadRemoteImage(photo.src.large2x || photo.src.large || photo.src.original, filePath);
+  const savedPath = await downloadRemoteImage(photo.src.large2x || photo.src.large || photo.src.original, filePath);
   article.featured_image_credit = {
     source: 'Pexels',
     creator: photo.photographer || '',
     url: photo.url || ''
   };
-  return true;
+  return `/assets/images/blog/${path.basename(savedPath)}`;
 }
 
 async function fetchOpenverseImage({ article, filePath }) {
   const query = encodeURIComponent(imageSearchQuery(article));
-  const response = await fetch(`https://api.openverse.org/v1/images/?q=${query}&license=cc0,pdm,by&category=photograph&page_size=12`, {
+  const response = await fetch(`https://api.openverse.org/v1/images/?q=${query}&license=cc0,pdm,by,by-sa&extension=jpg,png&page_size=12`, {
     headers: { 'User-Agent': 'RespiraTechBot/1.0' }
   });
   if (!response.ok) throw new Error(`Openverse HTTP ${response.status}`);
   const payload = await response.json();
-  const image = (payload.results || []).find((item) => item?.url && !/pillow|pet/i.test(`${item.title || ''} ${item.url || ''}`));
-  if (!image) return null;
-  await downloadRemoteImage(image.url, filePath);
-  article.featured_image_credit = {
-    source: image.source || 'Openverse',
-    creator: image.creator || '',
-    url: image.foreign_landing_url || image.url || ''
-  };
-  return true;
+  const images = (payload.results || []).filter((item) => item?.url && !/pillow|pet/i.test(`${item.title || ''} ${item.url || ''}`));
+  let lastError = null;
+  for (const image of images) {
+    try {
+      const savedPath = await downloadRemoteImage(image.url, filePath);
+      article.featured_image_credit = {
+        source: image.source || 'Openverse',
+        creator: image.creator || '',
+        url: image.foreign_landing_url || image.url || ''
+      };
+      return `/assets/images/blog/${path.basename(savedPath)}`;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  if (lastError) throw lastError;
+  return null;
 }
 
 function seoScore(article) {
@@ -619,13 +637,15 @@ async function generateFeaturedImage({ article, env }) {
   const filePath = path.join(BLOG_IMAGES_DIR, fileName);
 
   try {
-    if (await fetchPexelsImage({ article, env, filePath })) return `/assets/images/blog/${fileName}`;
+    const pexelsImage = await fetchPexelsImage({ article, env, filePath });
+    if (pexelsImage) return pexelsImage;
   } catch (error) {
     appendLog({ type: 'pexels_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
   }
 
   try {
-    if (await fetchOpenverseImage({ article, filePath })) return `/assets/images/blog/${fileName}`;
+    const openverseImage = await fetchOpenverseImage({ article, filePath });
+    if (openverseImage) return openverseImage;
   } catch (error) {
     appendLog({ type: 'openverse_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
   }

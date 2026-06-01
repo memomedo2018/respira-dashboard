@@ -188,21 +188,33 @@ def fallback_featured_image(seed: str = "") -> str:
 def image_search_query(title: str = "", category: str = "") -> str:
     source = f"{title} {category}".lower()
     if "mask" in source or "ماسك" in source or "قناع" in source:
-        return "CPAP mask"
+        return "sleep apnea mask"
     if "bipap" in source:
-        return "BiPAP machine"
+        return "CPAP"
     if "sleep" in source or "نوم" in source or "انقطاع" in source:
-        return "CPAP sleep apnea therapy"
-    return "CPAP machine medical"
+        return "sleep apnea"
+    return "CPAP"
 
 
-def download_remote_image(image_url: str, file_path: Path) -> None:
+def image_extension(content_type: str, fallback: str = ".jpg") -> str:
+    if "png" in content_type:
+        return ".png"
+    if "jpeg" in content_type or "jpg" in content_type:
+        return ".jpg"
+    if "webp" in content_type:
+        return ".webp"
+    return fallback
+
+
+def download_remote_image(image_url: str, file_path: Path) -> Path:
     response = requests.get(image_url, timeout=120, headers={"User-Agent": "RespiraTechBot/1.0"})
     response.raise_for_status()
     content_type = response.headers.get("content-type", "")
     if not content_type.startswith("image/"):
         raise RuntimeError(f"not an image: {content_type}")
-    file_path.write_bytes(response.content)
+    target_path = file_path.with_suffix(image_extension(content_type, file_path.suffix or ".jpg"))
+    target_path.write_bytes(response.content)
+    return target_path
 
 
 def fetch_pexels_image(slug: str, title: str, category: str, file_path: Path, env: dict) -> dict | None:
@@ -220,8 +232,8 @@ def fetch_pexels_image(slug: str, title: str, category: str, file_path: Path, en
         src = photo.get("src") or {}
         image_url = src.get("large2x") or src.get("large") or src.get("original")
         if image_url:
-            download_remote_image(image_url, file_path)
-            return {"source": "Pexels", "creator": photo.get("photographer", ""), "url": photo.get("url", "")}
+            saved_path = download_remote_image(image_url, file_path)
+            return {"source": "Pexels", "creator": photo.get("photographer", ""), "url": photo.get("url", ""), "file_name": saved_path.name}
     return None
 
 
@@ -230,24 +242,31 @@ def fetch_openverse_image(slug: str, title: str, category: str, file_path: Path)
         "https://api.openverse.org/v1/images/",
         params={
             "q": image_search_query(title, category),
-            "license": "cc0,pdm,by",
-            "category": "photograph",
+            "license": "cc0,pdm,by,by-sa",
+            "extension": "jpg,png",
             "page_size": 12,
         },
         timeout=45,
         headers={"User-Agent": "RespiraTechBot/1.0"},
     )
     response.raise_for_status()
+    last_error = None
     for image in response.json().get("results", []):
         image_url = image.get("url")
         title_url = f"{image.get('title', '')} {image_url or ''}"
         if image_url and re.search(r"pillow|pet", title_url, re.I) is None:
-            download_remote_image(image_url, file_path)
-            return {
-                "source": image.get("source") or "Openverse",
-                "creator": image.get("creator") or "",
-                "url": image.get("foreign_landing_url") or image_url,
-            }
+            try:
+                saved_path = download_remote_image(image_url, file_path)
+                return {
+                    "source": image.get("source") or "Openverse",
+                    "creator": image.get("creator") or "",
+                    "url": image.get("foreign_landing_url") or image_url,
+                    "file_name": saved_path.name,
+                }
+            except Exception as exc:
+                last_error = exc
+    if last_error:
+        raise last_error
     return None
 
 
@@ -532,13 +551,13 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     try:
         credit = fetch_pexels_image(slug, title_ar, category, stock_file_path, env)
         if credit:
-            return f"/assets/images/blog/{stock_file_name}"
+            return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
     except Exception as exc:
         append_log({"type": "pexels_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
     try:
         credit = fetch_openverse_image(slug, title_ar, category, stock_file_path)
         if credit:
-            return f"/assets/images/blog/{stock_file_name}"
+            return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
     except Exception as exc:
         append_log({"type": "openverse_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
 

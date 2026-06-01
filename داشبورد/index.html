@@ -593,6 +593,44 @@
                   <input id="settingPexelsKey" type="password" placeholder="الصق مفتاح Pexels هنا">
                   <div class="hint">اختياري. عند حفظه ستستخدم المقالات صور Pexels مجانية وتحفظها محلياً.</div>
                 </div>
+                <label class="toggle-row">
+                  <input id="settingAlertsEnabled" type="checkbox" checked>
+                  <span>إرسال تنبيه تلقائي بالإيميل عند أخطاء المقالات أو الرفع</span>
+                </label>
+                <div class="field">
+                  <label for="settingAlertEmailTo">إيميل التنبيهات</label>
+                  <input id="settingAlertEmailTo" type="email" placeholder="alihessien0@gmail.com">
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingSmtpHost">SMTP_HOST</label>
+                    <input id="settingSmtpHost" type="text" placeholder="smtp.gmail.com">
+                  </div>
+                  <div class="field">
+                    <label for="settingSmtpPort">SMTP_PORT</label>
+                    <input id="settingSmtpPort" type="number" placeholder="587">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingSmtpUsername">SMTP_USERNAME</label>
+                    <input id="settingSmtpUsername" type="text" placeholder="example@gmail.com">
+                  </div>
+                  <div class="field">
+                    <label for="settingSmtpPassword">SMTP_PASSWORD</label>
+                    <input id="settingSmtpPassword" type="password" placeholder="اتركه فارغاً إذا كان محفوظاً">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="settingSmtpFrom">SMTP_FROM</label>
+                    <input id="settingSmtpFrom" type="email" placeholder="alerts@respira-tech.com">
+                  </div>
+                  <label class="toggle-row">
+                    <input id="settingSmtpSsl" type="checkbox">
+                    <span>استخدام SSL مباشر للمنفذ 465</span>
+                  </label>
+                </div>
                 <div class="field-row">
                   <div class="field">
                     <label for="settingTextModel">موديل الكتابة</label>
@@ -643,6 +681,7 @@
                 </label>
                 <div class="toolbar">
                   <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
+                  <button class="btn" id="testAlertsBtn" type="button">اختبار تنبيه الإيميل</button>
                   <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
                 </div>
               </div>
