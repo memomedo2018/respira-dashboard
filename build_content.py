@@ -154,7 +154,7 @@ def markdown_to_html(markdown: str) -> str:
             if in_list:
                 html_parts.append("</ul>")
                 in_list = False
-            html_parts.append(f"<h1>{format_inline(line[2:])}</h1>")
+            html_parts.append(f"<h2>{format_inline(line[2:])}</h2>")
             continue
 
         if line.startswith("- ") or line.startswith("* "):
@@ -588,6 +588,18 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
             for item in related
         ) + "</div></section>"
 
+    image_credit_markup = ""
+    image_credit = article.get("featured_image_credit") or {}
+    if image_credit.get("source"):
+        creator = image_credit.get("creator") or image_credit.get("source")
+        source = image_credit.get("source")
+        url = image_credit.get("url") or ""
+        credit_text = f"الصورة: {creator} / {source}"
+        if url:
+            image_credit_markup = f'<a class="image-credit" href="{html.escape(url)}" target="_blank" rel="noopener nofollow">{html.escape(credit_text)}</a>'
+        else:
+            image_credit_markup = f'<div class="image-credit">{html.escape(credit_text)}</div>'
+
     faq_schema = []
     if article.get("faq"):
         faq_schema.append({
@@ -625,6 +637,7 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <img loading="lazy" class="featured-image" src="{html.escape(article['featured_image'])}" alt="{html.escape(article['title_ar'])}">
+          {image_credit_markup}
           <div class="toc-card">
             <h3>محتويات المقال</h3>
             <ul>{toc_markup}</ul>
@@ -649,7 +662,7 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
     """
 
     extra = """
-    .breadcrumbs{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;color:#64748b;font-size:.95rem;margin-bottom:1rem}.article-meta{margin-top:.8rem;color:#64748b;font-weight:700}.article-wrap{display:grid;grid-template-columns:310px minmax(0,1fr);gap:1.5rem}.article-sidebar{position:sticky;top:1.5rem;align-self:start}.sidebar-card{display:grid;gap:1rem}.featured-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:28px;background:#eef8fd}.toc-card,.cta-card,.content-card,.disclaimer-section{background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;box-shadow:0 18px 40px rgba(15,23,42,.06)}.toc-card,.cta-card{padding:1.2rem}.toc-card h3,.cta-card h3{margin-bottom:.75rem;color:#0f172a}.toc-card ul,.links-list{display:grid;gap:.7rem;padding-inline-start:1.2rem}.toc-card a,.links-list a{color:#0097b2}.article-main{display:grid;gap:1.5rem}.content-card{padding:1.8rem}.content-card h2{font-size:1.8rem;margin:1.8rem 0 .9rem;color:#0f172a}.content-card h3{font-size:1.35rem;margin:1.3rem 0 .7rem;color:#0f172a}.content-card p,.content-card li,.content-card blockquote{color:#475569}.content-card ul{padding-inline-start:1.4rem;display:grid;gap:.6rem}.faq-list{display:grid;gap:.75rem}.faq-item{background:#f9fcff;border:1px solid rgba(15,23,42,.08);border-radius:20px;padding:1rem}.faq-item summary{font-weight:800;cursor:pointer}.faq-item p{margin-top:.6rem}.article-section{margin-top:1.5rem}.cta-card p{color:#475569;line-height:1.9;margin-bottom:1rem}.disclaimer-section{padding:1rem 1.2rem;color:#475569}.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.related-card{display:block;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,.06)}.related-card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#eef8fd}.related-body{padding:1rem}.related-body h3{font-size:1.1rem;margin-bottom:.5rem;color:#0f172a}.related-body p{color:#64748b;font-size:.95rem}@media (max-width:960px){.article-wrap{grid-template-columns:1fr}.article-sidebar{position:static}.related-grid{grid-template-columns:1fr 1fr}}@media (max-width:768px){.related-grid{grid-template-columns:1fr}.content-card{padding:1.1rem}.toc-card,.cta-card{padding:1rem}}
+    .breadcrumbs{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;color:#64748b;font-size:.95rem;margin-bottom:1rem}.article-meta{margin-top:.8rem;color:#64748b;font-weight:700}.article-wrap{display:grid;grid-template-columns:310px minmax(0,1fr);gap:1.5rem}.article-sidebar{position:sticky;top:1.5rem;align-self:start}.sidebar-card{display:grid;gap:1rem}.featured-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:28px;background:#eef8fd}.image-credit{display:block;margin-top:-.65rem;color:#64748b;font-size:.78rem;text-align:center}.toc-card,.cta-card,.content-card,.disclaimer-section{background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;box-shadow:0 18px 40px rgba(15,23,42,.06)}.toc-card,.cta-card{padding:1.2rem}.toc-card h3,.cta-card h3{margin-bottom:.75rem;color:#0f172a}.toc-card ul,.links-list{display:grid;gap:.7rem;padding-inline-start:1.2rem}.toc-card a,.links-list a{color:#0097b2}.article-main{display:grid;gap:1.5rem}.content-card{padding:1.8rem}.content-card h2{font-size:1.8rem;margin:1.8rem 0 .9rem;color:#0f172a}.content-card h3{font-size:1.35rem;margin:1.3rem 0 .7rem;color:#0f172a}.content-card p,.content-card li,.content-card blockquote{color:#475569}.content-card ul{padding-inline-start:1.4rem;display:grid;gap:.6rem}.faq-list{display:grid;gap:.75rem}.faq-item{background:#f9fcff;border:1px solid rgba(15,23,42,.08);border-radius:20px;padding:1rem}.faq-item summary{font-weight:800;cursor:pointer}.faq-item p{margin-top:.6rem}.article-section{margin-top:1.5rem}.cta-card p{color:#475569;line-height:1.9;margin-bottom:1rem}.disclaimer-section{padding:1rem 1.2rem;color:#475569}.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.related-card{display:block;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,.06)}.related-card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#eef8fd}.related-body{padding:1rem}.related-body h3{font-size:1.1rem;margin-bottom:.5rem;color:#0f172a}.related-body p{color:#64748b;font-size:.95rem}@media (max-width:960px){.article-wrap{grid-template-columns:1fr}.article-sidebar{position:static}.related-grid{grid-template-columns:1fr 1fr}}@media (max-width:768px){.related-grid{grid-template-columns:1fr}.content-card{padding:1.1rem}.toc-card,.cta-card{padding:1rem}}
     """
     schema = org_schema(site_data) + [article_schema] + faq_schema
     save_text(

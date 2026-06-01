@@ -389,6 +389,7 @@ function renderSettings() {
   document.getElementById('settingGithubBranch').value = state.settings.github_branch || 'main';
   document.getElementById('settingAutoPushChanges').checked = state.settings.auto_push_changes !== false;
   document.getElementById('settingOpenAiKey').placeholder = state.settings.openai_api_key_set ? 'المفتاح محفوظ بالفعل' : 'الصق المفتاح هنا';
+  document.getElementById('settingPexelsKey').placeholder = state.settings.pexels_api_key_set ? 'مفتاح Pexels محفوظ بالفعل' : 'الصق مفتاح Pexels هنا';
   document.getElementById('settingGithubToken').placeholder = state.settings.github_sync_configured ? 'التوكن محفوظ بالفعل' : 'الصق التوكن هنا';
 }
 
@@ -739,6 +740,7 @@ productFields.galleryFiles.addEventListener('change', async (event) => {
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   const payload = {
     openai_api_key: document.getElementById('settingOpenAiKey').value.trim(),
+    pexels_api_key: document.getElementById('settingPexelsKey').value.trim(),
     auto_publish_blogs: document.getElementById('settingAutoPublish').checked,
     daily_blog_posts: Number(document.getElementById('settingDailyCount').value) || 2,
     generate_blog_images: document.getElementById('settingGenerateImages').checked,
@@ -758,6 +760,7 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
   };
   await adminApi('/api/dashboard/config', { method: 'POST', body: JSON.stringify(payload) });
   document.getElementById('settingOpenAiKey').value = '';
+  document.getElementById('settingPexelsKey').value = '';
   document.getElementById('settingAdminPassword').value = '';
   document.getElementById('settingCronSecret').value = '';
   document.getElementById('settingGithubToken').value = '';

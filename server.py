@@ -796,6 +796,7 @@ def dashboard_config() -> dict:
         "settings": {
             "openai_api_key_set": bool(env.get("OPENAI_API_KEY")),
             "openai_api_key_masked": "********" if env.get("OPENAI_API_KEY") else "",
+            "pexels_api_key_set": bool(env.get("PEXELS_API_KEY")),
             "auto_publish_blogs": str(env.get("AUTO_PUBLISH_BLOGS", "false")).lower() == "true",
             "daily_blog_posts": int(env.get("DAILY_BLOG_POSTS", "2") or "2"),
             "generate_blog_images": str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() != "false",
@@ -1258,6 +1259,9 @@ class StoreHandler(SimpleHTTPRequestHandler):
             api_key = str(payload.get("openai_api_key") or "").strip()
             if api_key and api_key != "********":
                 updates["OPENAI_API_KEY"] = api_key
+            pexels_api_key = str(payload.get("pexels_api_key") or "").strip()
+            if pexels_api_key and pexels_api_key != "********":
+                updates["PEXELS_API_KEY"] = pexels_api_key
             admin_password = str(payload.get("admin_password") or "").strip()
             if admin_password:
                 updates["ADMIN_PASSWORD"] = admin_password

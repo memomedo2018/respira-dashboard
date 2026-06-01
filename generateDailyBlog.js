@@ -137,6 +137,60 @@ function fallbackFeaturedImage(seed = '') {
   return FALLBACK_BLOG_IMAGES[hash % FALLBACK_BLOG_IMAGES.length];
 }
 
+function imageSearchQuery(article = {}) {
+  const source = `${article.title_ar || ''} ${article.category || ''}`.toLowerCase();
+  if (source.includes('mask') || source.includes('ماسك') || source.includes('قناع')) return 'CPAP mask';
+  if (source.includes('bipap')) return 'BiPAP machine';
+  if (source.includes('sleep') || source.includes('نوم') || source.includes('انقطاع')) return 'CPAP sleep apnea therapy';
+  return 'CPAP machine medical';
+}
+
+async function downloadRemoteImage(imageUrl, filePath) {
+  const response = await fetch(imageUrl, { headers: { 'User-Agent': 'RespiraTechBot/1.0' } });
+  if (!response.ok) throw new Error(`image download HTTP ${response.status}`);
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.startsWith('image/')) throw new Error(`not an image: ${contentType}`);
+  fs.writeFileSync(filePath, Buffer.from(await response.arrayBuffer()));
+}
+
+async function fetchPexelsImage({ article, env, filePath }) {
+  const key = env.PEXELS_API_KEY;
+  if (!key) return null;
+  const query = encodeURIComponent(imageSearchQuery(article));
+  const response = await fetch(`https://api.pexels.com/v1/search?query=${query}&orientation=landscape&per_page=12`, {
+    headers: { Authorization: key, 'User-Agent': 'RespiraTechBot/1.0' }
+  });
+  if (!response.ok) throw new Error(`Pexels HTTP ${response.status}`);
+  const payload = await response.json();
+  const photo = (payload.photos || []).find((item) => item?.src?.large2x || item?.src?.large || item?.src?.original);
+  if (!photo) return null;
+  await downloadRemoteImage(photo.src.large2x || photo.src.large || photo.src.original, filePath);
+  article.featured_image_credit = {
+    source: 'Pexels',
+    creator: photo.photographer || '',
+    url: photo.url || ''
+  };
+  return true;
+}
+
+async function fetchOpenverseImage({ article, filePath }) {
+  const query = encodeURIComponent(imageSearchQuery(article));
+  const response = await fetch(`https://api.openverse.org/v1/images/?q=${query}&license=cc0,pdm,by&category=photograph&page_size=12`, {
+    headers: { 'User-Agent': 'RespiraTechBot/1.0' }
+  });
+  if (!response.ok) throw new Error(`Openverse HTTP ${response.status}`);
+  const payload = await response.json();
+  const image = (payload.results || []).find((item) => item?.url && !/pillow|pet/i.test(`${item.title || ''} ${item.url || ''}`));
+  if (!image) return null;
+  await downloadRemoteImage(image.url, filePath);
+  article.featured_image_credit = {
+    source: image.source || 'Openverse',
+    creator: image.creator || '',
+    url: image.foreign_landing_url || image.url || ''
+  };
+  return true;
+}
+
 function seoScore(article) {
   const markdown = article.content_markdown || '';
   const words = stripMarkdown(markdown).length;
@@ -560,6 +614,22 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
 }
 
 async function generateFeaturedImage({ article, env }) {
+  fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
+  const fileName = `${article.slug}.jpg`;
+  const filePath = path.join(BLOG_IMAGES_DIR, fileName);
+
+  try {
+    if (await fetchPexelsImage({ article, env, filePath })) return `/assets/images/blog/${fileName}`;
+  } catch (error) {
+    appendLog({ type: 'pexels_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
+  }
+
+  try {
+    if (await fetchOpenverseImage({ article, filePath })) return `/assets/images/blog/${fileName}`;
+  } catch (error) {
+    appendLog({ type: 'openverse_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
+  }
+
   if (!env.OPENAI_API_KEY) return fallbackFeaturedImage(article.slug || article.title_ar);
   if (String(env.GENERATE_BLOG_IMAGES || 'true').toLowerCase() === 'false') {
     return fallbackFeaturedImage(article.slug || article.title_ar);
@@ -568,9 +638,8 @@ async function generateFeaturedImage({ article, env }) {
     return fallbackFeaturedImage(article.slug || article.title_ar);
   }
 
-  fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
-  const fileName = `${article.slug}.png`;
-  const filePath = path.join(BLOG_IMAGES_DIR, fileName);
+  const aiFileName = `${article.slug}.png`;
+  const aiFilePath = path.join(BLOG_IMAGES_DIR, aiFileName);
   const preferred = env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini';
   const modelCandidates = [preferred, 'gpt-image-1-mini', 'gpt-image-1', 'dall-e-3']
     .filter((model, index, arr) => model && arr.indexOf(model) === index);
@@ -604,8 +673,9 @@ async function generateFeaturedImage({ article, env }) {
     const imageBase64 = payload?.data?.[0]?.b64_json;
     const imageUrl = payload?.data?.[0]?.url;
     if (imageBase64) {
-      fs.writeFileSync(filePath, Buffer.from(imageBase64, 'base64'));
-      return `/assets/images/blog/${fileName}`;
+      fs.writeFileSync(aiFilePath, Buffer.from(imageBase64, 'base64'));
+      article.featured_image_credit = { source: 'OpenAI', creator: '', url: '' };
+      return `/assets/images/blog/${aiFileName}`;
     }
     if (imageUrl) {
       const imageResponse = await fetch(imageUrl);
@@ -614,8 +684,9 @@ async function generateFeaturedImage({ article, env }) {
         continue;
       }
       const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-      fs.writeFileSync(filePath, imageBuffer);
-      return `/assets/images/blog/${fileName}`;
+      fs.writeFileSync(aiFilePath, imageBuffer);
+      article.featured_image_credit = { source: 'OpenAI', creator: '', url: '' };
+      return `/assets/images/blog/${aiFileName}`;
     }
     lastError = `OpenAI image error (${model}): empty image payload`;
   }

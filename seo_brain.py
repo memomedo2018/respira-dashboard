@@ -185,6 +185,72 @@ def fallback_featured_image(seed: str = "") -> str:
     return FALLBACK_BLOG_IMAGES[index]
 
 
+def image_search_query(title: str = "", category: str = "") -> str:
+    source = f"{title} {category}".lower()
+    if "mask" in source or "ماسك" in source or "قناع" in source:
+        return "CPAP mask"
+    if "bipap" in source:
+        return "BiPAP machine"
+    if "sleep" in source or "نوم" in source or "انقطاع" in source:
+        return "CPAP sleep apnea therapy"
+    return "CPAP machine medical"
+
+
+def download_remote_image(image_url: str, file_path: Path) -> None:
+    response = requests.get(image_url, timeout=120, headers={"User-Agent": "RespiraTechBot/1.0"})
+    response.raise_for_status()
+    content_type = response.headers.get("content-type", "")
+    if not content_type.startswith("image/"):
+        raise RuntimeError(f"not an image: {content_type}")
+    file_path.write_bytes(response.content)
+
+
+def fetch_pexels_image(slug: str, title: str, category: str, file_path: Path, env: dict) -> dict | None:
+    api_key = env.get("PEXELS_API_KEY")
+    if not api_key:
+        return None
+    response = requests.get(
+        "https://api.pexels.com/v1/search",
+        params={"query": image_search_query(title, category), "orientation": "landscape", "per_page": 12},
+        timeout=45,
+        headers={"Authorization": api_key, "User-Agent": "RespiraTechBot/1.0"},
+    )
+    response.raise_for_status()
+    for photo in response.json().get("photos", []):
+        src = photo.get("src") or {}
+        image_url = src.get("large2x") or src.get("large") or src.get("original")
+        if image_url:
+            download_remote_image(image_url, file_path)
+            return {"source": "Pexels", "creator": photo.get("photographer", ""), "url": photo.get("url", "")}
+    return None
+
+
+def fetch_openverse_image(slug: str, title: str, category: str, file_path: Path) -> dict | None:
+    response = requests.get(
+        "https://api.openverse.org/v1/images/",
+        params={
+            "q": image_search_query(title, category),
+            "license": "cc0,pdm,by",
+            "category": "photograph",
+            "page_size": 12,
+        },
+        timeout=45,
+        headers={"User-Agent": "RespiraTechBot/1.0"},
+    )
+    response.raise_for_status()
+    for image in response.json().get("results", []):
+        image_url = image.get("url")
+        title_url = f"{image.get('title', '')} {image_url or ''}"
+        if image_url and re.search(r"pillow|pet", title_url, re.I) is None:
+            download_remote_image(image_url, file_path)
+            return {
+                "source": image.get("source") or "Openverse",
+                "creator": image.get("creator") or "",
+                "url": image.get("foreign_landing_url") or image_url,
+            }
+    return None
+
+
 def seo_score(article: dict) -> int:
     markdown = article.get("content_markdown", "")
     checks = [
@@ -460,6 +526,22 @@ def generate_openai_json(system_prompt: str, user_prompt: str, schema: dict) -> 
 
 def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     env = load_env()
+    BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+    stock_file_name = f"{slug}.jpg"
+    stock_file_path = BLOG_IMAGES_DIR / stock_file_name
+    try:
+        credit = fetch_pexels_image(slug, title_ar, category, stock_file_path, env)
+        if credit:
+            return f"/assets/images/blog/{stock_file_name}"
+    except Exception as exc:
+        append_log({"type": "pexels_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
+    try:
+        credit = fetch_openverse_image(slug, title_ar, category, stock_file_path)
+        if credit:
+            return f"/assets/images/blog/{stock_file_name}"
+    except Exception as exc:
+        append_log({"type": "openverse_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
+
     api_key = env.get("OPENAI_API_KEY")
     if not api_key or str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() == "false":
         return fallback_featured_image(slug or title_ar)
@@ -470,7 +552,6 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
         f"{category}, CPAP/BiPAP respiratory therapy, modern bedroom or consultation setting, "
         "soft daylight, premium healthcare, realistic, no text, no logos, no watermark."
     )
-    BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     file_name = f"{slug}.png"
     file_path = BLOG_IMAGES_DIR / file_name
     models = []
