@@ -1,5 +1,12 @@
 [
   {
+    "action": "blog_generate_batch",
+    "status": "success",
+    "created_at": "2026-06-01T00:50:51.396592",
+    "generated_count": 1,
+    "publish_now": true
+  },
+  {
     "action": "dashboard_settings_update",
     "status": "success",
     "created_at": "2026-06-01T00:27:00.525817"
