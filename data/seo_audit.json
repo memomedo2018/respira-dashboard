@@ -1,11 +1,11 @@
 {
-  "created_at": "2026-05-31T21:01:26.984962",
+  "created_at": "2026-06-01T00:53:25.612580",
   "site_base_url": "https://respira-tech.com",
   "pages": [
     {
       "url": "https://respira-tech.com/",
       "status": 200,
-      "load_ms": 549,
+      "load_ms": 598,
       "html_kb": 30.0,
       "has_title": true,
       "has_meta_description": true,
@@ -15,7 +15,7 @@
     {
       "url": "https://respira-tech.com/store/",
       "status": 200,
-      "load_ms": 519,
+      "load_ms": 531,
       "html_kb": 38.1,
       "has_title": true,
       "has_meta_description": true,
@@ -25,8 +25,8 @@
     {
       "url": "https://respira-tech.com/blog/",
       "status": 200,
-      "load_ms": 503,
-      "html_kb": 26.7,
+      "load_ms": 514,
+      "html_kb": 29.5,
       "has_title": true,
       "has_meta_description": true,
       "has_canonical": true,
@@ -35,7 +35,7 @@
     {
       "url": "https://respira-tech.com/services/",
       "status": 200,
-      "load_ms": 508,
+      "load_ms": 502,
       "html_kb": 16.6,
       "has_title": true,
       "has_meta_description": true,
@@ -45,8 +45,8 @@
     {
       "url": "https://respira-tech.com/contact/",
       "status": 200,
-      "load_ms": 500,
-      "html_kb": 16.2,
+      "load_ms": 496,
+      "html_kb": 16.3,
       "has_title": true,
       "has_meta_description": true,
       "has_canonical": true,
@@ -54,10 +54,12 @@
     }
   ],
   "content": {
-    "articles_total": 23,
-    "published_total": 9,
-    "draft_total": 14,
-    "logo_featured_images": [],
+    "articles_total": 22,
+    "published_total": 10,
+    "draft_total": 12,
+    "logo_featured_images": [
+      "best-cpap-machine-egypt"
+    ],
     "low_score_articles": [],
     "missing_internal_links": []
   },
@@ -67,6 +69,7 @@
     "queries": []
   },
   "recommendations": [
+    "1 مقال ما زال يستخدم لوجو الموقع بدل صورة مميزة.",
     "بعض الصفحات الأساسية تحتاج مراجعة structure أو availability."
   ]
 }

@@ -56,6 +56,10 @@
       "url": "/store/"
     },
     {
+      "anchor": "أفضل جهاز CPAP في مصر: كيف تختار الجهاز المناسب لحالتك؟",
+      "url": "/blog/best-cpap-machine-egypt/"
+    },
+    {
       "anchor": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمرضى",
       "url": "/blog/choose-right-cpap-mask/"
     }
@@ -67,9 +71,9 @@
   "status": "published",
   "published_at": "2026-05-31T21:46:58.726967",
   "created_at": "2026-04-29T09:10:00+02:00",
-  "updated_at": "2026-05-31T23:13:35.076786",
+  "updated_at": "2026-06-01T00:53:22.572032",
   "reading_time": 9,
   "seo_score": 100,
   "medical_disclaimer": "هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص.",
-  "_path": "/Users/mac/Documents/projects/respiratech/المعدل/data/blog_articles/difference-between-cpap-and-bipap.json"
+  "_path": "/app/data/blog_articles/difference-between-cpap-and-bipap.json"
 }
