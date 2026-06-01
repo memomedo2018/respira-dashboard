@@ -18,6 +18,22 @@ function adminPassword() {
   return '';
 }
 
+const API_ORIGIN = window.location.hostname === 'respira-tech.com'
+  ? 'https://perfect-art-production.up.railway.app'
+  : '';
+
+function apiUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_ORIGIN}${path}`;
+}
+
+function setSystemStatus(message, type = 'info') {
+  const wrap = document.getElementById('systemStatus');
+  if (!wrap) return;
+  wrap.className = `system-status ${type}`;
+  wrap.innerHTML = message ? `<span>${escapeHTML(message)}</span>` : '';
+}
+
 async function adminApi(path, options = {}) {
   const password = adminPassword();
   const headers = {
@@ -25,7 +41,7 @@ async function adminApi(path, options = {}) {
     'X-Admin-Password': password,
     ...(options.headers || {})
   };
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch(apiUrl(path), { ...options, headers });
   if (response.status === 401) {
     window.localStorage.removeItem('respiratech_admin_password');
     throw new Error('كلمة المرور غير صحيحة');
@@ -38,9 +54,17 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
-  const response = await fetch(path, options);
-  if (!response.ok) throw new Error('تعذر تحميل البيانات');
-  return response.json();
+  try {
+    const response = await fetch(apiUrl(path), options);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  } catch (error) {
+    if (path === '/api/store') {
+      const fallback = await fetch('/data/store.json', { cache: 'no-store' });
+      if (fallback.ok) return fallback.json();
+    }
+    throw new Error(`تعذر تحميل البيانات من ${path}: ${error.message}`);
+  }
 }
 
 function linesToArray(value) {
@@ -337,7 +361,7 @@ async function uploadFiles(files) {
     filename: file.name,
     content: await readFileAsDataURL(file)
   })));
-  const response = await fetch('/api/upload', {
+  const response = await fetch(apiUrl('/api/upload'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ files: encodedFiles })
@@ -347,7 +371,7 @@ async function uploadFiles(files) {
 }
 
 async function saveStore() {
-  const response = await fetch('/api/store/save', {
+  const response = await fetch(apiUrl('/api/store/save'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -670,10 +694,15 @@ function renderArticleChecklist(article) {
 }
 
 async function refreshDashboard() {
-  const [storeData, dashboardData] = await Promise.all([
-    publicApi('/api/store'),
-    adminApi('/api/dashboard/config')
-  ]);
+  setSystemStatus('جاري تحميل بيانات الداشبورد...', 'info');
+  const storeData = await publicApi('/api/store');
+  let dashboardData;
+  try {
+    dashboardData = await adminApi('/api/dashboard/config');
+  } catch (error) {
+    setSystemStatus(`تم تحميل المتجر، لكن بيانات الإدارة لم تحمل: ${error.message}`, 'error');
+    dashboardData = { settings: {}, logs: [], articles: [], seo_brain: { settings: {}, audit: {}, logs: [] }, activity_logs: [] };
+  }
 
   state.storeConfig = storeData.config || {};
   state.categories = Array.isArray(storeData.categories) ? storeData.categories : [];
@@ -700,6 +729,11 @@ async function refreshDashboard() {
     selectArticle(state.articles[0]);
   } else {
     renderArticleChecklist({});
+  }
+  if (!dashboardData.settings || !Object.keys(dashboardData.settings).length) {
+    setSystemStatus('بيانات المتجر ظاهرة، لكن وظائف الإدارة تحتاج كلمة مرور صحيحة واتصال Railway.', 'error');
+  } else {
+    setSystemStatus('الداشبورد جاهز ومتصل بالـ API.', 'success');
   }
 }
 
