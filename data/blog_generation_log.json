@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-02T10:16:27.226Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "جهاز CPAP للبيع: أسئلة مهمة قبل شراء جهاز التنفس المنزلي",
+        "primary_keyword": "جهاز CPAP للبيع",
+        "intent": "transactional",
+        "slug": "cpap-for-sale-egypt-guide",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-for-sale-egypt-guide.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-01T11:25:37.883Z",
     "generated_count": 1,
     "items": [
