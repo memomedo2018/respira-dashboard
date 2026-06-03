@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-03T10:52:08.069Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "أفضل ماسك CPAP في مصر: كيف تختار النوع والمقاس المناسب؟",
+        "primary_keyword": "أفضل ماسك CPAP في مصر",
+        "intent": "commercial",
+        "slug": "best-cpap-mask-egypt-selection-guide",
+        "status": "published",
+        "featured_image": "/assets/images/blog/best-cpap-mask-egypt-selection-guide.jpg"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-02T10:16:27.226Z",
     "generated_count": 1,
     "items": [
