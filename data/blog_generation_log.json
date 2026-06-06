@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-06T08:29:45.716Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "تسريب الهواء من ماسك CPAP: الأسباب والحلول قبل تغيير القناع",
+        "primary_keyword": "تسريب الهواء من ماسك CPAP",
+        "intent": "problem-solving",
+        "slug": "air-leak-cpap-mask-causes-solutions",
+        "status": "published",
+        "featured_image": "/assets/images/blog/air-leak-cpap-mask-causes-solutions.jpg"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-05T09:40:02.470Z",
     "generated_count": 1,
     "items": [
