@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-08T10:46:34.505Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "لا أستطيع النوم بجهاز CPAP: خطوات عملية للتعود على الجهاز",
+        "primary_keyword": "لا أستطيع النوم بجهاز CPAP",
+        "intent": "problem-solving",
+        "slug": "la-asta3ee-nawm-bigehaz-cpap-steps",
+        "status": "published",
+        "featured_image": "/assets/images/blog/la-asta3ee-nawm-bigehaz-cpap-steps.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-07T08:51:27.058Z",
     "generated_count": 1,
     "items": [
