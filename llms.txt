@@ -29,6 +29,7 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم: https://respira-tech.com/store/airfit-f40-complete-mask-system/
 
 ## Recent articles
+- الفرق بين CPAP و APAP و BiPAP: دليل مبسط قبل اختيار الجهاز: https://respira-tech.com/blog/cpap-vs-apap-vs-bipap/
 - الفرق بين Auto CPAP و Fixed CPAP: دليلك لاختيار الجهاز الأنسب لمريض انقطاع النفس أثناء النوم: https://respira-tech.com/blog/auto-cpap-vs-fixed-cpap-comparison/
 - لا أستطيع النوم بجهاز CPAP: خطوات عملية للتعود على الجهاز: https://respira-tech.com/blog/la-asta3ee-nawm-bigehaz-cpap-steps/
 - ضغط جهاز CPAP عالي أو مزعج: ماذا تفعل ومتى تراجع المختص؟: https://respira-tech.com/blog/cpap-high-pressure-issues/
@@ -40,4 +41,3 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - سعر جهاز CPAP في مصر: ما العوامل التي تحدد السعر قبل الشراء؟: https://respira-tech.com/blog/cpap-price-egypt-factors/
 - أفضل جهاز CPAP في مصر: كيف تختار الجهاز المناسب لحالتك؟: https://respira-tech.com/blog/best-cpap-machine-egypt/
 - الفرق بين CPAP و BiPAP: أيهما مناسب لحالتك؟: https://respira-tech.com/blog/difference-between-cpap-and-bipap/
-- كم ساعة يجب استخدام جهاز CPAP يوميًا؟ الدليل الشامل لمستخدمي أجهزة التنفس المنزلي: https://respira-tech.com/blog/cpap-daily-usage-hours-guide/

@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-10T09:52:27.274Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "الفرق بين CPAP و APAP و BiPAP: دليل مبسط قبل اختيار الجهاز",
+        "primary_keyword": "الفرق بين CPAP و APAP و BiPAP",
+        "intent": "comparison",
+        "slug": "cpap-vs-apap-vs-bipap",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-vs-apap-vs-bipap.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-09T09:36:08.614Z",
     "generated_count": 1,
     "items": [
