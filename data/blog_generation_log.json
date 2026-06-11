@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-11T10:17:45.978Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "متى تحتاج جهاز BiPAP بدل CPAP؟ علامات وأسئلة يجب مناقشتها مع الطبيب",
+        "primary_keyword": "متى تحتاج جهاز BiPAP",
+        "intent": "informational-commercial",
+        "slug": "bipap-vs-cpap-when-to-switch",
+        "status": "published",
+        "featured_image": "/assets/images/blog/bipap-vs-cpap-when-to-switch.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-10T09:52:27.274Z",
     "generated_count": 1,
     "items": [
