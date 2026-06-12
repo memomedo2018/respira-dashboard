@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-12T10:05:41.235Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "سعر جهاز BiPAP في مصر: لماذا يختلف عن CPAP وما الذي يجب مراجعته؟",
+        "primary_keyword": "سعر جهاز BiPAP في مصر",
+        "intent": "commercial",
+        "slug": "bipap-price-egypt-vs-cpap-guide",
+        "status": "published",
+        "featured_image": "/assets/images/blog/bipap-price-egypt-vs-cpap-guide.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-11T10:17:45.978Z",
     "generated_count": 1,
     "items": [
