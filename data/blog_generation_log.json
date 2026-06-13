@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-13T08:53:29.118Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "أعراض انقطاع النفس أثناء النوم عند الكبار: متى تحتاج فحص نوم؟",
+        "primary_keyword": "أعراض انقطاع النفس أثناء النوم",
+        "intent": "informational",
+        "slug": "sleep-apnea-symptoms-in-adults-and-when-to-ask-for-sleep-study",
+        "status": "published",
+        "featured_image": "/assets/images/blog/sleep-apnea-symptoms-in-adults-and-when-to-ask-for-sleep-study.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-12T10:05:41.235Z",
     "generated_count": 1,
     "items": [
