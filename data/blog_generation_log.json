@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-14T09:28:37.520Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "الاستيقاظ من النوم مع اختناق أو كتمة: الأسباب المحتملة والخطوة الصحيحة",
+        "primary_keyword": "الاستيقاظ من النوم مع اختناق",
+        "intent": "symptom",
+        "slug": "الاستيقاظ-من-النوم-مع-اختناق-الأسباب-المحتملة-والخطوة-الصحيحة",
+        "status": "published",
+        "featured_image": "/assets/images/blog/الاستيقاظ-من-النوم-مع-اختناق-الأسباب-المحتملة-والخطوة-الصحيحة.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-13T08:53:29.118Z",
     "generated_count": 1,
     "items": [
