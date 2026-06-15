@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-15T11:56:52.874Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "الشخير العالي مع تعب الصباح: هل يمكن أن يكون انقطاع نفس أثناء النوم؟",
+        "primary_keyword": "الشخير العالي مع تعب الصباح",
+        "intent": "symptom",
+        "slug": "الشخير-العالي-مع-تعب-الصباح-انقطاع-النفس-النوم",
+        "status": "published",
+        "featured_image": "/assets/images/blog/الشخير-العالي-مع-تعب-الصباح-انقطاع-النفس-النوم.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-14T09:28:37.520Z",
     "generated_count": 1,
     "items": [
