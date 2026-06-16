@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-16T11:04:55.326Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "صداع الصباح والنعاس أثناء النهار: علاقة الأعراض بانقطاع النفس أثناء النوم",
+        "primary_keyword": "صداع الصباح والنعاس أثناء النهار",
+        "intent": "symptom",
+        "slug": "morning-headache-daytime-sleepiness-sleep-apnea",
+        "status": "published",
+        "featured_image": "/assets/images/blog/morning-headache-daytime-sleepiness-sleep-apnea.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-15T11:56:52.874Z",
     "generated_count": 1,
     "items": [

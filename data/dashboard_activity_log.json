@@ -1,5 +1,12 @@
 [
   {
+    "action": "blog_generate_batch",
+    "status": "success",
+    "created_at": "2026-06-16T11:04:55.348647",
+    "generated_count": 1,
+    "publish_now": true
+  },
+  {
     "action": "cron_refresh_internal_links",
     "status": "success",
     "created_at": "2026-06-15T13:22:39.080744",
