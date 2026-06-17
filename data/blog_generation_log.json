@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-17T10:48:56.091Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "تنظيف جهاز CPAP يوميًا وأسبوعيًا: جدول عملي يحافظ على الجهاز والماسك",
+        "primary_keyword": "تنظيف جهاز CPAP",
+        "intent": "how-to",
+        "slug": "cpap-cleaning-daily-weekly-guide-egypt",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-cleaning-daily-weekly-guide-egypt.jpg"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-16T11:04:55.326Z",
     "generated_count": 1,
     "items": [
