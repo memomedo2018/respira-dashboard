@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-19T10:20:53.752Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "هل يمكن استخدام CPAP مع انسداد الأنف؟ نصائح مهمة قبل تغيير الجهاز",
+        "primary_keyword": "استخدام CPAP مع انسداد الأنف",
+        "intent": "problem-solving",
+        "slug": "cpap-nasal-obstruction-tips",
+        "status": "published",
+        "featured_image": "/assets/images/blog/cpap-nasal-obstruction-tips.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-18T10:15:53.219Z",
     "generated_count": 1,
     "items": [

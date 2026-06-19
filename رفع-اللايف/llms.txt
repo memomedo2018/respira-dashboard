@@ -29,6 +29,7 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم: https://respira-tech.com/store/airfit-f40-complete-mask-system/
 
 ## Recent articles
+- هل يمكن استخدام CPAP مع انسداد الأنف؟ نصائح مهمة قبل تغيير الجهاز: https://respira-tech.com/blog/cpap-nasal-obstruction-tips/
 - فلتر جهاز CPAP: متى يتغير وما علامات انسداده؟: https://respira-tech.com/blog/cpap-filter-change-signs/
 - تنظيف جهاز CPAP يوميًا وأسبوعيًا: جدول عملي يحافظ على الجهاز والماسك: https://respira-tech.com/blog/cpap-cleaning-daily-weekly-guide-egypt/
 - صداع الصباح والنعاس أثناء النهار: هل هما علامة على انقطاع النفس أثناء النوم؟: https://respira-tech.com/blog/morning-headache-daytime-sleepiness-sleep-apnea/
@@ -40,4 +41,3 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - الفرق بين CPAP و APAP و BiPAP: دليل مبسط قبل اختيار الجهاز: https://respira-tech.com/blog/cpap-vs-apap-vs-bipap/
 - الفرق بين Auto CPAP و Fixed CPAP: دليلك لاختيار الجهاز الأنسب لمريض انقطاع النفس أثناء النوم: https://respira-tech.com/blog/auto-cpap-vs-fixed-cpap-comparison/
 - لا أستطيع النوم بجهاز CPAP: خطوات عملية للتعود على الجهاز: https://respira-tech.com/blog/la-asta3ee-nawm-bigehaz-cpap-steps/
-- ضغط جهاز CPAP عالي أو مزعج: ماذا تفعل ومتى تراجع المختص؟: https://respira-tech.com/blog/cpap-high-pressure-issues/
