@@ -1,5 +1,10 @@
 [
   {
+    "action": "seo_full_run",
+    "status": "success",
+    "created_at": "2026-06-21T09:47:33.135327"
+  },
+  {
     "action": "blog_generate_batch",
     "status": "success",
     "created_at": "2026-06-21T09:43:53.355565",
