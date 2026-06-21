@@ -2,6 +2,13 @@
   {
     "action": "blog_generate_batch",
     "status": "success",
+    "created_at": "2026-06-21T09:43:53.355565",
+    "generated_count": 1,
+    "publish_now": true
+  },
+  {
+    "action": "blog_generate_batch",
+    "status": "success",
     "created_at": "2026-06-20T08:49:51.578301",
     "generated_count": 1,
     "publish_now": true

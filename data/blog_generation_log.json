@@ -1,6 +1,21 @@
 [
   {
     "type": "success",
+    "created_at": "2026-06-21T09:43:53.340Z",
+    "generated_count": 1,
+    "items": [
+      {
+        "topic": "أفضل وضعية نوم لمريض انقطاع النفس أثناء النوم ومستخدم جهاز CPAP",
+        "primary_keyword": "أفضل وضعية نوم لانقطاع النفس أثناء النوم",
+        "intent": "informational",
+        "slug": "best-sleep-position-for-sleep-apnea-and-cpap",
+        "status": "published",
+        "featured_image": "/assets/images/blog/best-sleep-position-for-sleep-apnea-and-cpap.png"
+      }
+    ]
+  },
+  {
+    "type": "success",
     "created_at": "2026-06-20T08:49:51.569Z",
     "generated_count": 1,
     "items": [
