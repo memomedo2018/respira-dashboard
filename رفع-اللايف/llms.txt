@@ -29,6 +29,7 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - ماسك ResMed AirFit F40 كامل الوجه منخفض التصميم: https://respira-tech.com/store/airfit-f40-complete-mask-system/
 
 ## Recent articles
+- هل جهاز CPAP يقلل الشخير؟ الفرق بين علاج الشخير وعلاج انقطاع النفس: https://respira-tech.com/blog/cpap-reduces-snoring-difference-snoring-osa/
 - أفضل وضعية نوم لمريض انقطاع النفس أثناء النوم ومستخدم جهاز CPAP: https://respira-tech.com/blog/best-sleep-position-for-sleep-apnea-and-cpap/
 - Full Face Mask أم Nasal Mask: أي ماسك CPAP أفضل لمن يتنفس من الفم؟: https://respira-tech.com/blog/full-face-mask-vs-nasal-mask-cpap-mouth-breathing/
 - هل يمكن استخدام CPAP مع انسداد الأنف؟ نصائح مهمة قبل تغيير الجهاز: https://respira-tech.com/blog/cpap-nasal-obstruction-tips/
@@ -40,4 +41,3 @@ Arabic respiratory therapy website focused on CPAP, BiPAP, CPAP masks, sleep apn
 - أعراض انقطاع النفس أثناء النوم عند الكبار: متى تحتاج فحص نوم؟: https://respira-tech.com/blog/sleep-apnea-symptoms-in-adults-and-when-to-ask-for-sleep-study/
 - سعر جهاز BiPAP في مصر: لماذا يختلف عن CPAP وما الذي يجب مراجعته قبل الشراء؟: https://respira-tech.com/blog/bipap-price-egypt-vs-cpap-guide/
 - متى تحتاج جهاز BiPAP بدل CPAP؟ علامات وأسئلة يجب مناقشتها مع الطبيب: https://respira-tech.com/blog/bipap-vs-cpap-when-to-switch/
-- الفرق بين CPAP و APAP و BiPAP: دليل مبسط قبل اختيار الجهاز: https://respira-tech.com/blog/cpap-vs-apap-vs-bipap/
