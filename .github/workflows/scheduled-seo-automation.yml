@@ -14,11 +14,3 @@ jobs:
         run: |
           curl --fail-with-body -X POST "https://respira-tech.com/api/cron/generate-blog" \
             -H "X-Cron-Secret: ${{ secrets.RESPIRATECH_CRON_SECRET }}"
-
-      - name: Wait for generation thread
-        run: sleep 180
-
-      - name: Run SEO Brain
-        run: |
-          curl --fail-with-body -X POST "https://respira-tech.com/api/cron/seo-brain" \
-            -H "X-Cron-Secret: ${{ secrets.RESPIRATECH_CRON_SECRET }}"

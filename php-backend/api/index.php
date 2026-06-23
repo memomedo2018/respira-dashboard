@@ -213,14 +213,18 @@ if ($method === 'POST' && $path === '/api/cron/generate-blog') {
     }
     require_once rt_data_path('php-backend/scripts/generate_blog.php');
     require_once rt_data_path('php-backend/scripts/build_content.php');
+    require_once rt_data_path('php-backend/scripts/seo_system.php');
     $payload = rt_read_optional_json_body();
     $requestedCount = $payload['count'] ?? rt_env('DAILY_BLOG_POSTS', '1');
     $count = max(1, min(5, (int)$requestedCount ?: 1));
     $dryRun = !empty($payload['dry_run']);
     $generated = rt_generate_blog_batch($count, true, $dryRun);
     $build = (count($generated) > 0 && !$dryRun) ? rt_build_content(false) : ['skipped' => true, 'reason' => $dryRun ? 'dry run' : 'no generated articles'];
-    rt_append_activity('cron_generate_blog', ['count' => $count, 'generated' => $generated, 'build' => $build]);
-    rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => true, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+    $runSeo = array_key_exists('run_seo', $payload) ? !empty($payload['run_seo']) : true;
+    $seoAction = (string)($payload['seo_action'] ?? ($dryRun ? 'quality_gate' : 'full_run'));
+    $seo = $runSeo ? rt_seo_run_brain($seoAction, $payload) : ['skipped' => true, 'reason' => 'run_seo disabled'];
+    rt_append_activity('cron_generate_blog', ['count' => $count, 'generated' => $generated, 'build' => $build, 'seo' => $seo]);
+    rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => true, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build, 'seo' => $seo]);
 }
 
 if ($method === 'POST' && $path === '/api/seo/gsc/upload') {
