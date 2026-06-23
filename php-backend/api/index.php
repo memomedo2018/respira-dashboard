@@ -207,6 +207,22 @@ if ($method === 'POST' && $path === '/api/blog/generate') {
     rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => $publishNow, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
 }
 
+if ($method === 'POST' && $path === '/api/cron/generate-blog') {
+    if (!rt_cron_authorized()) {
+        rt_json_response(['error' => 'unauthorized'], 401);
+    }
+    require_once rt_data_path('php-backend/scripts/generate_blog.php');
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    $payload = rt_read_optional_json_body();
+    $requestedCount = $payload['count'] ?? rt_env('DAILY_BLOG_POSTS', '1');
+    $count = max(1, min(5, (int)$requestedCount ?: 1));
+    $dryRun = !empty($payload['dry_run']);
+    $generated = rt_generate_blog_batch($count, true, $dryRun);
+    $build = (count($generated) > 0 && !$dryRun) ? rt_build_content(false) : ['skipped' => true, 'reason' => $dryRun ? 'dry run' : 'no generated articles'];
+    rt_append_activity('cron_generate_blog', ['count' => $count, 'generated' => $generated, 'build' => $build]);
+    rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => true, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+}
+
 if ($method === 'POST' && $path === '/api/seo/gsc/upload') {
     rt_require_admin();
     $payload = rt_read_json_body();
@@ -249,16 +265,15 @@ if ($method === 'POST' && $path === '/api/seo/brain') {
     rt_json_response($result + ['sync' => ['mode' => 'php-local']]);
 }
 
-if ($method === 'POST' && $path === '/api/seo/cron') {
-    $expected = rt_env('CRON_SECRET', '');
-    $provided = $_SERVER['HTTP_X_CRON_SECRET'] ?? ($_GET['secret'] ?? '');
-    if ($expected !== '' && !hash_equals($expected, (string)$provided)) {
+if ($method === 'POST' && ($path === '/api/seo/cron' || $path === '/api/cron/seo-brain')) {
+    if (!rt_cron_authorized()) {
         rt_json_response(['error' => 'unauthorized'], 401);
     }
     require_once rt_data_path('php-backend/scripts/build_content.php');
     require_once rt_data_path('php-backend/scripts/seo_system.php');
-    $payload = rt_read_json_body();
+    $payload = rt_read_optional_json_body();
     $result = rt_seo_run_brain((string)($payload['action'] ?? 'full_run'), $payload);
+    rt_append_activity('cron_seo_brain', ['result' => $result]);
     rt_json_response($result + ['sync' => ['mode' => 'php-local']]);
 }
 

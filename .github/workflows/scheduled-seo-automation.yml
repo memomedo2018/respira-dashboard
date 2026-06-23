@@ -12,19 +12,13 @@ jobs:
     steps:
       - name: Generate and publish daily blog article
         run: |
-          curl --fail-with-body --retry 3 --retry-all-errors --retry-delay 20 --max-time 60 \
-            -X POST "https://perfect-art-production.up.railway.app/api/blog/generate" \
-            -H "Content-Type: application/json" \
-            -H "X-Admin-Password: ${{ secrets.RESPIRATECH_ADMIN_PASSWORD }}" \
-            --data '{"count":1,"publish_now":true}'
+          curl --fail-with-body -X POST "https://respira-tech.com/api/cron/generate-blog" \
+            -H "X-Cron-Secret: ${{ secrets.RESPIRATECH_CRON_SECRET }}"
 
       - name: Wait for generation thread
-        run: sleep 240
+        run: sleep 180
 
-      - name: Start SEO Brain in background
+      - name: Run SEO Brain
         run: |
-          curl --fail-with-body --retry 3 --retry-all-errors --retry-delay 20 --max-time 60 \
-            -X POST "https://perfect-art-production.up.railway.app/api/seo/brain" \
-            -H "Content-Type: application/json" \
-            -H "X-Admin-Password: ${{ secrets.RESPIRATECH_ADMIN_PASSWORD }}" \
-            --data '{"action":"full_run","async":true}'
+          curl --fail-with-body -X POST "https://respira-tech.com/api/cron/seo-brain" \
+            -H "X-Cron-Secret: ${{ secrets.RESPIRATECH_CRON_SECRET }}"

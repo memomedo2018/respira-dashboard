@@ -45,6 +45,17 @@ function rt_read_json_body(): array {
     return $data;
 }
 
+function rt_read_optional_json_body(): array {
+    $raw = file_get_contents('php://input');
+    $raw = $raw !== false ? trim($raw) : '';
+    if ($raw === '') return [];
+    $data = json_decode($raw, true);
+    if (!is_array($data)) {
+        rt_json_response(['error' => 'invalid JSON payload'], 400);
+    }
+    return $data;
+}
+
 function rt_load_json(string $path, $default) {
     if (!is_file($path)) return $default;
     $data = json_decode((string)file_get_contents($path), true);
@@ -122,6 +133,17 @@ function rt_require_admin(): void {
     if (!rt_admin_authorized()) {
         rt_json_response(['error' => 'unauthorized'], 401);
     }
+}
+
+function rt_cron_authorized(): bool {
+    $expected = rt_env('CRON_SECRET', '');
+    if ($expected === '') return false;
+    $direct = $_SERVER['HTTP_X_CRON_SECRET'] ?? '';
+    $bearer = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $query = $_GET['secret'] ?? '';
+    return hash_equals($expected, (string)$direct)
+        || hash_equals('Bearer ' . $expected, (string)$bearer)
+        || hash_equals($expected, (string)$query);
 }
 
 function rt_slugify(string $value): string {
