@@ -18,22 +18,6 @@ function adminPassword() {
   return '';
 }
 
-const API_ORIGIN = window.location.hostname === 'respira-tech.com'
-  ? 'https://perfect-art-production.up.railway.app'
-  : '';
-
-function apiUrl(path) {
-  if (/^https?:\/\//i.test(path)) return path;
-  return `${API_ORIGIN}${path}`;
-}
-
-function setSystemStatus(message, type = 'info') {
-  const wrap = document.getElementById('systemStatus');
-  if (!wrap) return;
-  wrap.className = `system-status ${type}`;
-  wrap.innerHTML = message ? `<span>${escapeHTML(message)}</span>` : '';
-}
-
 async function adminApi(path, options = {}) {
   const password = adminPassword();
   const headers = {
@@ -41,7 +25,7 @@ async function adminApi(path, options = {}) {
     'X-Admin-Password': password,
     ...(options.headers || {})
   };
-  const response = await fetch(apiUrl(path), { ...options, headers });
+  const response = await fetch(path, { ...options, headers });
   if (response.status === 401) {
     window.localStorage.removeItem('respiratech_admin_password');
     throw new Error('كلمة المرور غير صحيحة');
@@ -54,17 +38,9 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
-  try {
-    const response = await fetch(apiUrl(path), options);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.json();
-  } catch (error) {
-    if (path === '/api/store') {
-      const fallback = await fetch('/data/store.json', { cache: 'no-store' });
-      if (fallback.ok) return fallback.json();
-    }
-    throw new Error(`تعذر تحميل البيانات من ${path}: ${error.message}`);
-  }
+  const response = await fetch(path, options);
+  if (!response.ok) throw new Error('تعذر تحميل البيانات');
+  return response.json();
 }
 
 function linesToArray(value) {
@@ -361,7 +337,7 @@ async function uploadFiles(files) {
     filename: file.name,
     content: await readFileAsDataURL(file)
   })));
-  const response = await fetch(apiUrl('/api/upload'), {
+  const response = await fetch('/api/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ files: encodedFiles })
@@ -371,7 +347,7 @@ async function uploadFiles(files) {
 }
 
 async function saveStore() {
-  const response = await fetch(apiUrl('/api/store/save'), {
+  const response = await fetch('/api/store/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -417,7 +393,7 @@ function collectProductPayload() {
 function renderSettings() {
   document.getElementById('settingDailyCount').value = state.settings.daily_blog_posts || 2;
   document.getElementById('settingTextModel').value = state.settings.openai_text_model || 'gpt-4.1';
-  document.getElementById('settingImageModel').value = state.settings.openai_image_model || 'gpt-image-1-mini';
+  document.getElementById('settingImageModel').value = state.settings.openai_image_model || 'dall-e-3';
   document.getElementById('settingAutoPublish').checked = !!state.settings.auto_publish_blogs;
   document.getElementById('settingGenerateImages').checked = state.settings.generate_blog_images !== false;
   document.getElementById('settingWhatsapp').value = state.settings.whatsapp_number || '';
@@ -426,16 +402,7 @@ function renderSettings() {
   document.getElementById('settingGithubBranch').value = state.settings.github_branch || 'main';
   document.getElementById('settingAutoPushChanges').checked = state.settings.auto_push_changes !== false;
   document.getElementById('settingOpenAiKey').placeholder = state.settings.openai_api_key_set ? 'المفتاح محفوظ بالفعل' : 'الصق المفتاح هنا';
-  document.getElementById('settingPexelsKey').placeholder = state.settings.pexels_api_key_set ? 'مفتاح Pexels محفوظ بالفعل' : 'الصق مفتاح Pexels هنا';
   document.getElementById('settingGithubToken').placeholder = state.settings.github_sync_configured ? 'التوكن محفوظ بالفعل' : 'الصق التوكن هنا';
-  document.getElementById('settingAlertsEnabled').checked = state.settings.alerts_enabled !== false;
-  document.getElementById('settingAlertEmailTo').value = state.settings.alert_email_to || 'alihessien0@gmail.com';
-  document.getElementById('settingSmtpHost').value = state.settings.smtp_host || '';
-  document.getElementById('settingSmtpPort').value = state.settings.smtp_port || '587';
-  document.getElementById('settingSmtpUsername').value = state.settings.smtp_username || '';
-  document.getElementById('settingSmtpFrom').value = state.settings.smtp_from || state.settings.smtp_username || '';
-  document.getElementById('settingSmtpSsl').checked = !!state.settings.smtp_ssl;
-  document.getElementById('settingSmtpPassword').placeholder = state.settings.smtp_password_set ? 'باسورد SMTP محفوظ بالفعل' : 'الصق باسورد SMTP هنا';
 }
 
 function renderLogs() {
@@ -690,6 +657,10 @@ function selectArticle(article) {
   articleFields.category.value = article.category || '';
   articleFields.tags.value = Array.isArray(article.tags) ? article.tags.join(', ') : '';
   articleFields.content.value = article.content_markdown || '';
+  const statusButton = document.getElementById('toggleArticleStatusBtn');
+  if (statusButton) {
+    statusButton.textContent = article.status === 'published' ? 'إلغاء النشر وإرجاع Draft' : 'اعتماد ونشر';
+  }
   renderArticleChecklist(article);
 }
 
@@ -703,15 +674,10 @@ function renderArticleChecklist(article) {
 }
 
 async function refreshDashboard() {
-  setSystemStatus('جاري تحميل بيانات الداشبورد...', 'info');
-  const storeData = await publicApi('/api/store');
-  let dashboardData;
-  try {
-    dashboardData = await adminApi('/api/dashboard/config');
-  } catch (error) {
-    setSystemStatus(`تم تحميل المتجر، لكن بيانات الإدارة لم تحمل: ${error.message}`, 'error');
-    dashboardData = { settings: {}, logs: [], articles: [], seo_brain: { settings: {}, audit: {}, logs: [] }, activity_logs: [] };
-  }
+  const [storeData, dashboardData] = await Promise.all([
+    publicApi('/api/store'),
+    adminApi('/api/dashboard/config')
+  ]);
 
   state.storeConfig = storeData.config || {};
   state.categories = Array.isArray(storeData.categories) ? storeData.categories : [];
@@ -738,11 +704,6 @@ async function refreshDashboard() {
     selectArticle(state.articles[0]);
   } else {
     renderArticleChecklist({});
-  }
-  if (!dashboardData.settings || !Object.keys(dashboardData.settings).length) {
-    setSystemStatus('بيانات المتجر ظاهرة، لكن وظائف الإدارة تحتاج كلمة مرور صحيحة واتصال Railway.', 'error');
-  } else {
-    setSystemStatus('الداشبورد جاهز ومتصل بالـ API.', 'success');
   }
 }
 
@@ -843,8 +804,7 @@ productFields.galleryFiles.addEventListener('change', async (event) => {
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   const payload = {
     openai_api_key: document.getElementById('settingOpenAiKey').value.trim(),
-    pexels_api_key: document.getElementById('settingPexelsKey').value.trim(),
-    auto_publish_blogs: document.getElementById('settingAutoPublish').checked,
+    auto_publish_blogs: false,
     daily_blog_posts: Number(document.getElementById('settingDailyCount').value) || 2,
     generate_blog_images: document.getElementById('settingGenerateImages').checked,
     openai_text_model: document.getElementById('settingTextModel').value.trim(),
@@ -857,40 +817,18 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
     github_branch: document.getElementById('settingGithubBranch').value.trim(),
     github_token: document.getElementById('settingGithubToken').value.trim(),
     auto_push_changes: document.getElementById('settingAutoPushChanges').checked,
-    alerts_enabled: document.getElementById('settingAlertsEnabled').checked,
-    alert_email_to: document.getElementById('settingAlertEmailTo').value.trim(),
-    smtp_host: document.getElementById('settingSmtpHost').value.trim(),
-    smtp_port: document.getElementById('settingSmtpPort').value.trim(),
-    smtp_username: document.getElementById('settingSmtpUsername').value.trim(),
-    smtp_password: document.getElementById('settingSmtpPassword').value.trim(),
-    smtp_from: document.getElementById('settingSmtpFrom').value.trim(),
-    smtp_ssl: document.getElementById('settingSmtpSsl').checked,
     seo_brain_auto: document.getElementById('settingSeoBrainAuto')?.checked,
     seo_brain_runs_per_day: Number(document.getElementById('settingSeoRuns')?.value) || 2,
-    gsc_site_url: document.getElementById('settingGscSiteUrl')?.value.trim()
+    gsc_site_url: document.getElementById('settingGscSiteUrl')?.value.trim(),
+    seo_daily_report_email: state.settings.seo_daily_report_email || 'alihessien0@gmail.com'
   };
   await adminApi('/api/dashboard/config', { method: 'POST', body: JSON.stringify(payload) });
   document.getElementById('settingOpenAiKey').value = '';
-  document.getElementById('settingPexelsKey').value = '';
   document.getElementById('settingAdminPassword').value = '';
   document.getElementById('settingCronSecret').value = '';
   document.getElementById('settingGithubToken').value = '';
-  document.getElementById('settingSmtpPassword').value = '';
   await refreshDashboard();
   window.alert('تم حفظ الإعدادات.');
-});
-
-document.getElementById('testAlertsBtn').addEventListener('click', async () => {
-  const response = await adminApi('/api/alerts/test', {
-    method: 'POST',
-    body: JSON.stringify({ action: 'manual_alert_read_error_test' })
-  });
-  const latest = Array.isArray(response.alert_logs) ? response.alert_logs[0] : null;
-  const status = latest?.status ? `\nحالة آخر تنبيه: ${latest.status}` : '';
-  const reason = latest?.result?.reason ? `\nالسبب: ${latest.result.reason}` : '';
-  const error = latest?.result?.error ? `\nخطأ الإرسال: ${latest.result.error}` : '';
-  await refreshDashboard();
-  window.alert(`تم تشغيل خطأ قراءة اختباري.${status}${reason}${error}`);
 });
 
 async function runSeoBrain(action, extra = {}) {
@@ -930,9 +868,9 @@ document.getElementById('generateFromUrlDraftBtn').addEventListener('click', asy
 document.getElementById('generateFromUrlPublishBtn').addEventListener('click', async () => {
   const url = document.getElementById('sourceArticleUrl').value.trim();
   if (!url) return window.alert('أدخل رابط المصدر أولًا.');
-  await runSeoBrain('from_url', { url, publish_now: true });
+  await runSeoBrain('from_url', { url, publish_now: false });
   document.getElementById('sourceArticleUrl').value = '';
-  window.alert('تم إنشاء المقال ونشره من الرابط.');
+  window.alert('تم إنشاء Draft من الرابط للمراجعة.');
 });
 
 document.getElementById('uploadGscBtn').addEventListener('click', async () => {
@@ -948,7 +886,7 @@ document.getElementById('saveSeoSettingsBtn').addEventListener('click', async ()
   await adminApi('/api/dashboard/config', {
     method: 'POST',
     body: JSON.stringify({
-      auto_publish_blogs: document.getElementById('settingAutoPublish').checked,
+      auto_publish_blogs: false,
       daily_blog_posts: Number(document.getElementById('settingDailyCount').value) || 2,
       generate_blog_images: document.getElementById('settingGenerateImages').checked,
       openai_text_model: document.getElementById('settingTextModel').value.trim(),
@@ -957,24 +895,12 @@ document.getElementById('saveSeoSettingsBtn').addEventListener('click', async ()
       site_base_url: document.getElementById('settingBaseUrl').value.trim(),
       seo_brain_auto: document.getElementById('settingSeoBrainAuto').checked,
       seo_brain_runs_per_day: Number(document.getElementById('settingSeoRuns').value) || 2,
-      gsc_site_url: document.getElementById('settingGscSiteUrl').value.trim()
+      gsc_site_url: document.getElementById('settingGscSiteUrl').value.trim(),
+      seo_daily_report_email: state.settings.seo_daily_report_email || 'alihessien0@gmail.com'
     })
   });
   await refreshDashboard();
   window.alert('تم حفظ إعدادات SEO Brain.');
-});
-
-document.getElementById('submitGscSitemapBtn').addEventListener('click', async () => {
-  const siteUrl = document.getElementById('settingGscSiteUrl').value.trim() || 'sc-domain:respira-tech.com';
-  const response = await adminApi('/api/seo/gsc/submit-sitemap', {
-    method: 'POST',
-    body: JSON.stringify({
-      site_url: siteUrl,
-      sitemap_url: `${publicBaseUrl()}/sitemap.xml`
-    })
-  });
-  await refreshDashboard();
-  window.alert(`تم إرسال sitemap لجوجل:\n${response.result.sitemap_url}`);
 });
 
 document.getElementById('rebuildBtn').addEventListener('click', async () => {
@@ -984,114 +910,9 @@ document.getElementById('rebuildBtn').addEventListener('click', async () => {
 });
 
 async function generateNow(count, publishNow) {
-  const bar       = document.getElementById('generateNowBarFill');
-  const statusTxt = document.getElementById('generateNowStatusText');
-  const progress  = document.getElementById('generateNowProgress');
-  const draftBtn  = document.getElementById('generateDraftNowBtn');
-  const genBtn    = document.getElementById('generateNowBtn');
-
-  // Lock buttons, show bar
-  if (draftBtn) draftBtn.disabled = true;
-  if (genBtn)   genBtn.disabled   = true;
-  if (progress) progress.style.display = 'block';
-  if (bar)      { bar.style.width = '5%'; bar.className = 'deploy-bar-fill'; }
-  if (statusTxt) statusTxt.textContent = 'جاري توليد المقالات بـ AI...';
-
-  try {
-    const startedAt = Date.now();
-    await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
-
-    // Phase 1: Poll for blog_generate_batch success (generation takes ~30-90s)
-    if (bar) bar.style.width = '15%';
-    let genDone = false;
-    for (let i = 0; i < 30 && !genDone; i++) {
-      await new Promise(r => setTimeout(r, 5000));
-      if (bar) bar.style.width = Math.min(55, 15 + i * 2) + '%';
-      try {
-        const cfg  = await adminApi('/api/dashboard/config');
-        const logs = cfg?.activity_logs || [];
-        const genLog = logs.find(l =>
-          l.action === 'blog_generate_batch' &&
-          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
-        );
-        if (genLog) {
-          genDone = true;
-          if (genLog.status === 'error') {
-            if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
-            if (statusTxt) statusTxt.textContent = 'فشل التوليد: ' + (genLog?.details?.error || '');
-            if (genBtn) { genBtn.textContent = 'فشل التوليد ✗'; }
-            setTimeout(() => {
-              if (draftBtn) draftBtn.disabled = false;
-              if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
-              if (progress) progress.style.display = 'none';
-            }, 5000);
-            await refreshDashboard();
-            return;
-          }
-        }
-      } catch { /* ignore */ }
-    }
-
-    if (!publishNow) {
-      // Draft only — no FTP needed
-      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill success'; }
-      if (statusTxt) statusTxt.textContent = `تم توليد ${count} مقال كـ Draft ✓`;
-      await refreshDashboard();
-      setTimeout(() => {
-        if (draftBtn) draftBtn.disabled = false;
-        if (genBtn)   genBtn.disabled = false;
-        if (progress) progress.style.display = 'none';
-      }, 4000);
-      return;
-    }
-
-    // Phase 2: Poll for manual_ftp_deploy (FTP upload takes ~2 min)
-    if (bar) bar.style.width = '60%';
-    if (statusTxt) statusTxt.textContent = 'جاري رفع الملفات على الموقع عبر FTP...';
-    let ftpDone = false;
-    for (let i = 0; i < 30 && !ftpDone; i++) {
-      await new Promise(r => setTimeout(r, 6000));
-      if (bar) bar.style.width = Math.min(90, 60 + i * 2) + '%';
-      if (statusTxt) statusTxt.textContent = `جاري رفع الملفات على الموقع... (${(i+1)*6}ث)`;
-      try {
-        const cfg  = await adminApi('/api/dashboard/config');
-        const logs = cfg?.activity_logs || [];
-        const ftpLog = logs.find(l =>
-          l.action === 'manual_ftp_deploy' &&
-          new Date(l.created_at + 'Z').getTime() >= startedAt - 3000
-        );
-        if (ftpLog) {
-          ftpDone = true;
-          const uploaded = ftpLog?.details?.uploaded ?? '؟';
-          const isErr    = ftpLog?.status === 'error';
-          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
-          if (statusTxt) statusTxt.textContent = isErr
-            ? 'فشل الرفع: ' + (ftpLog?.details?.error || '')
-            : `تم التوليد والنشر ✓ — رُفع ${uploaded} ملف`;
-          if (genBtn) genBtn.textContent = isErr ? 'فشل النشر ✗' : 'تم ✓';
-        }
-      } catch { /* ignore */ }
-    }
-
-    if (!ftpDone) {
-      if (bar) bar.style.width = '100%';
-      if (statusTxt) statusTxt.textContent = 'تم التوليد — تحقق من سجل النشاط للـ FTP';
-    }
-
-    await refreshDashboard();
-    setTimeout(() => {
-      if (draftBtn) draftBtn.disabled = false;
-      if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
-      if (progress) progress.style.display = 'none';
-    }, 5000);
-
-  } catch (err) {
-    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
-    if (statusTxt) statusTxt.textContent = 'خطأ في الاتصال: ' + (err.message || '');
-    if (draftBtn) draftBtn.disabled = false;
-    if (genBtn)   { genBtn.disabled = false; genBtn.textContent = 'توليد ونشر الآن'; }
-    setTimeout(() => { if (progress) progress.style.display = 'none'; }, 5000);
-  }
+  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: false }) });
+  await refreshDashboard();
+  window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال كـ Draft للمراجعة.`);
 }
 
 document.getElementById('generateDraftNowBtn').addEventListener('click', async () => {
@@ -1114,86 +935,17 @@ document.getElementById('refreshArticlesBtn').addEventListener('click', refreshD
 
 document.getElementById('deployNowBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('deployNowBtn');
-  const bar = document.getElementById('deployNowBarFill');
-  const statusText = document.getElementById('deployNowStatusText');
-  const progress = document.getElementById('deployNowProgress');
-
   btn.disabled = true;
   btn.textContent = 'جاري النشر...';
-  if (progress) progress.style.display = 'block';
-  if (bar) { bar.style.width = '0%'; bar.className = 'deploy-bar-fill'; }
-  if (statusText) statusText.textContent = 'جاري الاتصال بالسيرفر...';
-
-  // Animate bar while waiting (FTP takes ~2 min)
-  let pct = 0;
-  const stages = [
-    [15, 'جاري رفع الملفات عبر FTP...'],
-    [40, 'جاري رفع الملفات عبر FTP...'],
-    [65, 'جاري رفع الملفات عبر FTP...'],
-    [80, 'جاري مسح الكاش...'],
-    [90, 'جاري التحقق من الموقع...'],
-  ];
-  let stageIdx = 0;
-  const ticker = setInterval(() => {
-    if (stageIdx < stages.length) {
-      const [target, msg] = stages[stageIdx];
-      if (pct < target) { pct += 2; if (bar) bar.style.width = pct + '%'; }
-      else { if (statusText) statusText.textContent = msg; stageIdx++; }
-    }
-  }, 2500);
-
   try {
-    await adminApi('/api/deploy', { method: 'POST', body: '{}' });
-
-    // Server started background deploy — poll activity log until manual_ftp_deploy appears
-    clearInterval(ticker);
-    if (statusText) statusText.textContent = 'جاري رفع الملفات عبر FTP...';
-    if (bar) bar.style.width = '30%';
-
-    const deployStarted = Date.now();
-    let done = false;
-    for (let i = 0; i < 30 && !done; i++) {
-      await new Promise(r => setTimeout(r, 6000));
-      try {
-        const cfg = await adminApi('/api/dashboard/config');
-        const logs = cfg?.activity_logs || [];
-        const deployLog = logs.find(l =>
-          l.action === 'manual_ftp_deploy' &&
-          new Date(l.created_at + 'Z').getTime() >= deployStarted - 5000
-        );
-        if (deployLog) {
-          done = true;
-          const uploaded = deployLog?.details?.uploaded ?? '؟';
-          const isErr = deployLog?.status === 'error';
-          if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill ' + (isErr ? 'error' : 'success'); }
-          if (statusText) statusText.textContent = isErr
-            ? 'فشل النشر: ' + (deployLog?.details?.error || '')
-            : `تم النشر بنجاح ✓ — رُفع ${uploaded} ملف + مُسح الكاش`;
-          btn.textContent = isErr ? 'فشل النشر ✗' : 'تم النشر ✓';
-          setTimeout(() => {
-            btn.textContent = 'نشر على الموقع الآن';
-            btn.disabled = false;
-            if (progress) progress.style.display = 'none';
-          }, 5000);
-        } else {
-          pct = Math.min(90, 30 + i * 3);
-          if (bar) bar.style.width = pct + '%';
-          if (statusText) statusText.textContent = `جاري رفع الملفات عبر FTP... (${i * 6}ث)`;
-        }
-      } catch { /* ignore polling error */ }
-    }
-    if (!done) {
-      if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill'; }
-      if (statusText) statusText.textContent = 'انتهى — تحقق من سجل النشاط';
-      btn.textContent = 'نشر على الموقع الآن';
-      btn.disabled = false;
-    }
-  } catch (err) {
-    clearInterval(ticker);
-    if (bar) { bar.style.width = '100%'; bar.className = 'deploy-bar-fill error'; }
-    if (statusText) statusText.textContent = 'فشل الاتصال: ' + (err.message || '');
+    const res = await adminApi('/api/deploy', { method: 'POST', body: '{}' });
+    const uploaded = res?.deploy?.uploaded ?? res?.uploaded ?? '?';
+    const purged = res?.deploy?.cache_purge?.ok;
+    btn.textContent = `تم النشر ✓ (${uploaded} ملف${purged ? ' + cache' : ''})`;
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 4000);
+  } catch {
     btn.textContent = 'فشل النشر ✗';
-    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; if (progress) progress.style.display = 'none'; }, 4000);
+    setTimeout(() => { btn.textContent = 'نشر على الموقع الآن'; btn.disabled = false; }, 3000);
   }
 });
 
@@ -1218,6 +970,8 @@ document.getElementById('saveArticleBtn').addEventListener('click', async () => 
 
 document.getElementById('toggleArticleStatusBtn').addEventListener('click', async () => {
   if (!state.selectedArticle?.slug) return;
+  const action = state.selectedArticle.status === 'published' ? 'إلغاء نشر المقال وإرجاعه Draft؟' : 'اعتماد المقال ونشره على الموقع؟';
+  if (!window.confirm(action)) return;
   await adminApi('/api/blog/toggle-status', {
     method: 'POST',
     body: JSON.stringify({ slug: state.selectedArticle.slug })
