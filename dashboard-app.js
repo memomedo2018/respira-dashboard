@@ -18,6 +18,10 @@ function adminPassword() {
   return '';
 }
 
+function encodeHeaderValue(value) {
+  return encodeURIComponent(String(value || ''));
+}
+
 const API_BASE_URL = window.location.hostname === 'respira-tech.com'
   ? 'https://perfect-art-production.up.railway.app'
   : '';
@@ -32,7 +36,7 @@ async function adminApi(path, options = {}) {
   const requestOptions = { ...options };
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
-  headers.set('X-Admin-Password', password);
+  headers.set('X-Admin-Password', encodeHeaderValue(password));
   if (options.headers) {
     new Headers(options.headers).forEach((value, key) => headers.set(key, value));
   }

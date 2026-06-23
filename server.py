@@ -811,7 +811,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
         expected = env.get("ADMIN_PASSWORD", "")
         if not expected:
             return True
-        return self.headers.get("X-Admin-Password", "") == expected
+        provided = self.headers.get("X-Admin-Password", "")
+        return provided == expected or unquote(provided) == expected
 
     def _cron_authorized(self) -> bool:
         env = load_env()
