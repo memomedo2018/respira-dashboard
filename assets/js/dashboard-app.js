@@ -18,6 +18,15 @@ function adminPassword() {
   return '';
 }
 
+const API_BASE_URL = window.location.hostname === 'respira-tech.com'
+  ? 'https://perfect-art-production.up.railway.app'
+  : '';
+
+function apiUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_BASE_URL}${path}`;
+}
+
 async function adminApi(path, options = {}) {
   const password = adminPassword();
   const headers = {
@@ -25,7 +34,7 @@ async function adminApi(path, options = {}) {
     'X-Admin-Password': password,
     ...(options.headers || {})
   };
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch(apiUrl(path), { ...options, headers, mode: 'cors' });
   if (response.status === 401) {
     window.localStorage.removeItem('respiratech_admin_password');
     throw new Error('كلمة المرور غير صحيحة');
@@ -38,7 +47,7 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
-  const response = await fetch(path, options);
+  const response = await fetch(apiUrl(path), { ...options, mode: 'cors' });
   if (!response.ok) throw new Error('تعذر تحميل البيانات');
   return response.json();
 }
@@ -659,7 +668,7 @@ function selectArticle(article) {
   articleFields.content.value = article.content_markdown || '';
   const statusButton = document.getElementById('toggleArticleStatusBtn');
   if (statusButton) {
-    statusButton.textContent = article.status === 'published' ? 'إلغاء النشر وإرجاع Draft' : 'اعتماد ونشر';
+    statusButton.textContent = article.status === 'published' ? 'إلغاء نشر' : 'نشر';
   }
   renderArticleChecklist(article);
 }
@@ -804,7 +813,7 @@ productFields.galleryFiles.addEventListener('change', async (event) => {
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   const payload = {
     openai_api_key: document.getElementById('settingOpenAiKey').value.trim(),
-    auto_publish_blogs: false,
+    auto_publish_blogs: document.getElementById('settingAutoPublish').checked,
     daily_blog_posts: Number(document.getElementById('settingDailyCount').value) || 2,
     generate_blog_images: document.getElementById('settingGenerateImages').checked,
     openai_text_model: document.getElementById('settingTextModel').value.trim(),
@@ -868,9 +877,9 @@ document.getElementById('generateFromUrlDraftBtn').addEventListener('click', asy
 document.getElementById('generateFromUrlPublishBtn').addEventListener('click', async () => {
   const url = document.getElementById('sourceArticleUrl').value.trim();
   if (!url) return window.alert('أدخل رابط المصدر أولًا.');
-  await runSeoBrain('from_url', { url, publish_now: false });
+  await runSeoBrain('from_url', { url, publish_now: true });
   document.getElementById('sourceArticleUrl').value = '';
-  window.alert('تم إنشاء Draft من الرابط للمراجعة.');
+  window.alert('تم إنشاء المقال ونشره من الرابط.');
 });
 
 document.getElementById('uploadGscBtn').addEventListener('click', async () => {
@@ -886,7 +895,7 @@ document.getElementById('saveSeoSettingsBtn').addEventListener('click', async ()
   await adminApi('/api/dashboard/config', {
     method: 'POST',
     body: JSON.stringify({
-      auto_publish_blogs: false,
+      auto_publish_blogs: document.getElementById('settingAutoPublish').checked,
       daily_blog_posts: Number(document.getElementById('settingDailyCount').value) || 2,
       generate_blog_images: document.getElementById('settingGenerateImages').checked,
       openai_text_model: document.getElementById('settingTextModel').value.trim(),
@@ -910,9 +919,9 @@ document.getElementById('rebuildBtn').addEventListener('click', async () => {
 });
 
 async function generateNow(count, publishNow) {
-  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: false }) });
+  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
   await refreshDashboard();
-  window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال كـ Draft للمراجعة.`);
+  window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال ${publishNow ? 'مع النشر الفوري' : 'كـ Draft'}.`);
 }
 
 document.getElementById('generateDraftNowBtn').addEventListener('click', async () => {
@@ -970,7 +979,7 @@ document.getElementById('saveArticleBtn').addEventListener('click', async () => 
 
 document.getElementById('toggleArticleStatusBtn').addEventListener('click', async () => {
   if (!state.selectedArticle?.slug) return;
-  const action = state.selectedArticle.status === 'published' ? 'إلغاء نشر المقال وإرجاعه Draft؟' : 'اعتماد المقال ونشره على الموقع؟';
+  const action = state.selectedArticle.status === 'published' ? 'إلغاء نشر المقال؟' : 'نشر المقال الآن؟';
   if (!window.confirm(action)) return;
   await adminApi('/api/blog/toggle-status', {
     method: 'POST',

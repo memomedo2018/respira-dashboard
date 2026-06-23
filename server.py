@@ -705,7 +705,7 @@ def dashboard_config() -> dict:
         "settings": {
             "openai_api_key_set": bool(env.get("OPENAI_API_KEY")),
             "openai_api_key_masked": "********" if env.get("OPENAI_API_KEY") else "",
-            "auto_publish_blogs": str(env.get("AUTO_PUBLISH_BLOGS", "false")).lower() == "true",
+            "auto_publish_blogs": str(env.get("AUTO_PUBLISH_BLOGS", "true")).lower() == "true",
             "daily_blog_posts": int(env.get("DAILY_BLOG_POSTS", "2") or "2"),
             "generate_blog_images": str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() != "false",
             "openai_text_model": env.get("OPENAI_TEXT_MODEL", "gpt-4.1"),
@@ -1033,20 +1033,24 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 count = max(1, min(5, int(payload.get("count", 1) or 1)))
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
-            publish_now = False
-            extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true", "FORCE_PUBLISH": "false"}
+            publish_now = payload.get("publish_now")
+            extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true"}
+            if publish_now is True:
+                extra_env["FORCE_PUBLISH"] = "true"
+            elif publish_now is False:
+                extra_env["FORCE_PUBLISH"] = "false"
 
             def _run_generation():
                 try:
                     run_blog_generator(extra_env)
-                    append_activity_log("blog_generate_batch", generated_count=count, publish_now=False, review_required=True)
+                    append_activity_log("blog_generate_batch", generated_count=count, publish_now=publish_now)
                     deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
                 except Exception as exc:
                     import traceback
                     append_activity_log("blog_generate_batch", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
 
             threading.Thread(target=_run_generation, daemon=True).start()
-            return self._send_json({"ok": True, "started": True, "count": count, "publish_now": False, "review_required": True})
+            return self._send_json({"ok": True, "started": True, "count": count, "publish_now": publish_now})
 
         if parsed.path == "/api/seo/gsc/upload":
             if not self._ensure_admin():
@@ -1085,8 +1089,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                     source_url = str(payload.get("url") or "").strip()
                     if not source_url:
                         return self._send_json({"error": "missing url"}, 400)
-                    result = seo_brain.build_article_from_url(source_url, publish=False)
-                    result["review_required"] = True
+                    result = seo_brain.build_article_from_url(source_url, publish=bool(payload.get("publish_now")))
                 else:
                     return self._send_json({"error": "unknown action"}, 400)
             except requests.RequestException as exc:
@@ -1192,8 +1195,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": "unauthorized"}, 401)
             def _run_cron_generation():
                 try:
-                    run_blog_generator({"FORCE_PUBLISH": "false", "DAILY_BLOG_POSTS": "1"})
-                    append_activity_log("cron_generate_blog", publish_now=False, review_required=True)
+                    run_blog_generator({"FORCE_PUBLISH": "true", "DAILY_BLOG_POSTS": "1"})
+                    append_activity_log("cron_generate_blog")
                     deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
                 except Exception:
                     pass
