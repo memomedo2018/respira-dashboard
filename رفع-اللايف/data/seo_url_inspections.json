@@ -1,0 +1,56 @@
+[
+    {
+        "url": "https://respira-tech.com/store/airfit-n30i-starter-pack/",
+        "ok": true,
+        "raw": {
+            "inspectionResult": {
+                "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:respira-tech.com&id=UaCAvE2iFrdmu1FdMwdT2A&utm_medium=link&utm_source=api",
+                "indexStatusResult": {
+                    "verdict": "NEUTRAL",
+                    "coverageState": "URL is unknown to Google",
+                    "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                    "indexingState": "INDEXING_STATE_UNSPECIFIED",
+                    "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+                },
+                "mobileUsabilityResult": {
+                    "verdict": "VERDICT_UNSPECIFIED"
+                }
+            }
+        },
+        "inspected_at": "2026-06-23T05:22:33+00:00",
+        "verdict": "NEUTRAL",
+        "coverage_state": "URL is unknown to Google",
+        "indexing_state": "INDEXING_STATE_UNSPECIFIED",
+        "robots_txt_state": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "page_fetch_state": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "google_canonical": null,
+        "user_canonical": null
+    },
+    {
+        "url": "https://respira-tech.com/store/airfit-f40-complete-mask-system/",
+        "ok": true,
+        "raw": {
+            "inspectionResult": {
+                "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:respira-tech.com&id=i_B5HKlSbwSIcYNQlT93EA&utm_medium=link&utm_source=api",
+                "indexStatusResult": {
+                    "verdict": "NEUTRAL",
+                    "coverageState": "URL is unknown to Google",
+                    "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                    "indexingState": "INDEXING_STATE_UNSPECIFIED",
+                    "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+                },
+                "mobileUsabilityResult": {
+                    "verdict": "VERDICT_UNSPECIFIED"
+                }
+            }
+        },
+        "inspected_at": "2026-06-23T05:22:27+00:00",
+        "verdict": "NEUTRAL",
+        "coverage_state": "URL is unknown to Google",
+        "indexing_state": "INDEXING_STATE_UNSPECIFIED",
+        "robots_txt_state": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "page_fetch_state": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "google_canonical": null,
+        "user_canonical": null
+    }
+]

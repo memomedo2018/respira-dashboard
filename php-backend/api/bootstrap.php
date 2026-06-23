@@ -172,6 +172,10 @@ function rt_blog_logs(): array {
 function rt_seo_state(): array {
     $audit = rt_load_json(rt_data_path('data/seo_audit.json'), []);
     $logs = rt_load_json(rt_data_path('data/seo_brain_log.json'), []);
+    $readList = function (string $name): array {
+        $items = rt_load_json(rt_data_path('data/' . $name . '.json'), []);
+        return is_array($items) ? array_values($items) : [];
+    };
     return [
         'settings' => [
             'auto' => rt_env('SEO_BRAIN_AUTO', 'true') !== 'false',
@@ -181,6 +185,16 @@ function rt_seo_state(): array {
         ],
         'audit' => is_array($audit) ? $audit : [],
         'logs' => is_array($logs) ? $logs : [],
+        'gsc_rows' => $readList('seo_gsc_query_pages'),
+        'recommendations' => $readList('seo_recommendations'),
+        'indexing_queue' => $readList('seo_indexing_queue'),
+        'url_inspections' => $readList('seo_url_inspections'),
+        'quality_reports' => $readList('seo_quality_reports'),
+        'internal_links' => $readList('seo_internal_links'),
+        'content_refresh_queue' => $readList('seo_content_refresh_queue'),
+        'outreach_tasks' => $readList('seo_outreach_tasks'),
+        'daily_reports' => $readList('seo_daily_reports'),
+        'errors' => $readList('seo_errors'),
     ];
 }
 

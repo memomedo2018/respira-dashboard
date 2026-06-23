@@ -1,0 +1,25 @@
+[
+    {
+        "job": "gsc_import",
+        "error": "",
+        "details": {
+            "ok": false,
+            "status": 403,
+            "error": "",
+            "payload": {
+                "error": {
+                    "code": 403,
+                    "message": "User does not have sufficient permission for site 'https://respira-tech.com'. See also: https://support.google.com/webmasters/answer/2451999.",
+                    "errors": [
+                        {
+                            "message": "User does not have sufficient permission for site 'https://respira-tech.com'. See also: https://support.google.com/webmasters/answer/2451999.",
+                            "domain": "global",
+                            "reason": "forbidden"
+                        }
+                    ]
+                }
+            }
+        },
+        "created_at": "2026-06-23T05:20:50+00:00"
+    }
+]

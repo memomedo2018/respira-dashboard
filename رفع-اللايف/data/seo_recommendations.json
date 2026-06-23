@@ -1,0 +1,86 @@
+[
+    {
+        "source": "gsc",
+        "recommendation_type": "expand_section_internal_links",
+        "priority": "normal",
+        "url": "https://respira-tech.com/store/",
+        "query_text": "respiratech",
+        "title": "ترتيب قريب من الصفحة الأولى: أضف روابط داخلية وتوسيع",
+        "details": {
+            "query_text": "respiratech",
+            "page_url": "https://respira-tech.com/store/",
+            "clicks": 0,
+            "impressions": 3,
+            "ctr": 0,
+            "avg_position": 5.666666666666667,
+            "date_from": "2026-05-26",
+            "date_to": "2026-06-22",
+            "imported_at": "2026-06-23T05:22:20+00:00"
+        },
+        "status": "open",
+        "created_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "source": "gsc",
+        "recommendation_type": "expand_section_internal_links",
+        "priority": "normal",
+        "url": "https://respira-tech.com/products/",
+        "query_text": "respiratech",
+        "title": "ترتيب قريب من الصفحة الأولى: أضف روابط داخلية وتوسيع",
+        "details": {
+            "query_text": "respiratech",
+            "page_url": "https://respira-tech.com/products/",
+            "clicks": 0,
+            "impressions": 6,
+            "ctr": 0,
+            "avg_position": 6,
+            "date_from": "2026-05-26",
+            "date_to": "2026-06-22",
+            "imported_at": "2026-06-23T05:22:20+00:00"
+        },
+        "status": "open",
+        "created_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "source": "gsc",
+        "recommendation_type": "expand_section_internal_links",
+        "priority": "normal",
+        "url": "https://respira-tech.com/store/",
+        "query_text": "respira tech",
+        "title": "ترتيب قريب من الصفحة الأولى: أضف روابط داخلية وتوسيع",
+        "details": {
+            "query_text": "respira tech",
+            "page_url": "https://respira-tech.com/store/",
+            "clicks": 0,
+            "impressions": 2,
+            "ctr": 0,
+            "avg_position": 5.5,
+            "date_from": "2026-05-26",
+            "date_to": "2026-06-22",
+            "imported_at": "2026-06-23T05:22:20+00:00"
+        },
+        "status": "open",
+        "created_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "source": "gsc",
+        "recommendation_type": "expand_section_internal_links",
+        "priority": "normal",
+        "url": "https://respira-tech.com/products/",
+        "query_text": "respira tech",
+        "title": "ترتيب قريب من الصفحة الأولى: أضف روابط داخلية وتوسيع",
+        "details": {
+            "query_text": "respira tech",
+            "page_url": "https://respira-tech.com/products/",
+            "clicks": 0,
+            "impressions": 1,
+            "ctr": 0,
+            "avg_position": 6,
+            "date_from": "2026-05-26",
+            "date_to": "2026-06-22",
+            "imported_at": "2026-06-23T05:22:20+00:00"
+        },
+        "status": "open",
+        "created_at": "2026-06-23T05:22:20+00:00"
+    }
+]

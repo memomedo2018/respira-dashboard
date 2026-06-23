@@ -226,18 +226,44 @@ function rt_finalize_article(array $article, string $topic, array $siteData, ?bo
 }
 
 function rt_generate_blog_batch(int $count, ?bool $publishNow, bool $dryRun = false): array {
+    if (is_file(rt_data_path('php-backend/scripts/seo_system.php'))) {
+        require_once rt_data_path('php-backend/scripts/seo_system.php');
+    }
     $siteData = rt_site_data();
-    $topics = rt_choose_topics($count);
+    $topics = rt_choose_topics(max($count * 3, $count));
     $generated = [];
     foreach ($topics as $topic) {
         $article = rt_openai_article($topic, $siteData);
         if (!$article) $article = rt_fallback_article($topic, $siteData);
         $article = rt_finalize_article($article, (string)$topic, $siteData, $publishNow);
+        if (function_exists('rt_seo_apply_humanizer_to_article')) {
+            $article = rt_seo_apply_humanizer_to_article($article);
+        }
+        if (function_exists('rt_seo_find_duplicate_intent')) {
+            $duplicate = rt_seo_find_duplicate_intent($article);
+            if ($duplicate) {
+                rt_log_generation(['type' => 'duplicate_intent_blocked', 'backend' => 'php', 'topic' => $topic, 'slug' => $article['slug'], 'duplicate' => $duplicate, 'created_at' => gmdate('c')]);
+                continue;
+            }
+        }
+        $quality = null;
+        if (function_exists('rt_seo_record_quality_report')) {
+            $quality = $dryRun && function_exists('rt_seo_quality_gate')
+                ? rt_seo_quality_gate($article)
+                : rt_seo_record_quality_report($article);
+            $article['quality_score'] = $quality['score'];
+            $article['quality_warnings'] = $quality['warnings'];
+            if (!$quality['passed']) {
+                $article['status'] = 'needs_edits';
+                $article['published_at'] = null;
+            }
+        }
         if (!$dryRun) {
             rt_save_json(rt_blog_article_path($article['slug']), $article);
             rt_log_generation(['type' => 'generated', 'backend' => 'php', 'topic' => $topic, 'slug' => $article['slug'], 'status' => $article['status'], 'created_at' => gmdate('c')]);
         }
-        $generated[] = ['slug' => $article['slug'], 'title_ar' => $article['title_ar'], 'status' => $article['status'], 'seo_score' => $article['seo_score']];
+        $generated[] = ['slug' => $article['slug'], 'title_ar' => $article['title_ar'], 'status' => $article['status'], 'seo_score' => $article['seo_score'], 'quality_score' => $quality['score'] ?? null, 'quality_passed' => $quality['passed'] ?? null];
+        if (count($generated) >= $count) break;
     }
     return $generated;
 }

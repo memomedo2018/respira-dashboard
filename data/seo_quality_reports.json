@@ -1,0 +1,496 @@
+[
+    {
+        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "title": "ما هو جهاز CPAP وكيف يساعد في علاج انقطاع النفس أثناء النوم؟",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "difference-between-cpap-and-bipap",
+        "title": "الفرق بين CPAP و BiPAP: أيهما مناسب لحالتك؟",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "what_not_to_do"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": false,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "title": "هل الشخير المستمر علامة على مشكلة صحية؟",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "title": "كيف تختار ماسك CPAP المناسب؟",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "title": "أعراض انقطاع النفس أثناء النوم التي لا يجب تجاهلها",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "why-wake-up-tired-after-long-sleep",
+        "title": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "meta_description"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": true,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": false,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "sudden-awakening-choking-sleep-causes",
+        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم: الدليل الشامل",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "meta_title"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "sleep-apnea-morning-headache-relationship",
+        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي: فهم الأسباب والحلول العملية",
+        "score": 79,
+        "passed": false,
+        "status": "needs_edits",
+        "warnings": [
+            "word_count",
+            "meta_title",
+            "meta_description"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": false,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "sleep-apnea-headache-relationship",
+        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "meta_title"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "how-to-choose-right-cpap-mask",
+        "title": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمستخدم العربي",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "full-face-vs-nasal-mask",
+        "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "meta_title"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "cpap-sleep-comfort",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟  حقائق ونصائح وتجارب واقعية",
+        "score": 100,
+        "passed": true,
+        "status": "passed",
+        "warnings": [],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": true,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "cpap-sleep-comfort-egypt",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "meta_description"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": false,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "cpap-during-sleep-comfort",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل كامل لفهم التجربة وطرق التكيف",
+        "score": 86,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count",
+            "meta_title"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "cpap-discomfort-during-sleep",
+        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "meta_title"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": true,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "choose-right-cpap-mask",
+        "title": "كيف تختار ماسك CPAP المناسب؟ دليل شامل لراحة نومك",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "choose-cpap-mask-guide",
+        "title": "كيف تختار ماسك CPAP المناسب؟ دليلك الكامل لاختيار القناع الأفضل لجهاز التنفس الليلي",
+        "score": 93,
+        "passed": true,
+        "status": "passed",
+        "warnings": [
+            "word_count"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": true,
+            "meta_description": true,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "score": 79,
+        "passed": false,
+        "status": "needs_edits",
+        "warnings": [
+            "word_count",
+            "meta_title",
+            "meta_description"
+        ],
+        "checks": {
+            "title": true,
+            "lead_answers_intent": true,
+            "word_count": false,
+            "single_h1": true,
+            "has_h2": true,
+            "meta_title": false,
+            "meta_description": false,
+            "faq": true,
+            "internal_links": true,
+            "cta": true,
+            "medical_disclaimer": true,
+            "human_scenario": true,
+            "what_not_to_do": true,
+            "no_dangerous_claims": true
+        },
+        "checked_at": "2026-06-23T05:22:33+00:00"
+    }
+]

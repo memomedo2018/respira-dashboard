@@ -51,7 +51,8 @@ if ($method === 'GET' && $path === '/api/dashboard/config') {
 
 if ($method === 'GET' && $path === '/api/seo/brain') {
     rt_require_admin();
-    rt_json_response(rt_seo_state());
+    require_once rt_data_path('php-backend/scripts/seo_system.php');
+    rt_json_response(rt_seo_full_state());
 }
 
 if ($method === 'POST' && $path === '/api/store/save') {
@@ -225,33 +226,40 @@ if ($method === 'POST' && $path === '/api/seo/brain') {
     $payload = rt_read_json_body();
     $action = trim((string)($payload['action'] ?? ''));
     require_once rt_data_path('php-backend/scripts/build_content.php');
-    $audit = [
-        'generated_at' => gmdate('c'),
-        'backend' => 'php',
-        'action' => $action,
-        'content' => [
-            'articles_count' => count(rt_load_articles()),
-            'published_count' => count(array_filter(rt_load_articles(), fn($a) => ($a['status'] ?? '') === 'published')),
-        ],
-        'recommendations' => [],
-    ];
-    if ($action === 'audit' || $action === 'refresh_links' || $action === 'full_run') {
-        rt_save_json(rt_data_path('data/seo_audit.json'), $audit);
-        rt_save_json(rt_data_path('data/seo_brain_log.json'), array_merge([['type' => $action, 'created_at' => gmdate('c'), 'backend' => 'php']], rt_load_json(rt_data_path('data/seo_brain_log.json'), [])));
-        $build = $action === 'full_run' || $action === 'refresh_links' ? rt_build_content(false) : ['skipped' => true, 'reason' => 'audit only'];
-        rt_json_response(['ok' => true, 'result' => $audit, 'state' => rt_seo_state(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
-    }
+    require_once rt_data_path('php-backend/scripts/seo_system.php');
     if ($action === 'from_url') {
         require_once rt_data_path('php-backend/scripts/generate_blog.php');
         $url = trim((string)($payload['url'] ?? ''));
         $topic = $url !== '' ? 'مراجعة مصدر: ' . parse_url($url, PHP_URL_HOST) : 'مقال جديد من مصدر خارجي';
         $siteData = rt_site_data();
         $article = rt_finalize_article(rt_fallback_article($topic, $siteData), $topic, $siteData, !empty($payload['publish_now']));
+        $article = rt_seo_apply_humanizer_to_article($article);
+        $duplicate = rt_seo_find_duplicate_intent($article);
+        if ($duplicate) {
+            rt_json_response(['ok' => false, 'error' => 'duplicate intent', 'duplicate' => $duplicate, 'state' => rt_seo_full_state()], 409);
+        }
+        $quality = rt_seo_record_quality_report($article);
+        if (!$quality['passed']) $article['status'] = 'needs_edits';
         rt_save_json(rt_blog_article_path($article['slug']), $article);
         $build = rt_build_content(false);
-        rt_json_response(['ok' => true, 'result' => ['slug' => $article['slug']], 'state' => rt_seo_state(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+        rt_json_response(['ok' => true, 'result' => ['slug' => $article['slug'], 'quality' => $quality], 'state' => rt_seo_full_state(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
     }
-    rt_json_response(['error' => 'unknown action'], 400);
+    $result = rt_seo_run_brain($action, $payload);
+    if (empty($result['ok'])) rt_json_response($result, 400);
+    rt_json_response($result + ['sync' => ['mode' => 'php-local']]);
+}
+
+if ($method === 'POST' && $path === '/api/seo/cron') {
+    $expected = rt_env('CRON_SECRET', '');
+    $provided = $_SERVER['HTTP_X_CRON_SECRET'] ?? ($_GET['secret'] ?? '');
+    if ($expected !== '' && !hash_equals($expected, (string)$provided)) {
+        rt_json_response(['error' => 'unauthorized'], 401);
+    }
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    require_once rt_data_path('php-backend/scripts/seo_system.php');
+    $payload = rt_read_json_body();
+    $result = rt_seo_run_brain((string)($payload['action'] ?? 'full_run'), $payload);
+    rt_json_response($result + ['sync' => ['mode' => 'php-local']]);
 }
 
 rt_json_response([

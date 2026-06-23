@@ -47,6 +47,9 @@ body {
   direction: rtl;
   overflow-x: hidden;
 }
+html {
+  overflow-x: hidden;
+}
 
 body[data-theme="dark"] {
   --theme-bg: #0f172a;
@@ -68,39 +71,41 @@ a {
 }
 
 .floating-header {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1100px, calc(100vw - 24px));
+  width: min(980px, calc(100vw - 2rem));
   background: var(--theme-surface-strong);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(18px);
   border: 1px solid var(--theme-border);
-  border-radius: 0 0 32px 32px;
-  padding: 1rem 2rem;
+  border-radius: 999px;
+  padding: 0.5rem 0.6rem 0.5rem 0.75rem;
   z-index: 1000;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12);
 }
 
 .header-content {
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 3rem;
+  gap: 0.8rem;
 }
 
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.8rem;
+  gap: 0.55rem;
+  font-size: 1.05rem;
   font-weight: 900;
   color: #0097b2;
+  white-space: nowrap;
 }
 
 .brand-mark {
-  width: 35px;
-  height: 35px;
+  width: 34px;
+  height: 34px;
   border-radius: 12px;
   object-fit: contain;
 }
@@ -108,9 +113,9 @@ a {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.15rem;
   list-style: none;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .menu-toggle {
@@ -131,8 +136,9 @@ a {
 
 .nav-link {
   color: var(--theme-text-muted);
-  font-weight: 600;
-  padding: 0.75rem 1rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 0.55rem 0.72rem;
   border-radius: 999px;
   transition: all 0.25s ease;
 }
@@ -141,6 +147,26 @@ a {
 .nav-link.is-active {
   color: #0097b2;
   background: rgba(0, 151, 178, 0.1);
+}
+
+.header-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.header-cta:hover {
+  transform: translateY(-1px);
+  background: #0097b2;
 }
 
 .theme-toggle {
@@ -257,6 +283,7 @@ body[data-theme="dark"] .menu-toggle {
 .store-section {
   padding: calc(var(--header-offset) + 2.5rem) 0 7rem;
   background: var(--theme-section-1);
+  overflow-x: hidden;
 }
 
 .section-header {
@@ -288,6 +315,7 @@ body[data-theme="dark"] .menu-toggle {
   background-clip: text;
   margin-bottom: 1rem;
 }
+.section-title-ultra span { display: inline; }
 
 .section-description {
   color: var(--theme-text-soft);
@@ -303,6 +331,7 @@ body[data-theme="dark"] .menu-toggle {
   max-width: 1100px;
   margin: 0 auto 2.5rem;
   padding: 0 2rem;
+  overflow-x: hidden;
 }
 
 .filter-btn {
@@ -344,6 +373,7 @@ body[data-theme="dark"] .menu-toggle {
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 32px;
   overflow: hidden;
+  max-width: 100%;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.35s ease;
   cursor: pointer;
@@ -830,6 +860,14 @@ body[data-theme="dark"] .filter-btn {
 }
 
 @media (max-width: 768px) {
+  html,
+  body,
+  main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  * { min-width: 0; }
   .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
   :root {
     --header-offset: 100px;
@@ -843,32 +881,46 @@ body[data-theme="dark"] .filter-btn {
   }
 
   .header-content {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    min-height: 76px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    direction: ltr;
+    justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
   }
-  .brand-logo { min-width: 0; font-size: 1.25rem; gap: 0.55rem; }
-  .brand-mark { width: 32px; height: 32px; }
+  .brand-logo { min-width: 0; font-size: 0; gap: 0; position: fixed; left: 88px; top: 32px; z-index: 1400; transform: none; }
+  .menu-toggle { position: fixed; left: 28px; top: 27px; z-index: 1400; transform: none; }
+  .brand-mark { width: 34px; height: 34px; }
   .menu-toggle { display: inline-flex; }
+  .header-cta { display: none; }
   .nav-links {
     display: none;
-    grid-column: 1 / -1;
-    width: 100%;
-    margin-top: 0.2rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100vw;
+    min-height: 100svh;
+    padding: 7.5rem 1.25rem 2rem;
+    margin: 0;
+    border-top: 0;
+    background: rgba(255,255,255,.98);
+    backdrop-filter: blur(14px);
+    align-content: start;
+    direction: rtl;
   }
+  body[data-theme="dark"] .nav-links { background: rgba(15,23,42,.98); }
   .floating-header.is-open .nav-links {
     display: grid;
-    gap: 0.55rem;
+    gap: 0.75rem;
   }
   .nav-link {
     display: block;
     width: 100%;
     text-align: center;
-    padding: 0.8rem 1rem;
-    font-size: 0.98rem;
+    padding: 1rem;
+    font-size: 1.05rem;
   }
 
   .theme-toggle:not(.theme-fab) {
@@ -893,6 +945,10 @@ body[data-theme="dark"] .filter-btn {
 
   .section-header {
     margin-bottom: 1.4rem;
+    width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+    padding-right: 0;
+    padding-left: 0;
   }
 
   .section-badge {
@@ -902,27 +958,34 @@ body[data-theme="dark"] .filter-btn {
   }
 
   .section-title-ultra {
-    font-size: clamp(1.7rem, 9.5vw, 2.35rem);
-    line-height: 1.08;
+    font-size: clamp(1.3rem, 6.2vw, 1.75rem);
+    line-height: 1.22;
     margin-bottom: 0.75rem;
   }
+  .section-title-ultra span { display: block; }
 
   .section-description,
   .footer-cta-card p {
     font-size: 0.95rem;
     line-height: 1.75;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .filter-bar {
-    padding: 0 1rem 0.3rem;
+    width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+    padding: 0 0 0.3rem;
     margin: 0 auto 1.4rem;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 0.55rem;
-    overflow-x: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    direction: ltr;
   }
 
   .filter-bar::-webkit-scrollbar {
@@ -930,16 +993,28 @@ body[data-theme="dark"] .filter-btn {
   }
 
   .filter-btn {
-    flex: 0 0 auto;
-    white-space: nowrap;
+    flex: 0 1 auto;
+    white-space: normal;
+    max-width: 100%;
     padding: 0.56rem 0.82rem;
     font-size: 0.8rem;
     line-height: 1.2;
     min-height: 36px;
+    direction: rtl;
   }
 
   .products-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
     gap: 1.2rem;
+  }
+  .product-card,
+  .product-body {
+    width: 100%;
+    max-width: 100%;
   }
 
   .product-media {
@@ -954,15 +1029,22 @@ body[data-theme="dark"] .filter-btn {
   .product-title {
     font-size: 1.12rem;
     line-height: 1.45;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .product-title-en {
     font-size: 0.84rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .product-description {
     font-size: 0.92rem;
     line-height: 1.7;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .product-price {
@@ -1041,6 +1123,7 @@ body[data-theme="dark"] .filter-btn {
       <li><a href="/blog/" class="nav-link">المدونة</a></li>
       <li><a href="/contact/" class="nav-link">تواصل معنا</a></li>
     </ul>
+    <a class="header-cta" href="https://wa.me/201010317647" target="_blank" rel="noopener">استشارة مجانية</a>
   </nav>
 </header>
 
@@ -1052,7 +1135,7 @@ body[data-theme="dark"] .filter-btn {
   <div class="section-header">
     <div class="section-badge">متجر Respira Tech</div>
     <h1 class="visually-hidden">متجر ماسكات ResMed الأصلية لأجهزة CPAP وBiPAP</h1>
-    <h2 class="section-title-ultra">ماسكات ResMed الأصلية</h2>
+    <h2 class="section-title-ultra"><span>ماسكات</span><span>ResMed</span><span>الأصلية</span></h2>
     <p class="section-description">
       تصفح مجموعة ماسكات ResMed الأصلية المخصصة لأجهزة CPAP وBiPAP، مع تفاصيل المقاسات والمحتويات وملاحظات التوافق والدعم بعد الشراء.
     </p>

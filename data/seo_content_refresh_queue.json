@@ -1,0 +1,314 @@
+[
+    {
+        "url": "https://respira-tech.com/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "reason": "quality warning: word_count, meta_title, meta_description",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "تحسين lead/CTA/FAQ/internal links حسب التحذيرات.",
+        "details": {
+            "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+            "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_title",
+                "meta_description"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": false,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": true,
+                "what_not_to_do": true,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:22:33+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/sleep-apnea-morning-headache-relationship/",
+        "slug": "sleep-apnea-morning-headache-relationship",
+        "reason": "quality warning: word_count, meta_title, meta_description",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "تحسين lead/CTA/FAQ/internal links حسب التحذيرات.",
+        "details": {
+            "slug": "sleep-apnea-morning-headache-relationship",
+            "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي: فهم الأسباب والحلول العملية",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_title",
+                "meta_description"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": false,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": true,
+                "what_not_to_do": true,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:22:33+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/cpap-discomfort-during-sleep/",
+        "slug": "cpap-discomfort-during-sleep",
+        "reason": "quality_gate_failed",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "راجع التحذيرات وعدل المقال قبل الاعتماد طويل المدى.",
+        "details": {
+            "slug": "cpap-discomfort-during-sleep",
+            "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "meta_title",
+                "human_scenario",
+                "what_not_to_do"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": true,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": true,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": false,
+                "what_not_to_do": false,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:49+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/why-wake-up-tired-after-long-sleep/",
+        "slug": "why-wake-up-tired-after-long-sleep",
+        "reason": "quality_gate_failed",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "راجع التحذيرات وعدل المقال قبل الاعتماد طويل المدى.",
+        "details": {
+            "slug": "why-wake-up-tired-after-long-sleep",
+            "title": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_description",
+                "human_scenario"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": true,
+                "meta_description": false,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": false,
+                "what_not_to_do": true,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:49+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/full-face-vs-nasal-mask/",
+        "slug": "full-face-vs-nasal-mask",
+        "reason": "quality_gate_failed",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "راجع التحذيرات وعدل المقال قبل الاعتماد طويل المدى.",
+        "details": {
+            "slug": "full-face-vs-nasal-mask",
+            "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_title",
+                "what_not_to_do"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": true,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": true,
+                "what_not_to_do": false,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:49+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/full-face-vs-nasal-mask/",
+        "slug": "full-face-vs-nasal-mask",
+        "reason": "quality warning: word_count, meta_title, what_not_to_do",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "تحسين lead/CTA/FAQ/internal links حسب التحذيرات.",
+        "details": {
+            "slug": "full-face-vs-nasal-mask",
+            "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_title",
+                "what_not_to_do"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": true,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": true,
+                "what_not_to_do": false,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:48+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/why-wake-up-tired-after-long-sleep/",
+        "slug": "why-wake-up-tired-after-long-sleep",
+        "reason": "quality warning: word_count, meta_description, human_scenario",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "تحسين lead/CTA/FAQ/internal links حسب التحذيرات.",
+        "details": {
+            "slug": "why-wake-up-tired-after-long-sleep",
+            "title": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "word_count",
+                "meta_description",
+                "human_scenario"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": false,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": true,
+                "meta_description": false,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": false,
+                "what_not_to_do": true,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:48+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    },
+    {
+        "url": "https://respira-tech.com/blog/cpap-discomfort-during-sleep/",
+        "slug": "cpap-discomfort-during-sleep",
+        "reason": "quality warning: meta_title, human_scenario, what_not_to_do",
+        "priority": "high",
+        "source": "quality_gate",
+        "suggested_action": "تحسين lead/CTA/FAQ/internal links حسب التحذيرات.",
+        "details": {
+            "slug": "cpap-discomfort-during-sleep",
+            "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
+            "score": 79,
+            "passed": false,
+            "status": "needs_edits",
+            "warnings": [
+                "meta_title",
+                "human_scenario",
+                "what_not_to_do"
+            ],
+            "checks": {
+                "title": true,
+                "lead_answers_intent": true,
+                "word_count": true,
+                "single_h1": true,
+                "has_h2": true,
+                "meta_title": false,
+                "meta_description": true,
+                "faq": true,
+                "internal_links": true,
+                "cta": true,
+                "medical_disclaimer": true,
+                "human_scenario": false,
+                "what_not_to_do": false,
+                "no_dangerous_claims": true
+            },
+            "checked_at": "2026-06-23T05:20:49+00:00"
+        },
+        "status": "queued",
+        "created_at": "2026-06-23T05:20:49+00:00"
+    }
+]

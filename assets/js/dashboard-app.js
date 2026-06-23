@@ -439,12 +439,20 @@ function renderSeoBrain() {
   const settings = state.seoBrain.settings || {};
   const audit = state.seoBrain.audit || {};
   const logs = Array.isArray(state.seoBrain.logs) ? state.seoBrain.logs : [];
+  const recommendations = Array.isArray(state.seoBrain.recommendations) ? state.seoBrain.recommendations : [];
+  const gscRows = Array.isArray(state.seoBrain.gsc_rows) ? state.seoBrain.gsc_rows : [];
+  const qualityReports = Array.isArray(state.seoBrain.quality_reports) ? state.seoBrain.quality_reports : [];
+  const indexingQueue = Array.isArray(state.seoBrain.indexing_queue) ? state.seoBrain.indexing_queue : [];
+  const urlInspections = Array.isArray(state.seoBrain.url_inspections) ? state.seoBrain.url_inspections : [];
+  const refreshQueue = Array.isArray(state.seoBrain.content_refresh_queue) ? state.seoBrain.content_refresh_queue : [];
+  const dailyReports = Array.isArray(state.seoBrain.daily_reports) ? state.seoBrain.daily_reports : [];
+  const errors = Array.isArray(state.seoBrain.errors) ? state.seoBrain.errors : [];
 
   const seoAuto = document.getElementById('settingSeoBrainAuto');
   const seoRuns = document.getElementById('settingSeoRuns');
   const gscSiteUrl = document.getElementById('settingGscSiteUrl');
-  if (seoAuto) seoAuto.checked = settings.seo_brain_auto !== false;
-  if (seoRuns) seoRuns.value = settings.seo_brain_runs_per_day || 2;
+  if (seoAuto) seoAuto.checked = settings.auto !== false && settings.seo_brain_auto !== false;
+  if (seoRuns) seoRuns.value = settings.runs_per_day || settings.seo_brain_runs_per_day || 2;
   if (gscSiteUrl) gscSiteUrl.value = settings.gsc_site_url || state.settings.site_base_url || '';
 
   const summary = document.getElementById('seoAuditSummary');
@@ -456,7 +464,7 @@ function renderSeoBrain() {
   summary.innerHTML = `
     <div class="mini-card">
       <div class="mini-card-title">آخر مراجعة</div>
-      <div class="mini-card-sub">${escapeHTML(audit.created_at || 'لم يتم التشغيل بعد')}</div>
+      <div class="mini-card-sub">${escapeHTML(audit.created_at || audit.generated_at || 'لم يتم التشغيل بعد')}</div>
     </div>
     <div class="mini-card">
       <div class="mini-card-title">الصفحات الأساسية</div>
@@ -472,14 +480,76 @@ function renderSeoBrain() {
     </div>
     <div class="mini-card">
       <div class="mini-card-title">Search Console</div>
-      <div class="mini-card-sub">${escapeHTML(gsc.message || (settings.gsc_credentials_set ? 'مربوط' : 'غير مربوط'))}</div>
+      <div class="mini-card-sub">${escapeHTML(gsc.message || (settings.gsc_credentials_set ? `مربوط · ${gscRows.length} صف من آخر استيراد` : 'غير مربوط'))}</div>
       ${Array.isArray(gsc.queries) && gsc.queries.length ? `<div class="mini-card-sub" style="margin-top:.5rem">${gsc.queries.map((row) => `${escapeHTML(row.query)} · Pos ${escapeHTML(String(Number(row.position || 0).toFixed(1)))} · Clicks ${escapeHTML(String(row.clicks || 0))}`).join('<br>')}</div>` : ''}
     </div>
     <div class="mini-card">
       <div class="mini-card-title">التوصيات الحالية</div>
-      <div class="mini-card-sub">${recs.length ? recs.map((item) => `• ${escapeHTML(item)}`).join('<br>') : 'لا توجد ملاحظات حرجة حاليًا.'}</div>
+      <div class="mini-card-sub">${recommendations.length || recs.length ? `${recommendations.length} توصية من GSC · ${recs.length} توصية audit` : 'لا توجد ملاحظات حرجة حاليًا.'}</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-card-title">Quality Gate</div>
+      <div class="mini-card-sub">${qualityReports.length ? `${qualityReports.filter((item) => item.passed === false).length} محتاج تعديل من ${qualityReports.length} تقرير` : 'لم يتم تشغيل فحص الجودة بعد.'}</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-card-title">طابور التحديث والفهرسة</div>
+      <div class="mini-card-sub">${refreshQueue.length} تحديث محتوى · ${indexingQueue.length} رابط فهرسة · ${urlInspections.length} فحص URL</div>
     </div>
   `;
+
+  const recsWrap = document.getElementById('seoRecommendationsList');
+  if (recsWrap) {
+    recsWrap.innerHTML = recommendations.length ? recommendations.slice(0, 12).map((item) => `
+      <div class="mini-card">
+        <div class="mini-card-head">
+          <div>
+            <div class="mini-card-title">${escapeHTML(item.query || item.title || item.keyword || 'توصية')}</div>
+            <div class="mini-card-sub">${escapeHTML(item.url || item.page || item.slug || '')}</div>
+          </div>
+          <span class="badge">${escapeHTML(item.type || item.priority || 'GSC')}</span>
+        </div>
+        <div class="mini-card-sub">${escapeHTML(item.recommendation || item.reason || item.note || '')}</div>
+        ${item.clicks !== undefined || item.position !== undefined ? `<div class="mini-card-sub" style="margin-top:.45rem">Clicks ${escapeHTML(String(item.clicks || 0))} · Position ${escapeHTML(String(Number(item.position || 0).toFixed(1)))}</div>` : ''}
+      </div>
+    `).join('') : '<div class="empty-state">لا توجد توصيات GSC حالية.</div>';
+  }
+
+  const qualityWrap = document.getElementById('seoQualityList');
+  if (qualityWrap) {
+    const failed = qualityReports.filter((item) => item.passed === false);
+    qualityWrap.innerHTML = (failed.length ? failed : qualityReports.slice(0, 8)).map((item) => `
+      <div class="mini-card">
+        <div class="mini-card-head">
+          <div>
+            <div class="mini-card-title">${escapeHTML(item.title || item.slug || 'مقال')}</div>
+            <div class="mini-card-sub">${escapeHTML(item.slug || '')}</div>
+          </div>
+          <span class="badge">${escapeHTML(String(item.score ?? '—'))}/100</span>
+        </div>
+        <div class="mini-card-sub">${Array.isArray(item.warnings) && item.warnings.length ? item.warnings.map(escapeHTML).join(' · ') : (item.passed ? 'ناجح' : 'يحتاج مراجعة')}</div>
+      </div>
+    `).join('') || '<div class="empty-state">لا توجد نتائج Quality Gate بعد.</div>';
+  }
+
+  const indexingWrap = document.getElementById('seoIndexingList');
+  if (indexingWrap) {
+    const latestReport = dailyReports[0] || {};
+    indexingWrap.innerHTML = `
+      <div class="mini-card">
+        <div class="mini-card-title">آخر تقرير يومي</div>
+        <div class="mini-card-sub">${escapeHTML(latestReport.created_at || latestReport.generated_at || 'لم يصدر تقرير بعد')}</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-title">URL Inspection</div>
+        <div class="mini-card-sub">${urlInspections.length ? urlInspections.slice(0, 6).map((item) => `${escapeHTML(item.url || '')} · ${escapeHTML(item.verdict || item.indexing_state || item.status || 'تم الفحص')}`).join('<br>') : 'لا توجد نتائج فحص URL بعد.'}</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-title">طابور Refresh</div>
+        <div class="mini-card-sub">${refreshQueue.length ? refreshQueue.slice(0, 8).map((item) => `${escapeHTML(item.slug || item.url || '')} · ${escapeHTML(item.reason || item.priority || 'تحسين محتوى')}`).join('<br>') : 'لا توجد تحديثات محتوى مطلوبة حالياً.'}</div>
+      </div>
+      ${errors.length ? `<div class="mini-card"><div class="mini-card-title">أخطاء تحتاج متابعة</div><div class="mini-card-sub">${errors.slice(0, 4).map((item) => escapeHTML(item.error || item.message || JSON.stringify(item))).join('<br>')}</div></div>` : ''}
+    `;
+  }
 
   const seoLogs = document.getElementById('seoLogsList');
   seoLogs.innerHTML = logs.length ? logs.map((log) => `

@@ -52,14 +52,16 @@
     }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
-    .floating-header { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: min(1100px, calc(100vw - 24px)); background: var(--theme-surface-strong); backdrop-filter: blur(20px); border: 1px solid var(--theme-border); border-radius: 0 0 32px 32px; padding: 1rem 2rem; z-index: 1000; box-shadow: 0 20px 40px rgba(15,23,42,0.12); }
-    .header-content { display: flex; align-items: center; justify-content: space-between; gap: 3rem; }
-    .brand-logo { display: inline-flex; align-items: center; gap: .75rem; font-size: 1.8rem; font-weight: 900; color: var(--theme-accent); }
-    .brand-mark { width: 35px; height: 35px; border-radius: 12px; object-fit: contain; }
-    .nav-links { display: flex; align-items: center; gap: 1rem; list-style: none; flex-wrap: wrap; }
-    .nav-link { color: var(--theme-text-muted); font-weight: 600; padding: .75rem 1rem; border-radius: 999px; transition: .25s ease; }
+    .floating-header { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); width: min(980px, calc(100vw - 2rem)); background: var(--theme-surface-strong); backdrop-filter: blur(18px); border: 1px solid var(--theme-border); border-radius: 999px; padding: .5rem .6rem .5rem .75rem; z-index: 1000; box-shadow: 0 18px 44px rgba(15,23,42,0.12); }
+    .header-content { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: .8rem; }
+    .brand-logo { display: inline-flex; align-items: center; gap: .55rem; font-size: 1.05rem; font-weight: 900; color: var(--theme-accent); white-space: nowrap; }
+    .brand-mark { width: 34px; height: 34px; border-radius: 12px; object-fit: contain; }
+    .nav-links { display: flex; align-items: center; gap: .15rem; list-style: none; flex-wrap: nowrap; }
+    .nav-link { color: var(--theme-text-muted); font-size: .86rem; font-weight: 800; padding: .55rem .72rem; border-radius: 999px; transition: .25s ease; }
     .nav-link:hover, .nav-link.is-active { color: var(--theme-accent); background: var(--theme-accent-soft); }
     .menu-toggle { display: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 16px; border: 1px solid var(--theme-border); background: rgba(255,255,255,.82); color: #0f172a; font-size: 1.2rem; font-weight: 900; box-shadow: 0 12px 30px rgba(15,23,42,.14); cursor: pointer; }
+    .header-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 .95rem; border-radius: 999px; background: #0f172a; color: #fff; font-size: .9rem; font-weight: 900; white-space: nowrap; transition: .2s ease; }
+    .header-cta:hover { transform: translateY(-1px); background: var(--theme-accent); }
     .theme-fab { position: fixed; top: 18px; left: 18px; z-index: 1200; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.42); background: rgba(255,255,255,.82); backdrop-filter: blur(12px); color: #0f172a; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(15,23,42,.14); }
     body[data-theme="dark"] .theme-fab { background: rgba(15,23,42,.92); color: #f8fafc; border-color: rgba(255,255,255,.08); }
     body[data-theme="dark"] .menu-toggle { background: rgba(15,23,42,.92); color: #f8fafc; }
@@ -97,13 +99,16 @@
       :root { --header-offset: 100px; }
       .theme-fab { top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }
       .floating-header { top: 12px; width: calc(100vw - 16px); padding: .9rem 1rem; border-radius: 28px; }
-      .header-content { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; }
-      .brand-logo { min-width: 0; font-size: 1.25rem; gap: .55rem; }
-      .brand-mark { width: 32px; height: 32px; }
+      .header-content { min-height: 76px; position: relative; display: flex; flex-direction: row; direction: ltr; justify-content: space-between; align-items: center; gap: .75rem; }
+      .brand-logo { min-width: 0; font-size: 0; gap: 0; position: fixed; left: 88px; top: 32px; z-index: 1400; transform: none; }
+      .menu-toggle { position: fixed; left: 28px; top: 27px; z-index: 1400; transform: none; }
+      .brand-mark { width: 34px; height: 34px; }
       .menu-toggle { display: inline-flex; }
-      .nav-links { display: none; grid-column: 1 / -1; width: 100%; margin-top: .2rem; padding-top: .35rem; border-top: 1px solid rgba(15,23,42,.08); }
-      .floating-header.is-open .nav-links { display: grid; gap: .55rem; }
-      .nav-link { display: block; width: 100%; text-align: center; padding: .8rem 1rem; font-size: .98rem; }
+      .header-cta { display: none; }
+      .nav-links { display: none; position: fixed; inset: 0; z-index: -1; width: 100vw; min-height: 100svh; padding: 7.5rem 1.25rem 2rem; margin: 0; border-top: 0; background: rgba(255,255,255,.98); backdrop-filter: blur(14px); align-content: start; direction: rtl; }
+      body[data-theme="dark"] .nav-links { background: rgba(15,23,42,.98); }
+      .floating-header.is-open .nav-links { display: grid; gap: .75rem; }
+      .nav-link { display: block; width: 100%; text-align: center; padding: 1rem; font-size: 1.05rem; }
       .btn { width: 100%; min-height: 46px; padding: .82rem 1rem; font-size: .92rem; gap: .45rem; }
       .footer-cta-shell, .footer-content, .content-wrap, .hero-strip { padding-right: 1rem; padding-left: 1rem; }
       .footer-cta-card { padding: 2rem 1.2rem; }
@@ -126,6 +131,7 @@
         <li><a href="/blog/" class="nav-link">المدونة</a></li>
         <li><a href="/contact/" class="nav-link">تواصل معنا</a></li>
       </ul>
+      <a class="header-cta" href="https://wa.me/201010317647" target="_blank" rel="noopener">استشارة مجانية</a>
     </nav>
   </header>
   <button class="theme-fab" type="button" aria-label="تبديل وضع الألوان">🌙</button>

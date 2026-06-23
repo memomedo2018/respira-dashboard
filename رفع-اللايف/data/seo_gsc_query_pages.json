@@ -1,0 +1,101 @@
+[
+    {
+        "query_text": "respiratech",
+        "page_url": "https://www.respira-tech.com/",
+        "clicks": 2,
+        "impressions": 3,
+        "ctr": 0.6666666666666666,
+        "avg_position": 1.3333333333333333,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respira tech",
+        "page_url": "https://www.respira-tech.com/",
+        "clicks": 1,
+        "impressions": 3,
+        "ctr": 0.3333333333333333,
+        "avg_position": 1,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respira mask",
+        "page_url": "https://respira-tech.com/store/",
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "avg_position": 43,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respira medical",
+        "page_url": "https://respira-tech.com/products/",
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "avg_position": 54.5,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respira tech",
+        "page_url": "https://respira-tech.com/products/",
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "avg_position": 6,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respira tech",
+        "page_url": "https://respira-tech.com/store/",
+        "clicks": 0,
+        "impressions": 2,
+        "ctr": 0,
+        "avg_position": 5.5,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respiratech",
+        "page_url": "https://respira-tech.com/products/",
+        "clicks": 0,
+        "impressions": 6,
+        "ctr": 0,
+        "avg_position": 6,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "respiratech",
+        "page_url": "https://respira-tech.com/store/",
+        "clicks": 0,
+        "impressions": 3,
+        "ctr": 0,
+        "avg_position": 5.666666666666667,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    },
+    {
+        "query_text": "رسميد",
+        "page_url": "https://respira-tech.com/store/",
+        "clicks": 0,
+        "impressions": 1,
+        "ctr": 0,
+        "avg_position": 75,
+        "date_from": "2026-05-26",
+        "date_to": "2026-06-22",
+        "imported_at": "2026-06-23T05:22:20+00:00"
+    }
+]

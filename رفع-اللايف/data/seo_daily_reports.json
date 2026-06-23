@@ -1,0 +1,1037 @@
+[
+    {
+        "created_at": "2026-06-23T05:22:34+00:00",
+        "email_to": "alihessien0@gmail.com",
+        "jobs": {
+            "submit_sitemap": {
+                "ok": true,
+                "status": 204,
+                "error": "",
+                "payload": "",
+                "sitemap": "https://respira-tech.com/sitemap.xml"
+            },
+            "gsc_import": {
+                "ok": true,
+                "rows_imported": 9,
+                "date_from": "2026-05-26",
+                "date_to": "2026-06-22"
+            },
+            "recommendations": {
+                "created": 4
+            },
+            "indexing_seeded": 19,
+            "url_inspection": {
+                "inspected": 2,
+                "items": [
+                    {
+                        "url": "https://respira-tech.com/store/airfit-f40-complete-mask-system/",
+                        "ok": true,
+                        "raw": {
+                            "inspectionResult": {
+                                "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:respira-tech.com&id=i_B5HKlSbwSIcYNQlT93EA&utm_medium=link&utm_source=api",
+                                "indexStatusResult": {
+                                    "verdict": "NEUTRAL",
+                                    "coverageState": "URL is unknown to Google",
+                                    "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                                    "indexingState": "INDEXING_STATE_UNSPECIFIED",
+                                    "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+                                },
+                                "mobileUsabilityResult": {
+                                    "verdict": "VERDICT_UNSPECIFIED"
+                                }
+                            }
+                        },
+                        "inspected_at": "2026-06-23T05:22:27+00:00",
+                        "verdict": "NEUTRAL",
+                        "coverage_state": "URL is unknown to Google",
+                        "indexing_state": "INDEXING_STATE_UNSPECIFIED",
+                        "robots_txt_state": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                        "page_fetch_state": "PAGE_FETCH_STATE_UNSPECIFIED",
+                        "google_canonical": null,
+                        "user_canonical": null
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-n30i-starter-pack/",
+                        "ok": true,
+                        "raw": {
+                            "inspectionResult": {
+                                "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:respira-tech.com&id=UaCAvE2iFrdmu1FdMwdT2A&utm_medium=link&utm_source=api",
+                                "indexStatusResult": {
+                                    "verdict": "NEUTRAL",
+                                    "coverageState": "URL is unknown to Google",
+                                    "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                                    "indexingState": "INDEXING_STATE_UNSPECIFIED",
+                                    "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+                                },
+                                "mobileUsabilityResult": {
+                                    "verdict": "VERDICT_UNSPECIFIED"
+                                }
+                            }
+                        },
+                        "inspected_at": "2026-06-23T05:22:33+00:00",
+                        "verdict": "NEUTRAL",
+                        "coverage_state": "URL is unknown to Google",
+                        "indexing_state": "INDEXING_STATE_UNSPECIFIED",
+                        "robots_txt_state": "ROBOTS_TXT_STATE_UNSPECIFIED",
+                        "page_fetch_state": "PAGE_FETCH_STATE_UNSPECIFIED",
+                        "google_canonical": null,
+                        "user_canonical": null
+                    }
+                ]
+            },
+            "technical_audit": {
+                "generated_at": "2026-06-23T05:22:33+00:00",
+                "backend": "php",
+                "pages": [
+                    {
+                        "url": "https://respira-tech.com/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/blog/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/contact/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/about/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/services/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/services/cpap/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/services/bipap/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/services/sleep-apnea/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/services/cpap-masks/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/blog/sleep-apnea-headache-relationship/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-f20-complete-mask-system/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-n20-complete-mask-system/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-f30i-complete-mask-system/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-n30-complete-mask-system/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-n30i-starter-pack/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    },
+                    {
+                        "url": "https://respira-tech.com/store/airfit-f40-complete-mask-system/",
+                        "status": 200,
+                        "has_title": true,
+                        "has_meta_description": true,
+                        "has_canonical": true,
+                        "h1_count": 1,
+                        "has_schema": true
+                    }
+                ],
+                "issues": [],
+                "summary": {
+                    "pages": 19,
+                    "issues": 0
+                }
+            },
+            "internal_links": {
+                "changed_count": 18,
+                "changes": [
+                    {
+                        "slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "full-face-vs-nasal-mask",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "choose-cpap-mask-guide",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "why-wake-up-tired-after-long-sleep",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "sudden-awakening-choking-sleep-causes",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "sleep-apnea-morning-headache-relationship",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "cpap-sleep-comfort-egypt",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "cpap-sleep-comfort",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "choose-right-cpap-mask",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "how-to-choose-right-cpap-mask",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "cpap-during-sleep-comfort",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "cpap-discomfort-during-sleep",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "sleep-apnea-headache-relationship",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "difference-between-cpap-and-bipap",
+                        "links_count": 5
+                    },
+                    {
+                        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+                        "links_count": 5
+                    }
+                ]
+            },
+            "humanizer": {
+                "changed_count": 13,
+                "changes": [
+                    {
+                        "slug": "choose-right-cpap-mask",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "cpap-discomfort-during-sleep",
+                        "changes": [
+                            "added what-not-to-do",
+                            "added scenario"
+                        ]
+                    },
+                    {
+                        "slug": "cpap-sleep-comfort",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "difference-between-cpap-and-bipap",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "full-face-vs-nasal-mask",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "how-to-choose-right-cpap-mask",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "why-wake-up-tired-after-long-sleep",
+                        "changes": [
+                            "added scenario"
+                        ]
+                    },
+                    {
+                        "slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "difference-between-cpap-and-bipap",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    },
+                    {
+                        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+                        "changes": [
+                            "added what-not-to-do"
+                        ]
+                    }
+                ]
+            },
+            "quality_gate": {
+                "checked": 20,
+                "failed": 2,
+                "reports": [
+                    {
+                        "slug": "causes-sudden-waking-up-shortness-breath-sleep",
+                        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+                        "score": 79,
+                        "passed": false,
+                        "status": "needs_edits",
+                        "warnings": [
+                            "word_count",
+                            "meta_title",
+                            "meta_description"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": false,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "choose-cpap-mask-guide",
+                        "title": "كيف تختار ماسك CPAP المناسب؟ دليلك الكامل لاختيار القناع الأفضل لجهاز التنفس الليلي",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "choose-right-cpap-mask",
+                        "title": "كيف تختار ماسك CPAP المناسب؟ دليل شامل لراحة نومك",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "cpap-discomfort-during-sleep",
+                        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل شامل لتجربة نوم أفضل",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "meta_title"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": true,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "cpap-during-sleep-comfort",
+                        "title": "هل جهاز CPAP مزعج أثناء النوم؟ دليل كامل لفهم التجربة وطرق التكيف",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "meta_title"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "cpap-sleep-comfort-egypt",
+                        "title": "هل جهاز CPAP مزعج أثناء النوم؟",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "meta_description"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": false,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "cpap-sleep-comfort",
+                        "title": "هل جهاز CPAP مزعج أثناء النوم؟  حقائق ونصائح وتجارب واقعية",
+                        "score": 100,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": true,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "full-face-vs-nasal-mask",
+                        "title": "الفرق بين قناع الوجه الكامل (Full Face Mask) وقناع الأنف (Nasal Mask): دليل شامل لاختيار الأفضل لدعم التنفس المنزلي",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "meta_title"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "how-to-choose-right-cpap-mask",
+                        "title": "كيف تختار ماسك CPAP المناسب؟ دليل شامل للمستخدم العربي",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "sleep-apnea-headache-relationship",
+                        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "meta_title"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "sleep-apnea-morning-headache-relationship",
+                        "title": "العلاقة بين انقطاع النفس أثناء النوم والصداع الصباحي: فهم الأسباب والحلول العملية",
+                        "score": 79,
+                        "passed": false,
+                        "status": "needs_edits",
+                        "warnings": [
+                            "word_count",
+                            "meta_title",
+                            "meta_description"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": false,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "sudden-awakening-choking-sleep-causes",
+                        "title": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم: الدليل الشامل",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "meta_title"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": false,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "why-wake-up-tired-after-long-sleep",
+                        "title": "لماذا تستيقظ مرهقًا رغم النوم لساعات طويلة؟",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "meta_description"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": true,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": false,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+                        "title": "أعراض انقطاع النفس أثناء النوم التي لا يجب تجاهلها",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+                        "title": "كيف تختار ماسك CPAP المناسب؟",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+                        "title": "هل الشخير المستمر علامة على مشكلة صحية؟",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "difference-between-cpap-and-bipap",
+                        "title": "الفرق بين CPAP و BiPAP: أيهما مناسب لحالتك؟",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "difference-between-cpap-and-bipap",
+                        "title": "الفرق بين CPAP و BiPAP: أيهما مناسب لحالتك؟",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "what_not_to_do"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": false,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+                        "title": "ما هو جهاز CPAP وكيف يساعد في علاج انقطاع النفس أثناء النوم؟",
+                        "score": 86,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count",
+                            "what_not_to_do"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": false,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    },
+                    {
+                        "slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+                        "title": "ما هو جهاز CPAP وكيف يساعد في علاج انقطاع النفس أثناء النوم؟",
+                        "score": 93,
+                        "passed": true,
+                        "status": "passed",
+                        "warnings": [
+                            "word_count"
+                        ],
+                        "checks": {
+                            "title": true,
+                            "lead_answers_intent": true,
+                            "word_count": false,
+                            "single_h1": true,
+                            "has_h2": true,
+                            "meta_title": true,
+                            "meta_description": true,
+                            "faq": true,
+                            "internal_links": true,
+                            "cta": true,
+                            "medical_disclaimer": true,
+                            "human_scenario": true,
+                            "what_not_to_do": true,
+                            "no_dangerous_claims": true
+                        },
+                        "checked_at": "2026-06-23T05:22:33+00:00"
+                    }
+                ]
+            },
+            "refresh_queue": {
+                "queued": 2
+            },
+            "outreach_task": {
+                "opportunity_type": "partnership",
+                "title": "تواصل مع طبيب/مركز نوم لمراجعة محتوى تثقيفي أو مشاركة مصدر",
+                "target_url": "https://respira-tech.com/blog/",
+                "suggested_text": "اقترح مشاركة مقال تثقيفي عن CPAP أو انقطاع النفس أثناء النوم مع مركز نوم أو عيادة صدر موثوقة.",
+                "priority": "normal",
+                "status": "queued",
+                "created_at": "2026-06-23T05:22:33+00:00"
+            },
+            "build": {
+                "dry_run": false,
+                "official_builder": true,
+                "ok": true,
+                "published_articles": 4,
+                "products": 6,
+                "output": "Built 3 blog articles, store product pages, sitemap, robots, AI catalog, llms.txt, service pages, and admin shell."
+            }
+        },
+        "numbers": {
+            "gsc_rows": 9,
+            "open_recommendations": 4,
+            "indexing_queue": 19,
+            "url_inspections": 2,
+            "quality_warnings": 2,
+            "refresh_queue": 8,
+            "outreach_tasks": 1
+        },
+        "human_action": "راجع توصيات SEO المفتوحة ومهمة outreach واحدة هذا الأسبوع."
+    },
+    {
+        "created_at": "2026-06-23T05:20:51+00:00",
+        "email_to": "alihessien0@gmail.com",
+        "jobs": {
+            "outreach_task": {
+                "opportunity_type": "partnership",
+                "title": "تواصل مع طبيب/مركز نوم لمراجعة محتوى تثقيفي أو مشاركة مصدر",
+                "target_url": "https://respira-tech.com/blog/",
+                "suggested_text": "اقترح مشاركة مقال تثقيفي عن CPAP أو انقطاع النفس أثناء النوم مع مركز نوم أو عيادة صدر موثوقة.",
+                "priority": "normal",
+                "status": "queued",
+                "created_at": "2026-06-23T05:20:51+00:00"
+            }
+        },
+        "numbers": {
+            "gsc_rows": 0,
+            "open_recommendations": 0,
+            "indexing_queue": 19,
+            "url_inspections": 2,
+            "quality_warnings": 5,
+            "refresh_queue": 10,
+            "outreach_tasks": 1
+        },
+        "human_action": "راجع توصيات SEO المفتوحة ومهمة outreach واحدة هذا الأسبوع."
+    }
+]

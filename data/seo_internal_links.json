@@ -1,0 +1,902 @@
+[
+    {
+        "source_url": "/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+        "target_url": "/store/",
+        "source_slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "target_slug": "المتجر",
+        "anchor_text": "المتجر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+        "target_url": "/services/bipap/",
+        "source_slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "target_slug": "ماسكات-cpap",
+        "anchor_text": "ماسكات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+        "target_url": "/services/cpap/",
+        "source_slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/what-is-cpap-and-how-it-helps-sleep-apnea/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "what-is-cpap-and-how-it-helps-sleep-apnea",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/difference-between-cpap-and-bipap/",
+        "target_url": "/contact/",
+        "source_slug": "difference-between-cpap-and-bipap",
+        "target_slug": "تواصل-معنا",
+        "anchor_text": "تواصل معنا",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/difference-between-cpap-and-bipap/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "difference-between-cpap-and-bipap",
+        "target_slug": "ماسكات-cpap",
+        "anchor_text": "ماسكات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/difference-between-cpap-and-bipap/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "difference-between-cpap-and-bipap",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/difference-between-cpap-and-bipap/",
+        "target_url": "/services/bipap/",
+        "source_slug": "difference-between-cpap-and-bipap",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/difference-between-cpap-and-bipap/",
+        "target_url": "/services/cpap/",
+        "source_slug": "difference-between-cpap-and-bipap",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-headache-relationship/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "sleep-apnea-headache-relationship",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-headache-relationship/",
+        "target_url": "/store/",
+        "source_slug": "sleep-apnea-headache-relationship",
+        "target_slug": "المتجر",
+        "anchor_text": "المتجر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-headache-relationship/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "sleep-apnea-headache-relationship",
+        "target_slug": "أنواع-أقنعة-cpap",
+        "anchor_text": "أنواع أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-headache-relationship/",
+        "target_url": "/services/bipap/",
+        "source_slug": "sleep-apnea-headache-relationship",
+        "target_slug": "خدمة-أجهزة-bipap",
+        "anchor_text": "خدمة أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-headache-relationship/",
+        "target_url": "/services/cpap/",
+        "source_slug": "sleep-apnea-headache-relationship",
+        "target_slug": "خدمة-أجهزة-cpap",
+        "anchor_text": "خدمة أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-discomfort-during-sleep/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "cpap-discomfort-during-sleep",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-discomfort-during-sleep/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "cpap-discomfort-during-sleep",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-discomfort-during-sleep/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "cpap-discomfort-during-sleep",
+        "target_slug": "أقنعة-cpap",
+        "anchor_text": "أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-discomfort-during-sleep/",
+        "target_url": "/services/bipap/",
+        "source_slug": "cpap-discomfort-during-sleep",
+        "target_slug": "جهاز-bipap",
+        "anchor_text": "جهاز BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-discomfort-during-sleep/",
+        "target_url": "/services/cpap/",
+        "source_slug": "cpap-discomfort-during-sleep",
+        "target_slug": "جهاز-cpap",
+        "anchor_text": "جهاز CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-during-sleep-comfort/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "cpap-during-sleep-comfort",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-during-sleep-comfort/",
+        "target_url": "/services/bipap/",
+        "source_slug": "cpap-during-sleep-comfort",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-during-sleep-comfort/",
+        "target_url": "/store/",
+        "source_slug": "cpap-during-sleep-comfort",
+        "target_slug": "متجر-respira-tech",
+        "anchor_text": "متجر Respira Tech",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-during-sleep-comfort/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "cpap-during-sleep-comfort",
+        "target_slug": "صفحة-أقنعة-cpap",
+        "anchor_text": "صفحة أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-during-sleep-comfort/",
+        "target_url": "/services/cpap/",
+        "source_slug": "cpap-during-sleep-comfort",
+        "target_slug": "علاج-اضطرابات-النوم-باستخدام-cpap",
+        "anchor_text": "علاج اضطرابات النوم باستخدام CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/how-to-choose-right-cpap-mask/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "how-to-choose-right-cpap-mask",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/how-to-choose-right-cpap-mask/",
+        "target_url": "/services/cpap/",
+        "source_slug": "how-to-choose-right-cpap-mask",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/how-to-choose-right-cpap-mask/",
+        "target_url": "/contact/",
+        "source_slug": "how-to-choose-right-cpap-mask",
+        "target_slug": "صفحة-التواصل",
+        "anchor_text": "صفحة التواصل",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/how-to-choose-right-cpap-mask/",
+        "target_url": "/store/",
+        "source_slug": "how-to-choose-right-cpap-mask",
+        "target_slug": "متجر-respira-tech",
+        "anchor_text": "متجر Respira Tech",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/how-to-choose-right-cpap-mask/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "how-to-choose-right-cpap-mask",
+        "target_slug": "خدمة-أقنعة-cpap",
+        "anchor_text": "خدمة أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-right-cpap-mask/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "choose-right-cpap-mask",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-right-cpap-mask/",
+        "target_url": "/services/bipap/",
+        "source_slug": "choose-right-cpap-mask",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-right-cpap-mask/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "choose-right-cpap-mask",
+        "target_slug": "أقنعة-cpap",
+        "anchor_text": "أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-right-cpap-mask/",
+        "target_url": "/services/cpap/",
+        "source_slug": "choose-right-cpap-mask",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-right-cpap-mask/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "choose-right-cpap-mask",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "cpap-sleep-comfort",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort/",
+        "target_url": "/services/bipap/",
+        "source_slug": "cpap-sleep-comfort",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort/",
+        "target_url": "/contact/",
+        "source_slug": "cpap-sleep-comfort",
+        "target_slug": "تواصل-معنا",
+        "anchor_text": "تواصل معنا",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "cpap-sleep-comfort",
+        "target_slug": "أقنعة-cpap",
+        "anchor_text": "أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort/",
+        "target_url": "/services/cpap/",
+        "source_slug": "cpap-sleep-comfort",
+        "target_slug": "خدمة-أجهزة-cpap-المنزلية",
+        "anchor_text": "خدمة أجهزة CPAP المنزلية",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort-egypt/",
+        "target_url": "/contact/",
+        "source_slug": "cpap-sleep-comfort-egypt",
+        "target_slug": "respira-tech",
+        "anchor_text": "Respira Tech",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort-egypt/",
+        "target_url": "/store/",
+        "source_slug": "cpap-sleep-comfort-egypt",
+        "target_slug": "متجر-الأجهزة-الطبية",
+        "anchor_text": "متجر الأجهزة الطبية",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort-egypt/",
+        "target_url": "/services/bipap/",
+        "source_slug": "cpap-sleep-comfort-egypt",
+        "target_slug": "خدمات-جهاز-bipap",
+        "anchor_text": "خدمات جهاز BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort-egypt/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "cpap-sleep-comfort-egypt",
+        "target_slug": "أنواع-أقنعة-cpap-المتوفرة",
+        "anchor_text": "أنواع أقنعة CPAP المتوفرة",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/cpap-sleep-comfort-egypt/",
+        "target_url": "/services/cpap/",
+        "source_slug": "cpap-sleep-comfort-egypt",
+        "target_slug": "خدمات-أجهزة-cpap",
+        "anchor_text": "خدمات أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "target_url": "/store/",
+        "source_slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "target_slug": "متجر-respira-tech",
+        "anchor_text": "متجر Respira Tech",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "target_slug": "أقنعة-cpap-الطبية",
+        "anchor_text": "أقنعة CPAP الطبية",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "target_url": "/services/bipap/",
+        "source_slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "target_slug": "خدمة-أجهزة-bipap",
+        "anchor_text": "خدمة أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "target_url": "/services/cpap/",
+        "source_slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "target_slug": "خدمة-أجهزة-cpap",
+        "anchor_text": "خدمة أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "causes-sudden-waking-up-shortness-breath-sleep",
+        "target_slug": "تفاصيل-انقطاع-النفس-النومي",
+        "anchor_text": "تفاصيل انقطاع النفس النومي",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-morning-headache-relationship/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "sleep-apnea-morning-headache-relationship",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-morning-headache-relationship/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "sleep-apnea-morning-headache-relationship",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-morning-headache-relationship/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "sleep-apnea-morning-headache-relationship",
+        "target_slug": "أقنعة-cpap",
+        "anchor_text": "أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-morning-headache-relationship/",
+        "target_url": "/services/bipap/",
+        "source_slug": "sleep-apnea-morning-headache-relationship",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sleep-apnea-morning-headache-relationship/",
+        "target_url": "/services/cpap/",
+        "source_slug": "sleep-apnea-morning-headache-relationship",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sudden-awakening-choking-sleep-causes/",
+        "target_url": "/store/",
+        "source_slug": "sudden-awakening-choking-sleep-causes",
+        "target_slug": "المتجر-الإلكتروني",
+        "anchor_text": "المتجر الإلكتروني",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sudden-awakening-choking-sleep-causes/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "sudden-awakening-choking-sleep-causes",
+        "target_slug": "أنواع-أقنعة-cpap",
+        "anchor_text": "أنواع أقنعة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sudden-awakening-choking-sleep-causes/",
+        "target_url": "/services/bipap/",
+        "source_slug": "sudden-awakening-choking-sleep-causes",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sudden-awakening-choking-sleep-causes/",
+        "target_url": "/services/cpap/",
+        "source_slug": "sudden-awakening-choking-sleep-causes",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/sudden-awakening-choking-sleep-causes/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "sudden-awakening-choking-sleep-causes",
+        "target_slug": "توقف-التنفس-أثناء-النوم",
+        "anchor_text": "توقف التنفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/why-wake-up-tired-after-long-sleep/",
+        "target_url": "/contact/",
+        "source_slug": "why-wake-up-tired-after-long-sleep",
+        "target_slug": "صفحة-الاتصال",
+        "anchor_text": "صفحة الاتصال",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/why-wake-up-tired-after-long-sleep/",
+        "target_url": "/store/",
+        "source_slug": "why-wake-up-tired-after-long-sleep",
+        "target_slug": "متجرنا",
+        "anchor_text": "متجرنا",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/why-wake-up-tired-after-long-sleep/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "why-wake-up-tired-after-long-sleep",
+        "target_slug": "قناع-cpap",
+        "anchor_text": "قناع CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/why-wake-up-tired-after-long-sleep/",
+        "target_url": "/services/bipap/",
+        "source_slug": "why-wake-up-tired-after-long-sleep",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/why-wake-up-tired-after-long-sleep/",
+        "target_url": "/services/cpap/",
+        "source_slug": "why-wake-up-tired-after-long-sleep",
+        "target_slug": "صفحة-أجهزة-cpap",
+        "anchor_text": "صفحة أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟/",
+        "target_url": "/store/",
+        "source_slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "target_slug": "المتجر",
+        "anchor_text": "المتجر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "target_slug": "ماسكات-cpap",
+        "anchor_text": "ماسكات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟/",
+        "target_url": "/services/bipap/",
+        "source_slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟/",
+        "target_url": "/services/cpap/",
+        "source_slug": "هل-الشخير-المستمر-علامة-على-مشكلة-صحية؟",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها/",
+        "target_url": "/store/",
+        "source_slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "target_slug": "المتجر",
+        "anchor_text": "المتجر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "target_slug": "ماسكات-cpap",
+        "anchor_text": "ماسكات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها/",
+        "target_url": "/services/bipap/",
+        "source_slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها/",
+        "target_url": "/services/cpap/",
+        "source_slug": "أعراض-انقطاع-النفس-أثناء-النوم-التي-لا-يجب-تجاهلها",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-cpap-mask-guide/",
+        "target_url": "/blog/causes-sudden-waking-up-shortness-breath-sleep/",
+        "source_slug": "choose-cpap-mask-guide",
+        "target_slug": "أسباب-الاستيقاظ-المفاجئ-مع-كتمة-أو-اختناق-أثناء-النوم",
+        "anchor_text": "أسباب الاستيقاظ المفاجئ مع كتمة أو اختناق أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-cpap-mask-guide/",
+        "target_url": "/services/bipap/",
+        "source_slug": "choose-cpap-mask-guide",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-cpap-mask-guide/",
+        "target_url": "/store/",
+        "source_slug": "choose-cpap-mask-guide",
+        "target_slug": "المتجر-الإلكتروني-للأجهزة-والأقنعة",
+        "anchor_text": "المتجر الإلكتروني للأجهزة والأقنعة",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-cpap-mask-guide/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "choose-cpap-mask-guide",
+        "target_slug": "خدمات-أقنعة-cpap-في-مصر",
+        "anchor_text": "خدمات أقنعة CPAP في مصر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/choose-cpap-mask-guide/",
+        "target_url": "/services/cpap/",
+        "source_slug": "choose-cpap-mask-guide",
+        "target_slug": "كل-ما-تحتاج-معرفته-عن-أجهزة-cpap",
+        "anchor_text": "كل ما تحتاج معرفته عن أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/full-face-vs-nasal-mask/",
+        "target_url": "/contact/",
+        "source_slug": "full-face-vs-nasal-mask",
+        "target_slug": "صفحة-التواصل",
+        "anchor_text": "صفحة التواصل",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/full-face-vs-nasal-mask/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "full-face-vs-nasal-mask",
+        "target_slug": "قسم-أقنعة-أجهزة-cpap",
+        "anchor_text": "قسم أقنعة أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/full-face-vs-nasal-mask/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "full-face-vs-nasal-mask",
+        "target_slug": "أجهزة-الدعم-التنفسي-المنزلية",
+        "anchor_text": "أجهزة الدعم التنفسي المنزلية",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/full-face-vs-nasal-mask/",
+        "target_url": "/services/bipap/",
+        "source_slug": "full-face-vs-nasal-mask",
+        "target_slug": "خدمات-bipap",
+        "anchor_text": "خدمات BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/full-face-vs-nasal-mask/",
+        "target_url": "/services/cpap/",
+        "source_slug": "full-face-vs-nasal-mask",
+        "target_slug": "خدمات-cpap",
+        "anchor_text": "خدمات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/كيف-تختار-ماسك-cpap-المناسب؟/",
+        "target_url": "/store/",
+        "source_slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "target_slug": "المتجر",
+        "anchor_text": "المتجر",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/كيف-تختار-ماسك-cpap-المناسب؟/",
+        "target_url": "/services/cpap-masks/",
+        "source_slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "target_slug": "ماسكات-cpap",
+        "anchor_text": "ماسكات CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/كيف-تختار-ماسك-cpap-المناسب؟/",
+        "target_url": "/services/sleep-apnea/",
+        "source_slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "target_slug": "انقطاع-النفس-أثناء-النوم",
+        "anchor_text": "انقطاع النفس أثناء النوم",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/كيف-تختار-ماسك-cpap-المناسب؟/",
+        "target_url": "/services/bipap/",
+        "source_slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "target_slug": "أجهزة-bipap",
+        "anchor_text": "أجهزة BiPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    },
+    {
+        "source_url": "/blog/كيف-تختار-ماسك-cpap-المناسب؟/",
+        "target_url": "/services/cpap/",
+        "source_slug": "كيف-تختار-ماسك-cpap-المناسب؟",
+        "target_slug": "أجهزة-cpap",
+        "anchor_text": "أجهزة CPAP",
+        "reason": "cluster/product linking",
+        "status": "inserted",
+        "created_at": "2026-06-23T05:22:33+00:00"
+    }
+]
