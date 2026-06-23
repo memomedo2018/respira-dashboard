@@ -47,6 +47,11 @@ async function adminApi(path, options = {}) {
 }
 
 async function publicApi(path, options = {}) {
+  if (window.location.hostname === 'respira-tech.com' && path === '/api/store') {
+    const response = await fetch('/store-data.json', { ...options, mode: 'same-origin' });
+    if (!response.ok) throw new Error('تعذر تحميل البيانات');
+    return response.json();
+  }
   const response = await fetch(apiUrl(path), { ...options, mode: 'cors' });
   if (!response.ok) throw new Error('تعذر تحميل البيانات');
   return response.json();
