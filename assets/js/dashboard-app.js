@@ -613,7 +613,7 @@ function renderDailyReport() {
 
   document.getElementById('dailyReportNotes').innerHTML = `
     آخر تحديث للتقرير: ${escapeHTML(formatDateTime(new Date().toISOString()))}<br>
-    الحفظ التلقائي إلى GitHub: ${state.settings.github_sync_configured ? 'مفعل، وأي عملية ناجحة تدفع التغيير ثم تؤدي إلى redeploy تلقائي على Railway.' : 'غير مكتمل بعد، لذلك بعض العمليات قد تنجح محليًا فقط.'}
+    الحفظ التلقائي إلى GitHub: ${state.settings.github_sync_configured ? 'مفعل، وأي عملية ناجحة تدفع التغيير وتحدث نسخة Hostinger عند النشر.' : 'غير مكتمل بعد، لذلك بعض العمليات قد تنجح محليًا فقط.'}
   `;
 
   const timeline = collectDailyTimeline();

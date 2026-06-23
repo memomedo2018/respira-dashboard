@@ -22,9 +22,7 @@ function encodeHeaderValue(value) {
   return encodeURIComponent(String(value || ''));
 }
 
-const API_BASE_URL = window.location.hostname === 'respira-tech.com'
-  ? 'https://perfect-art-production.up.railway.app'
-  : '';
+const API_BASE_URL = '';
 
 function apiUrl(path) {
   if (/^https?:\/\//i.test(path)) return path;
@@ -615,7 +613,7 @@ function renderDailyReport() {
 
   document.getElementById('dailyReportNotes').innerHTML = `
     آخر تحديث للتقرير: ${escapeHTML(formatDateTime(new Date().toISOString()))}<br>
-    الحفظ التلقائي إلى GitHub: ${state.settings.github_sync_configured ? 'مفعل، وأي عملية ناجحة تدفع التغيير ثم تؤدي إلى redeploy تلقائي على Railway.' : 'غير مكتمل بعد، لذلك بعض العمليات قد تنجح محليًا فقط.'}
+    الحفظ التلقائي إلى GitHub: ${state.settings.github_sync_configured ? 'مفعل، وأي عملية ناجحة تدفع التغيير وتحدث نسخة Hostinger عند النشر.' : 'غير مكتمل بعد، لذلك بعض العمليات قد تنجح محليًا فقط.'}
   `;
 
   const timeline = collectDailyTimeline();
@@ -925,7 +923,7 @@ document.getElementById('rebuildBtn').addEventListener('click', async () => {
 });
 
 async function generateNow(count, publishNow) {
-  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow }) });
+  await adminApi('/api/blog/generate', { method: 'POST', body: JSON.stringify({ count, publish_now: publishNow, build: true }) });
   await refreshDashboard();
   window.alert(`تم تشغيل التوليد اليدوي لعدد ${count} مقال ${publishNow ? 'مع النشر الفوري' : 'كـ Draft'}.`);
 }
