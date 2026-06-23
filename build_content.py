@@ -15,7 +15,6 @@ LIVE_RELEASE_DIR = BASE_DIR / "رفع-اللايف"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 STORE_FILE = BASE_DIR / "data" / "store.json"
-FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 BLOG_INDEX_FILE = BASE_DIR / "blog" / "index.html"
 BLOG_OUTPUT_DIR = BASE_DIR / "blog"
 ROBOTS_FILE = BASE_DIR / "robots.txt"
@@ -34,7 +33,6 @@ AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
 
 RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / ".htaccess",
-    BASE_DIR / "favicon.ico",
     BASE_DIR / "index.html",
     BASE_DIR / "about",
     BASE_DIR / "admin",
@@ -50,17 +48,14 @@ RELEASE_TOP_LEVEL_PATHS = [
     BASE_DIR / "store",
     BASE_DIR / "terms",
     BASE_DIR / "sitemap.xml",
-    BASE_DIR / "site.webmanifest",
     BASE_DIR / "robots.txt",
     BASE_DIR / "llms.txt",
-    BASE_DIR / "video",
     BASE_DIR / "داشبورد",
 ]
 
 RELEASE_DATA_PATHS = [
     STORE_FILE,
     SITE_FILE,
-    FALLBACK_CATALOG_FILE,
     BASE_DIR / "data" / "product-schema.json",
     AI_CATALOG_FILE,
 ]
@@ -128,7 +123,7 @@ def estimate_reading_time(markdown: str) -> int:
     return max(1, round(words / 180))
 
 
-def markdown_to_html(markdown: str) -> str:
+def markdown_to_html(markdown: str, *, demote_h1: bool = False) -> str:
     lines = markdown.splitlines()
     html_parts: list[str] = []
     in_list = False
@@ -159,7 +154,8 @@ def markdown_to_html(markdown: str) -> str:
             if in_list:
                 html_parts.append("</ul>")
                 in_list = False
-            html_parts.append(f"<h2>{format_inline(line[2:])}</h2>")
+            tag = "h2" if demote_h1 else "h1"
+            html_parts.append(f"<{tag}>{format_inline(line[2:])}</{tag}>")
             continue
 
         if line.startswith("- ") or line.startswith("* "):
@@ -247,7 +243,7 @@ def get_published_articles() -> list[dict]:
         if article.get("status") != "published":
             continue
         article["source_file"] = str(path.relative_to(BASE_DIR))
-        article["content_html"] = inject_heading_ids(markdown_to_html(article.get("content_markdown", "")))
+        article["content_html"] = inject_heading_ids(markdown_to_html(article.get("content_markdown", ""), demote_h1=True))
         article["reading_time"] = article.get("reading_time") or estimate_reading_time(article.get("content_markdown", ""))
         article["seo_score"] = seo_check(article)
         articles.append(article)
@@ -298,12 +294,6 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
   <meta name="twitter:title" content="{html.escape(title)}">
   <meta name="twitter:description" content="{html.escape(meta_description)}">
   <meta name="twitter:image" content="{html.escape(meta_image)}">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/respira-icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/respira-icon-512.png">
-  <link rel="apple-touch-icon" href="/assets/icons/respira-icon-192.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#f3f8fc">
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     :root {{
@@ -348,9 +338,6 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
     .nav-link:hover, .nav-link.is-active {{ color: var(--theme-accent); background: var(--theme-accent-soft); }}
     .menu-toggle {{ display: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 16px; border: 1px solid var(--theme-border); background: rgba(255,255,255,.82); color: #0f172a; font-size: 1.2rem; font-weight: 900; box-shadow: 0 12px 30px rgba(15,23,42,.14); cursor: pointer; }}
     .theme-fab {{ position: fixed; top: 18px; left: 18px; z-index: 1200; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.42); background: rgba(255,255,255,.82); backdrop-filter: blur(12px); color: #0f172a; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(15,23,42,.14); }}
-    .whatsapp-fab {{ position: fixed; right: 18px; bottom: 18px; z-index: 1250; width: 58px; height: 58px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #25d366; color: #fff; box-shadow: 0 18px 38px rgba(37,211,102,.32); transition: transform .2s ease, box-shadow .2s ease; }}
-    .whatsapp-fab:hover {{ transform: translateY(-3px); box-shadow: 0 24px 48px rgba(37,211,102,.4); }}
-    .whatsapp-fab svg {{ width: 30px; height: 30px; fill: currentColor; }}
     body[data-theme="dark"] .theme-fab {{ background: rgba(15,23,42,.92); color: #f8fafc; border-color: rgba(255,255,255,.08); }}
     body[data-theme="dark"] .menu-toggle {{ background: rgba(15,23,42,.92); color: #f8fafc; }}
     .page-shell {{ padding: calc(var(--header-offset) + 1.5rem) 0 0; min-height: 60vh; }}
@@ -386,7 +373,6 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
     @media (max-width: 768px) {{
       :root {{ --header-offset: 100px; }}
       .theme-fab {{ top: auto; bottom: 14px; left: 14px; width: 42px; height: 42px; }}
-      .whatsapp-fab {{ right: 14px; bottom: 14px; width: 54px; height: 54px; }}
       .floating-header {{ top: 12px; width: calc(100vw - 16px); padding: .9rem 1rem; border-radius: 28px; }}
       .header-content {{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; }}
       .brand-logo {{ min-width: 0; font-size: 1.25rem; gap: .55rem; }}
@@ -420,9 +406,6 @@ def build_layout(*, title: str, meta_description: str, canonical: str, og_type: 
     </nav>
   </header>
   <button class="theme-fab" type="button" aria-label="تبديل وضع الألوان">🌙</button>
-  <a class="whatsapp-fab" href="https://wa.me/{html.escape(site['whatsapp_number'])}?text=%D9%85%D8%B1%D8%AD%D8%A8%D9%8B%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.02 3.2A12.68 12.68 0 0 0 5.07 22.28L3.2 29l6.88-1.8A12.67 12.67 0 1 0 16.02 3.2Zm0 22.94a10.18 10.18 0 0 1-5.2-1.43l-.37-.22-4.08 1.07 1.09-3.98-.24-.41a10.2 10.2 0 1 1 8.8 4.97Zm5.6-7.62c-.3-.15-1.8-.89-2.08-.99-.28-.1-.49-.15-.69.15-.2.3-.79.99-.96 1.19-.18.2-.36.22-.67.07-.3-.15-1.29-.47-2.46-1.5-.91-.8-1.53-1.8-1.7-2.1-.18-.3-.02-.47.13-.62.14-.13.3-.36.46-.54.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.69-1.66-.94-2.27-.25-.6-.5-.51-.69-.52h-.59c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.21 5.08 4.5.71.3 1.26.49 1.69.62.71.23 1.36.2 1.88.12.57-.08 1.8-.73 2.05-1.44.25-.71.25-1.31.18-1.44-.08-.13-.28-.2-.59-.35Z"/></svg>
-  </a>
   <div class="page-shell">{content}</div>
   <section class="footer-cta">
     <div class="footer-cta-shell">
@@ -500,7 +483,7 @@ def org_schema(site_data: dict) -> list[dict]:
             "@type": "Organization",
             "name": site["name"],
             "url": site["base_url"],
-            "logo": f"{site['base_url']}/assets/icons/respira-icon-512.png",
+            "logo": f"{site['base_url']}{site['default_image']}",
             "sameAs": org["same_as"],
         },
         {
@@ -606,18 +589,6 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
             for item in related
         ) + "</div></section>"
 
-    image_credit_markup = ""
-    image_credit = article.get("featured_image_credit") or {}
-    if image_credit.get("source"):
-        creator = image_credit.get("creator") or image_credit.get("source")
-        source = image_credit.get("source")
-        url = image_credit.get("url") or ""
-        credit_text = f"الصورة: {creator} / {source}"
-        if url:
-            image_credit_markup = f'<a class="image-credit" href="{html.escape(url)}" target="_blank" rel="noopener nofollow">{html.escape(credit_text)}</a>'
-        else:
-            image_credit_markup = f'<div class="image-credit">{html.escape(credit_text)}</div>'
-
     faq_schema = []
     if article.get("faq"):
         faq_schema.append({
@@ -655,7 +626,6 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <img loading="lazy" class="featured-image" src="{html.escape(article['featured_image'])}" alt="{html.escape(article['title_ar'])}">
-          {image_credit_markup}
           <div class="toc-card">
             <h3>محتويات المقال</h3>
             <ul>{toc_markup}</ul>
@@ -680,7 +650,7 @@ def build_article_page(article: dict, site_data: dict, all_articles: list[dict])
     """
 
     extra = """
-    .breadcrumbs{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;color:#64748b;font-size:.95rem;margin-bottom:1rem}.article-meta{margin-top:.8rem;color:#64748b;font-weight:700}.article-wrap{display:grid;grid-template-columns:310px minmax(0,1fr);gap:1.5rem}.article-sidebar{position:sticky;top:1.5rem;align-self:start}.sidebar-card{display:grid;gap:1rem}.featured-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:28px;background:#eef8fd}.image-credit{display:block;margin-top:-.65rem;color:#64748b;font-size:.78rem;text-align:center}.toc-card,.cta-card,.content-card,.disclaimer-section{background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;box-shadow:0 18px 40px rgba(15,23,42,.06)}.toc-card,.cta-card{padding:1.2rem}.toc-card h3,.cta-card h3{margin-bottom:.75rem;color:#0f172a}.toc-card ul,.links-list{display:grid;gap:.7rem;padding-inline-start:1.2rem}.toc-card a,.links-list a{color:#0097b2}.article-main{display:grid;gap:1.5rem}.content-card{padding:1.8rem}.content-card h2{font-size:1.8rem;margin:1.8rem 0 .9rem;color:#0f172a}.content-card h3{font-size:1.35rem;margin:1.3rem 0 .7rem;color:#0f172a}.content-card p,.content-card li,.content-card blockquote{color:#475569}.content-card ul{padding-inline-start:1.4rem;display:grid;gap:.6rem}.faq-list{display:grid;gap:.75rem}.faq-item{background:#f9fcff;border:1px solid rgba(15,23,42,.08);border-radius:20px;padding:1rem}.faq-item summary{font-weight:800;cursor:pointer}.faq-item p{margin-top:.6rem}.article-section{margin-top:1.5rem}.cta-card p{color:#475569;line-height:1.9;margin-bottom:1rem}.disclaimer-section{padding:1rem 1.2rem;color:#475569}.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.related-card{display:block;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,.06)}.related-card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#eef8fd}.related-body{padding:1rem}.related-body h3{font-size:1.1rem;margin-bottom:.5rem;color:#0f172a}.related-body p{color:#64748b;font-size:.95rem}@media (max-width:960px){.article-wrap{grid-template-columns:1fr}.article-sidebar{position:static}.related-grid{grid-template-columns:1fr 1fr}}@media (max-width:768px){.related-grid{grid-template-columns:1fr}.content-card{padding:1.1rem}.toc-card,.cta-card{padding:1rem}}
+    .breadcrumbs{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;color:#64748b;font-size:.95rem;margin-bottom:1rem}.article-meta{margin-top:.8rem;color:#64748b;font-weight:700}.article-wrap{display:grid;grid-template-columns:310px minmax(0,1fr);gap:1.5rem}.article-sidebar{position:sticky;top:1.5rem;align-self:start}.sidebar-card{display:grid;gap:1rem}.featured-image{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:28px;background:#eef8fd}.toc-card,.cta-card,.content-card,.disclaimer-section{background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;box-shadow:0 18px 40px rgba(15,23,42,.06)}.toc-card,.cta-card{padding:1.2rem}.toc-card h3,.cta-card h3{margin-bottom:.75rem;color:#0f172a}.toc-card ul,.links-list{display:grid;gap:.7rem;padding-inline-start:1.2rem}.toc-card a,.links-list a{color:#0097b2}.article-main{display:grid;gap:1.5rem}.content-card{padding:1.8rem}.content-card h2{font-size:1.8rem;margin:1.8rem 0 .9rem;color:#0f172a}.content-card h3{font-size:1.35rem;margin:1.3rem 0 .7rem;color:#0f172a}.content-card p,.content-card li,.content-card blockquote{color:#475569}.content-card ul{padding-inline-start:1.4rem;display:grid;gap:.6rem}.faq-list{display:grid;gap:.75rem}.faq-item{background:#f9fcff;border:1px solid rgba(15,23,42,.08);border-radius:20px;padding:1rem}.faq-item summary{font-weight:800;cursor:pointer}.faq-item p{margin-top:.6rem}.article-section{margin-top:1.5rem}.cta-card p{color:#475569;line-height:1.9;margin-bottom:1rem}.disclaimer-section{padding:1rem 1.2rem;color:#475569}.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.related-card{display:block;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,.06)}.related-card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#eef8fd}.related-body{padding:1rem}.related-body h3{font-size:1.1rem;margin-bottom:.5rem;color:#0f172a}.related-body p{color:#64748b;font-size:.95rem}@media (max-width:960px){.article-wrap{grid-template-columns:1fr}.article-sidebar{position:static}.related-grid{grid-template-columns:1fr 1fr}}@media (max-width:768px){.related-grid{grid-template-columns:1fr}.content-card{padding:1.1rem}.toc-card,.cta-card{padding:1rem}}
     """
     schema = org_schema(site_data) + [article_schema] + faq_schema
     save_text(
