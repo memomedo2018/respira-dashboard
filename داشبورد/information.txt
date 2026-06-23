@@ -1,0 +1,12 @@
+SSH details
+IP
+89.116.53.44
+
+Port
+65002
+
+Username
+u598338404
+
+password
+Mohamed0@!..

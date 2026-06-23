@@ -4,7 +4,6 @@ import json
 import os
 import re
 import subprocess
-import base64
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
@@ -25,7 +24,6 @@ except Exception:  # pragma: no cover
 BASE_DIR = Path(__file__).resolve().parent
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 SITE_FILE = BASE_DIR / "data" / "site.json"
-FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 TOPICS_FILE = BASE_DIR / "data" / "blog_topics.json"
 ENV_FILE = BASE_DIR / ".env"
 SEO_AUDIT_FILE = BASE_DIR / "data" / "seo_audit.json"
@@ -33,29 +31,6 @@ SEO_LOG_FILE = BASE_DIR / "data" / "seo_brain_log.json"
 GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
 BLOG_IMAGES_DIR = BASE_DIR / "assets" / "images" / "blog"
 BUILD_SCRIPT = BASE_DIR / "build_content.py"
-GSC_SCOPES = ["https://www.googleapis.com/auth/webmasters"]
-ARTICLE_MIN_WORDS = int(os.getenv("ARTICLE_MIN_WORDS", os.getenv("BLOG_ARTICLE_MIN_WORDS", "1600")) or "1600")
-ARTICLE_TARGET_WORDS = int(os.getenv("ARTICLE_TARGET_WORDS", os.getenv("BLOG_ARTICLE_TARGET_WORDS", "1800")) or "1800")
-FALLBACK_BLOG_IMAGES = [
-    "/assets/images/blog/cpap-daily-usage-hours-guide.png",
-    "/assets/images/blog/cpap-cleaning-guide.png",
-    "/assets/images/blog/choose-cpap-mask-guide.png",
-    "/assets/images/blog/cpap-sleep-comfort.png",
-    "/assets/images/blog/cpap-mask-air-leakage-causes-solutions.png",
-    "/assets/images/store/resmed-airsense-11-autoset.jpg",
-    "/assets/images/store/resmed-airsense-10-autoset.jpg",
-    "/assets/images/store/yuwell-auto-cpap.png",
-]
-_fallback_catalog_cache: list[dict] | None = None
-
-INTERNAL_LINK_STRATEGY = [
-    {"url": "/services/cpap/", "anchors": ["أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم", "أجهزة CPAP المنزلية", "جهاز CPAP المناسب لحالتك", "خدمة أجهزة CPAP من Respira Tech"]},
-    {"url": "/services/bipap/", "anchors": ["الفرق بين أجهزة CPAP و BiPAP", "أجهزة BiPAP للحالات التي تحتاج دعم تنفسي أكبر", "متى يكون جهاز BiPAP اختيارًا مناسبًا", "خدمة أجهزة BiPAP المنزلية"]},
-    {"url": "/services/sleep-apnea/", "anchors": ["أعراض انقطاع النفس أثناء النوم", "تشخيص انقطاع النفس أثناء النوم", "الشخير وتوقف التنفس أثناء النوم", "متى تحتاج لتقييم اضطرابات النوم"]},
-    {"url": "/services/cpap-masks/", "anchors": ["اختيار ماسك CPAP المناسب", "حل مشكلة تسريب الهواء من ماسك CPAP", "أنواع ماسكات CPAP وطرق اختيارها", "ماسكات CPAP المريحة للاستخدام اليومي"]},
-    {"url": "/store/", "anchors": ["تصفح أجهزة التنفس وماسكات CPAP المتاحة", "شراء مستلزمات CPAP و BiPAP", "منتجات Respira Tech لأجهزة التنفس المنزلي", "خيارات أجهزة وماسكات التنفس المتوفرة"]},
-    {"url": "/contact/", "anchors": ["استشارة Respira Tech لاختيار الجهاز المناسب", "التواصل مع مختص قبل شراء جهاز CPAP", "مساعدة في اختيار جهاز التنفس المنزلي", "طلب دعم لاختيار الماسك أو الجهاز"]},
-]
 
 AR_STOPWORDS = {
     "في", "من", "على", "إلى", "عن", "أن", "أو", "مع", "هذا", "هذه", "ذلك", "التي", "الذي",
@@ -98,65 +73,6 @@ def append_log(entry: dict) -> None:
     save_json(SEO_LOG_FILE, logs[:200])
 
 
-def google_service_account_email() -> str:
-    credentials = gsc_credentials_info()
-    if not isinstance(credentials, dict):
-        return ""
-    return str(credentials.get("client_email") or "")
-
-
-def gsc_credentials_info() -> dict:
-    env = load_env()
-    raw = env.get("GSC_CREDENTIALS_JSON") or ""
-    if raw:
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            pass
-    encoded = env.get("GSC_CREDENTIALS_JSON_B64") or ""
-    if encoded:
-        try:
-            return json.loads(base64.b64decode(encoded).decode("utf-8"))
-        except Exception:
-            pass
-    credentials = load_json(GSC_CREDENTIALS_FILE, {})
-    return credentials if isinstance(credentials, dict) else {}
-
-
-def gsc_credentials_available() -> bool:
-    return bool(gsc_credentials_info().get("client_email"))
-
-
-def _gsc_service():
-    credentials = gsc_credentials_info()
-    if not credentials:
-        raise RuntimeError("Google Search Console credentials غير مرفوعة بعد.")
-    if service_account is None or google_build is None:
-        raise RuntimeError("مكتبات Google Search Console غير متاحة في البيئة الحالية.")
-    creds = service_account.Credentials.from_service_account_info(
-        credentials,
-        scopes=GSC_SCOPES,
-    )
-    return google_build("searchconsole", "v1", credentials=creds, cache_discovery=False)
-
-
-def submit_sitemap(site_url: str | None = None, sitemap_url: str | None = None) -> dict:
-    env = load_env()
-    site_url = (site_url or env.get("GSC_SITE_URL") or env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
-    public_base_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
-    sitemap_url = sitemap_url or f"{public_base_url}/sitemap.xml"
-    service = _gsc_service()
-    service.sitemaps().submit(siteUrl=site_url, feedpath=sitemap_url).execute()
-    result = {
-        "submitted": True,
-        "site_url": site_url,
-        "sitemap_url": sitemap_url,
-        "submitted_at": datetime.utcnow().isoformat(),
-    }
-    append_log({"type": "gsc_sitemap_submit", **result})
-    return result
-
-
 def run_build() -> None:
     subprocess.run(["python3", str(BUILD_SCRIPT)], cwd=BASE_DIR, check=True)
 
@@ -182,112 +98,6 @@ def estimate_reading_time(markdown: str) -> int:
     return max(1, round(words / 180))
 
 
-def fallback_catalog() -> list[dict]:
-    global _fallback_catalog_cache
-    if _fallback_catalog_cache is not None:
-        return _fallback_catalog_cache
-    catalog = load_json(FALLBACK_CATALOG_FILE, [])
-    if isinstance(catalog, list) and catalog:
-        _fallback_catalog_cache = [item for item in catalog if isinstance(item, dict) and item.get("url")]
-    else:
-        _fallback_catalog_cache = [
-            {"url": url, "source": "Respira Tech local fallback library", "creator": "Respira Tech"}
-            for url in FALLBACK_BLOG_IMAGES
-        ]
-    return _fallback_catalog_cache
-
-
-def fallback_featured_image(seed: str = "") -> str:
-    catalog = fallback_catalog()
-    index = sum(ord(char) for char in str(seed or "")) % len(catalog)
-    return catalog[index].get("url") or FALLBACK_BLOG_IMAGES[index % len(FALLBACK_BLOG_IMAGES)]
-
-
-def image_search_query(title: str = "", category: str = "") -> str:
-    source = f"{title} {category}".lower()
-    if "mask" in source or "ماسك" in source or "قناع" in source:
-        return "sleep apnea mask"
-    if "bipap" in source:
-        return "CPAP"
-    if "sleep" in source or "نوم" in source or "انقطاع" in source:
-        return "sleep apnea"
-    return "CPAP"
-
-
-def image_extension(content_type: str, fallback: str = ".jpg") -> str:
-    if "png" in content_type:
-        return ".png"
-    if "jpeg" in content_type or "jpg" in content_type:
-        return ".jpg"
-    if "webp" in content_type:
-        return ".webp"
-    return fallback
-
-
-def download_remote_image(image_url: str, file_path: Path) -> Path:
-    response = requests.get(image_url, timeout=120, headers={"User-Agent": "RespiraTechBot/1.0"})
-    response.raise_for_status()
-    content_type = response.headers.get("content-type", "")
-    if not content_type.startswith("image/"):
-        raise RuntimeError(f"not an image: {content_type}")
-    target_path = file_path.with_suffix(image_extension(content_type, file_path.suffix or ".jpg"))
-    target_path.write_bytes(response.content)
-    return target_path
-
-
-def fetch_pexels_image(slug: str, title: str, category: str, file_path: Path, env: dict) -> dict | None:
-    api_key = env.get("PEXELS_API_KEY")
-    if not api_key:
-        return None
-    response = requests.get(
-        "https://api.pexels.com/v1/search",
-        params={"query": image_search_query(title, category), "orientation": "landscape", "per_page": 12},
-        timeout=45,
-        headers={"Authorization": api_key, "User-Agent": "RespiraTechBot/1.0"},
-    )
-    response.raise_for_status()
-    for photo in response.json().get("photos", []):
-        src = photo.get("src") or {}
-        image_url = src.get("large2x") or src.get("large") or src.get("original")
-        if image_url:
-            saved_path = download_remote_image(image_url, file_path)
-            return {"source": "Pexels", "creator": photo.get("photographer", ""), "url": photo.get("url", ""), "file_name": saved_path.name}
-    return None
-
-
-def fetch_openverse_image(slug: str, title: str, category: str, file_path: Path) -> dict | None:
-    response = requests.get(
-        "https://api.openverse.org/v1/images/",
-        params={
-            "q": image_search_query(title, category),
-            "license": "cc0,pdm,by,by-sa",
-            "extension": "jpg,png",
-            "page_size": 12,
-        },
-        timeout=45,
-        headers={"User-Agent": "RespiraTechBot/1.0"},
-    )
-    response.raise_for_status()
-    last_error = None
-    for image in response.json().get("results", []):
-        image_url = image.get("url")
-        title_url = f"{image.get('title', '')} {image_url or ''}"
-        if image_url and re.search(r"pillow|pet", title_url, re.I) is None:
-            try:
-                saved_path = download_remote_image(image_url, file_path)
-                return {
-                    "source": image.get("source") or "Openverse",
-                    "creator": image.get("creator") or "",
-                    "url": image.get("foreign_landing_url") or image_url,
-                    "file_name": saved_path.name,
-                }
-            except Exception as exc:
-                last_error = exc
-    if last_error:
-        raise last_error
-    return None
-
-
 def seo_score(article: dict) -> int:
     markdown = article.get("content_markdown", "")
     checks = [
@@ -302,63 +112,9 @@ def seo_score(article: dict) -> int:
         bool(article.get("medical_disclaimer")),
         bool(article.get("category")),
         bool(article.get("slug")),
-        len(strip_markdown(markdown).split()) >= ARTICLE_MIN_WORDS,
+        len(strip_markdown(markdown).split()) >= 1200,
     ]
     return round(sum(100 / len(checks) for item in checks if item))
-
-
-def link_score_for_text(link: dict, text: str) -> int:
-    source = str(text or "").lower()
-    url = link.get("url", "")
-    score = 0
-    if "cpap" in url and "cpap" in source:
-        score += 3
-    if "bipap" in url and "bipap" in source:
-        score += 3
-    if "sleep-apnea" in url and re.search(r"انقطاع|الشخير|النفس|النوم", source):
-        score += 3
-    if "cpap-masks" in url and re.search(r"ماسك|قناع|تسريب|mask", source):
-        score += 3
-    if "store" in url and re.search(r"شراء|سعر|منتج|متجر|اختيار", source):
-        score += 1
-    if "contact" in url:
-        score += 1
-    return score
-
-
-def preferred_anchor(link: dict, topic_text: str, index: int = 0) -> str:
-    options = next((item["anchors"] for item in INTERNAL_LINK_STRATEGY if item["url"] == link.get("url")), None)
-    if not options:
-        return str(link.get("anchor") or "")
-    offset = sum(ord(char) for char in slugify(topic_text))
-    return options[(offset + index) % len(options)]
-
-
-def is_weak_anchor(anchor: str) -> bool:
-    value = str(anchor or "").strip()
-    return (
-        len(value) < 13
-        or re.search(r"^(صفحة|المتجر|تواصل معنا|اضغط هنا|اقرأ المزيد|خدمة العملاء)$", value, re.I) is not None
-        or re.search(r"^صفحة\s+", value, re.I) is not None
-    )
-
-
-def ensure_internal_links(article: dict, site_data: dict, limit: int = 6) -> list[dict]:
-    topic_text = f"{article.get('title_ar','')} {article.get('excerpt','')} {article.get('category','')}"
-    by_url: dict[str, dict] = {}
-    for item in article.get("internal_links") or []:
-        url = item.get("url")
-        if not url:
-            continue
-        core = next((link for link in site_data.get("core_links", []) if link.get("url") == url), item)
-        raw_anchor = str(item.get("anchor") or "")
-        anchor = raw_anchor if not is_weak_anchor(raw_anchor) else preferred_anchor(core, topic_text, len(by_url))
-        by_url[url] = {"anchor": anchor, "url": url}
-    core_links = sorted(site_data.get("core_links", []), key=lambda item: link_score_for_text(item, topic_text), reverse=True)
-    for link in core_links:
-        if link.get("url") not in by_url:
-            by_url[link["url"]] = {"anchor": preferred_anchor(link, topic_text, len(by_url)), "url": link["url"]}
-    return list(by_url.values())[:limit]
 
 
 def list_articles() -> list[dict]:
@@ -413,44 +169,18 @@ def ensure_meta_fallbacks(article: dict, site_data: dict) -> dict:
 
 
 def auto_link_markdown(markdown: str, links: list[dict]) -> str:
-    updated = re.sub(
-        r"\[\[([^\]]+)\]\((/[^)]+)\)\]\(https://respira-tech\.com/?[^)]*\)",
-        r"[\1](\2)",
-        str(markdown or ""),
-    )
-    missing_links = []
+    updated = str(markdown or "")
     for link in links:
         anchor = link.get("anchor")
         url = link.get("url")
         if not anchor or not url:
             continue
-        existing_link = re.search(rf"\[([^\]]+)\]\((?:https://respira-tech\.com)?{re.escape(url)}\)", updated, re.I)
-        if existing_link:
-            if is_weak_anchor(existing_link.group(1)):
-                updated = re.sub(
-                    rf"\[([^\]]+)\]\((?:https://respira-tech\.com)?{re.escape(url)}\)",
-                    f"[{anchor}]({url})",
-                    updated,
-                    count=1,
-                    flags=re.I,
-                )
+        if f"]({url})" in updated:
             continue
         pattern = re.compile(re.escape(anchor), re.I)
-        if pattern.search(updated):
-            updated, count = pattern.subn(f"[{anchor}]({url})", updated, count=1)
-            if count:
-                continue
-        missing_links.append(link)
-    if missing_links and "## روابط تساعدك على الخطوة التالية" not in updated:
-        lines = ["", "## روابط تساعدك على الخطوة التالية", ""]
-        for link in missing_links[:6]:
-            lines.append(f"- [{link['anchor']}]({link['url']})")
-        insertion = "\n" + "\n".join(lines) + "\n"
-        cta_match = re.search(r"\n##\s+(الخلاصة|هل تحتاج|تواصل|CTA|دعوة)", updated, re.I)
-        if cta_match:
-            updated = f"{updated[:cta_match.start()].rstrip()}{insertion}\n{updated[cta_match.start():].lstrip()}"
-        else:
-            updated = f"{updated.rstrip()}{insertion}"
+        updated, count = pattern.subn(f"[{anchor}]({url})", updated, count=1)
+        if count:
+            continue
     return updated
 
 
@@ -563,38 +293,20 @@ def generate_openai_json(system_prompt: str, user_prompt: str, schema: dict) -> 
 
 def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
     env = load_env()
-    BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
-    stock_file_name = f"{slug}.jpg"
-    stock_file_path = BLOG_IMAGES_DIR / stock_file_name
-    if str(env.get("STOCK_IMAGES_ENABLED", "true")).lower() != "false":
-        try:
-            credit = fetch_pexels_image(slug, title_ar, category, stock_file_path, env)
-            if credit:
-                return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
-        except Exception as exc:
-            append_log({"type": "pexels_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
-        try:
-            credit = fetch_openverse_image(slug, title_ar, category, stock_file_path)
-            if credit:
-                return f"/assets/images/blog/{credit.get('file_name') or stock_file_name}"
-        except Exception as exc:
-            append_log({"type": "openverse_image_error", "created_at": datetime.utcnow().isoformat(), "error": str(exc), "slug": slug})
-
     api_key = env.get("OPENAI_API_KEY")
     if not api_key or str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() == "false":
-        return fallback_featured_image(slug or title_ar)
-    if str(env.get("OPENAI_IMAGE_MODEL", "")).lower() == "dall-e-3":
-        return fallback_featured_image(slug or title_ar)
+        return "/assets/images/store/respira-tech-logo.png"
     prompt = (
         f"Clean white medical website image, Arabic SEO article cover about {title_ar}, "
         f"{category}, CPAP/BiPAP respiratory therapy, modern bedroom or consultation setting, "
         "soft daylight, premium healthcare, realistic, no text, no logos, no watermark."
     )
+    BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     file_name = f"{slug}.png"
     file_path = BLOG_IMAGES_DIR / file_name
     models = []
-    preferred = env.get("OPENAI_IMAGE_MODEL", "gpt-image-1-mini")
-    for model in [preferred, "gpt-image-1-mini", "gpt-image-1", "dall-e-3"]:
+    preferred = env.get("OPENAI_IMAGE_MODEL", "dall-e-3")
+    for model in [preferred, "dall-e-3", "gpt-image-1"]:
         if model and model not in models:
             models.append(model)
     last_error = None
@@ -632,7 +344,7 @@ def generate_featured_image(slug: str, title_ar: str, category: str) -> str:
         "error": last_error or "image generation failed",
         "slug": slug,
     })
-    return fallback_featured_image(slug or title_ar)
+    return "/assets/images/store/respira-tech-logo.png"
 
 
 def build_article_from_url(source_url: str, publish: bool = False) -> dict:
@@ -695,13 +407,9 @@ def build_article_from_url(source_url: str, publish: bool = False) -> dict:
 
 المطلوب:
 - اكتب مقالًا عربيًا أصليًا ومهنيًا مبنيًا على فهم المصدر، وليس نسخًا منه.
-- لا تقل عن {ARTICLE_MIN_WORDS} كلمة، والهدف المثالي حوالي {ARTICLE_TARGET_WORDS} كلمة.
+- لا تقل عن 1200 كلمة.
 - اجعل المقال مناسبًا للسيو وللقراءة البشرية، وبأسلوب طبيعي جدًا.
-- اجعل كل قسم رئيسي غنيًا: 2 إلى 4 فقرات أو نقاط عملية عند الحاجة.
-- أضف قسمًا للأخطاء الشائعة أو جدول مقارنة Markdown إذا كان مناسبًا للموضوع.
 - أضف روابط داخلية طبيعية إلى: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
-- استخدم anchor text وصفيًا طويلًا، وليس كلمات عامة مثل "اضغط هنا" أو "المتجر" أو "تواصل معنا" فقط.
-- وزع الروابط داخل الفقرات في سياق منطقي.
 - اختم بدعوة للتواصل عبر واتساب.
 - المقال يجب أن يناسب موقع Respira Tech.
 """
@@ -737,7 +445,7 @@ def build_article_from_url(source_url: str, publish: bool = False) -> dict:
     article["created_at"] = now_iso
     article["updated_at"] = now_iso
     article["published_at"] = now_iso if publish else None
-    article["internal_links"] = ensure_internal_links(article, site_data)
+    article["internal_links"] = article.get("internal_links") or site_data.get("core_links", [])[:5]
     article["content_markdown"] = auto_link_markdown(article.get("content_markdown", ""), article["internal_links"])
     article["cta_button_url"] = f"https://wa.me/{env.get('WHATSAPP_NUMBER', site_data['site']['whatsapp_number'])}"
     article["medical_disclaimer"] = site_data["site"]["medical_disclaimer"]
@@ -794,7 +502,9 @@ def refresh_article_links(auto_fix: bool = True) -> dict:
     for article in articles:
         original = json.dumps(article, ensure_ascii=False, sort_keys=True)
         article["internal_links"] = article.get("internal_links") or []
-        article["internal_links"] = ensure_internal_links(article, site_data)
+        for link in site_data.get("core_links", [])[:5]:
+            if not any(item.get("url") == link["url"] for item in article["internal_links"]):
+                article["internal_links"].append(link)
         new_links = suggest_related_article_links(article, articles, site_data)
         article["internal_links"].extend(new_links[:2])
         article["internal_links"] = article["internal_links"][:8]
@@ -841,7 +551,7 @@ def page_health(url: str) -> dict:
 
 
 def search_console_summary(site_url: str) -> dict:
-    if not gsc_credentials_available():
+    if not GSC_CREDENTIALS_FILE.exists():
         return {
             "configured": False,
             "message": "Google Search Console غير مربوط بعد. ارفع ملف service account JSON وامنح الإيميل صلاحية على الـ property.",
@@ -854,7 +564,11 @@ def search_console_summary(site_url: str) -> dict:
             "queries": [],
         }
     try:
-        service = _gsc_service()
+        creds = service_account.Credentials.from_service_account_file(
+            str(GSC_CREDENTIALS_FILE),
+            scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
+        )
+        service = google_build("searchconsole", "v1", credentials=creds, cache_discovery=False)
         today = datetime.now(timezone.utc).date()
         start_date = (today - timedelta(days=28)).isoformat()
         end_date = (today - timedelta(days=1)).isoformat()
@@ -969,10 +683,6 @@ def audit_site() -> dict:
 def full_run() -> dict:
     link_result = refresh_article_links(auto_fix=True)
     audit = audit_site()
-    try:
-        sitemap_submission = submit_sitemap()
-    except Exception as exc:
-        sitemap_submission = {"submitted": False, "error": str(exc)}
     result = {
         "created_at": datetime.utcnow().isoformat(),
         "links": link_result,
@@ -981,7 +691,6 @@ def full_run() -> dict:
             "logo_featured_images": len(audit.get("content", {}).get("logo_featured_images", [])),
             "low_score_articles": len(audit.get("content", {}).get("low_score_articles", [])),
         },
-        "gsc_sitemap": sitemap_submission,
     }
     append_log({
         "type": "seo_brain_full_run",
@@ -999,8 +708,7 @@ def current_state() -> dict:
             "seo_brain_auto": str(env.get("SEO_BRAIN_AUTO", "true")).lower() != "false",
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", "https://respira-tech.com")),
-            "gsc_credentials_set": gsc_credentials_available(),
-            "gsc_service_account_email": google_service_account_email(),
+            "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
         },
         "audit": load_json(SEO_AUDIT_FILE, {}),
         "logs": load_json(SEO_LOG_FILE, []),

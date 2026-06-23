@@ -7,13 +7,10 @@ import json
 import os
 import re
 import shutil
-import smtplib
-import ssl
 import subprocess
 import threading
 import requests
 from datetime import datetime
-from email.message import EmailMessage
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
@@ -26,7 +23,6 @@ STORE_FILE = BASE_DIR / "data" / "store.json"
 SITE_FILE = BASE_DIR / "data" / "site.json"
 BLOG_DIR = BASE_DIR / "data" / "blog_articles"
 BLOG_LOG_FILE = BASE_DIR / "data" / "blog_generation_log.json"
-FALLBACK_CATALOG_FILE = BASE_DIR / "data" / "blog_fallback_images.json"
 IMAGES_DIR = BASE_DIR / "assets" / "images" / "store"
 BLOG_IMAGES_DIR = BASE_DIR / "assets" / "images" / "blog"
 ENV_FILE = BASE_DIR / ".env"
@@ -36,7 +32,6 @@ GSC_CREDENTIALS_FILE = BASE_DIR / "data" / "gsc-service-account.json"
 SEO_AUDIT_FILE = BASE_DIR / "data" / "seo_audit.json"
 SEO_BRAIN_LOG_FILE = BASE_DIR / "data" / "seo_brain_log.json"
 ACTIVITY_LOG_FILE = BASE_DIR / "data" / "dashboard_activity_log.json"
-ALERT_LOG_FILE = BASE_DIR / "data" / "alert_log.json"
 PRODUCT_SCHEMA_FILE = BASE_DIR / "data" / "product-schema.json"
 AI_CATALOG_FILE = BASE_DIR / "data" / "ai-catalog.json"
 SITEMAP_FILE = BASE_DIR / "sitemap.xml"
@@ -47,13 +42,11 @@ SYNC_PATHS = [
     SITE_FILE,
     BLOG_DIR,
     BLOG_LOG_FILE,
-    FALLBACK_CATALOG_FILE,
     IMAGES_DIR,
     BLOG_IMAGES_DIR,
     SEO_AUDIT_FILE,
     SEO_BRAIN_LOG_FILE,
     ACTIVITY_LOG_FILE,
-    ALERT_LOG_FILE,
     PRODUCT_SCHEMA_FILE,
     AI_CATALOG_FILE,
     BASE_DIR / "blog",
@@ -103,13 +96,6 @@ def load_env() -> dict[str, str]:
             values[key.strip()] = value.strip()
     values.update({key: value for key, value in os.environ.items() if value is not None})
     return values
-
-
-def clean_whatsapp_number(value: str | None) -> str:
-    candidate = str(value or "").strip()
-    if not candidate or "your_whatsapp" in candidate.lower():
-        return "201012566955"
-    return "".join(char for char in candidate if char.isdigit()) or "201012566955"
 
 
 def save_env(updates: dict[str, str]) -> None:
@@ -206,96 +192,6 @@ def read_activity_logs(limit: int = 100) -> list[dict]:
     return logs[:limit]
 
 
-def append_alert_log(entry: dict) -> dict:
-    logs = load_json(ALERT_LOG_FILE, [])
-    if not isinstance(logs, list):
-        logs = []
-    payload = {"created_at": datetime.utcnow().isoformat(), **entry}
-    logs.insert(0, payload)
-    save_json(ALERT_LOG_FILE, logs[:200])
-    return payload
-
-
-def _public_env(env: dict[str, str]) -> dict[str, str]:
-    hidden = ("KEY", "TOKEN", "SECRET", "PASSWORD", "CREDENTIAL")
-    return {key: ("***" if any(part in key.upper() for part in hidden) else value) for key, value in env.items()}
-
-
-def send_email_alert(subject: str, message: str, env: dict[str, str] | None = None) -> dict:
-    env = env or load_env()
-    if str(env.get("ALERTS_ENABLED", "true")).lower() == "false":
-        return {"ok": False, "skipped": True, "reason": "alerts disabled"}
-
-    recipients = [
-        item.strip()
-        for item in str(env.get("ALERT_EMAIL_TO") or "alihessien0@gmail.com").split(",")
-        if item.strip()
-    ]
-    smtp_host = str(env.get("SMTP_HOST") or "").strip()
-    smtp_user = str(env.get("SMTP_USERNAME") or "").strip()
-    smtp_password = str(env.get("SMTP_PASSWORD") or "").strip()
-    smtp_from = str(env.get("SMTP_FROM") or smtp_user or "alerts@respira-tech.com").strip()
-    smtp_port = int(env.get("SMTP_PORT") or ("465" if env.get("SMTP_SSL") == "true" else "587"))
-
-    if not recipients:
-        return {"ok": False, "skipped": True, "reason": "missing ALERT_EMAIL_TO"}
-    if not smtp_host or not smtp_user or not smtp_password:
-        return {"ok": False, "skipped": True, "reason": "SMTP not configured"}
-
-    email = EmailMessage()
-    email["Subject"] = subject
-    email["From"] = smtp_from
-    email["To"] = ", ".join(recipients)
-    email.set_content(message)
-
-    if str(env.get("SMTP_SSL", "false")).lower() == "true" or smtp_port == 465:
-        with smtplib.SMTP_SSL(smtp_host, smtp_port, context=ssl.create_default_context(), timeout=30) as smtp:
-            smtp.login(smtp_user, smtp_password)
-            smtp.send_message(email)
-    else:
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as smtp:
-            smtp.ehlo()
-            smtp.starttls(context=ssl.create_default_context())
-            smtp.login(smtp_user, smtp_password)
-            smtp.send_message(email)
-
-    return {"ok": True, "recipients": recipients}
-
-
-def notify_error_alert(action: str, details: dict) -> dict:
-    env = load_env()
-    if str(env.get("ALERTS_ENABLED", "true")).lower() == "false":
-        result = {"ok": False, "skipped": True, "reason": "alerts disabled"}
-        append_alert_log({"action": action, "status": "skipped", "result": result})
-        return result
-
-    safe_details = {
-        key: value
-        for key, value in details.items()
-        if key not in {"password", "token", "secret", "api_key", "credentials"}
-    }
-    subject = f"[Respira Tech] Error: {action}"
-    body = "\n".join([
-        "Respira Tech automatic alert",
-        f"Action: {action}",
-        f"Time UTC: {datetime.utcnow().isoformat()}",
-        "",
-        "Details:",
-        json.dumps(safe_details, ensure_ascii=False, indent=2)[:6000],
-        "",
-        "Public env snapshot:",
-        json.dumps(_public_env({k: env.get(k, '') for k in ['SITE_BASE_URL', 'GITHUB_REPO', 'GITHUB_BRANCH', 'SHARED_HOSTING_FTP_SERVER']}), ensure_ascii=False, indent=2),
-    ])
-    try:
-        result = send_email_alert(subject, body, env)
-        append_alert_log({"action": action, "status": "sent" if result.get("ok") else "failed", "result": result})
-        return result
-    except Exception as exc:
-        result = {"ok": False, "error": str(exc)}
-        append_alert_log({"action": action, "status": "failed", "result": result})
-        return result
-
-
 def append_activity_log(action: str, status: str = "success", **details) -> dict:
     logs = load_json(ACTIVITY_LOG_FILE, [])
     if not isinstance(logs, list):
@@ -311,8 +207,6 @@ def append_activity_log(action: str, status: str = "success", **details) -> dict
         entry[key] = value
     logs.insert(0, entry)
     save_json(ACTIVITY_LOG_FILE, logs[:200])
-    if status == "error" or details.get("error") or details.get("errors"):
-        notify_error_alert(action, entry)
     return entry
 
 
@@ -675,92 +569,6 @@ def safe_hostinger_remote_dir(value: str | None) -> str:
     return remote_root
 
 
-def sftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
-    """Deploy via SFTP (SSH port 65002) — more reliable than FTP from cloud IPs.
-
-    Derives credentials from existing FTP env vars:
-      SSH user  = SHARED_HOSTING_FTP_USERNAME split on '.' first token (e.g. u598338404)
-      SSH host  = SHARED_HOSTING_FTP_SERVER
-      SSH pass  = SHARED_HOSTING_FTP_PASSWORD
-      Remote dir = /home/{ssh_user}/domains/{domain}/public_html
-                   where domain comes from SITE_BASE_URL
-    """
-    try:
-        import paramiko
-    except ImportError:
-        return {"ok": False, "skipped": True, "reason": "paramiko not installed"}
-
-    env = load_env()
-    if not ftp_deploy_enabled(env):
-        return {"ok": False, "skipped": True, "reason": "FTP/SFTP not configured"}
-
-    host = env["SHARED_HOSTING_FTP_SERVER"].strip()
-    ftp_user = env["SHARED_HOSTING_FTP_USERNAME"].strip()
-    password = env["SHARED_HOSTING_FTP_PASSWORD"].strip()
-    ssh_port = int(env.get("SHARED_HOSTING_SSH_PORT", "65002") or "65002")
-
-    # Derive SSH username (u598338404 from u598338404.respira-tech.com)
-    ssh_user = ftp_user.split(".")[0] if "." in ftp_user else ftp_user
-
-    # Derive remote path from SITE_BASE_URL
-    site_url = (env.get("SITE_BASE_URL") or "https://respira-tech.com").rstrip("/")
-    domain = site_url.replace("https://", "").replace("http://", "").split("/")[0]
-    remote_root = env.get("SHARED_HOSTING_SFTP_REMOTE_DIR") or f"/home/{ssh_user}/domains/{domain}/public_html"
-
-    source = release_dir or (BASE_DIR / "رفع-اللايف")
-    if not source.exists():
-        return {"ok": False, "error": "release directory رفع-اللايف not found"}
-
-    try:
-        transport = paramiko.Transport((host, ssh_port))
-        transport.connect(username=ssh_user, password=password)
-        sftp = paramiko.SFTPClient.from_transport(transport)
-
-        created_dirs: set[str] = set()
-
-        def ensure_dir(remote_dir: str) -> None:
-            if remote_dir in created_dirs:
-                return
-            parts = [p for p in remote_dir.split("/") if p]
-            current = ""
-            for part in parts:
-                current = f"{current}/{part}"
-                if current not in created_dirs:
-                    try:
-                        sftp.mkdir(current)
-                    except OSError:
-                        pass
-                    created_dirs.add(current)
-
-        uploaded = 0
-        errors: list[str] = []
-
-        for local_file in sorted(source.rglob("*")):
-            if not local_file.is_file():
-                continue
-            relative = local_file.relative_to(source)
-            remote_path = remote_root + "/" + "/".join(relative.parts)
-            remote_dir = remote_root + "/" + "/".join(relative.parts[:-1]) if len(relative.parts) > 1 else remote_root
-            ensure_dir(remote_dir)
-            try:
-                sftp.put(str(local_file), remote_path)
-                uploaded += 1
-            except Exception as exc:
-                errors.append(f"{remote_path}: {exc}")
-
-        sftp.close()
-        transport.close()
-
-        purge_result = _purge_litespeed_cache(env)
-
-        if errors:
-            return {"ok": False, "uploaded": uploaded, "errors": errors[:10], "cache_purge": purge_result}
-        return {"ok": True, "uploaded": uploaded, "cache_purge": purge_result, "method": "sftp"}
-
-    except Exception as exc:
-        return {"ok": False, "error": str(exc)}
-
-
 def ftp_deploy_to_hostinger(release_dir: Path | None = None) -> dict:
     env = load_env()
     if not ftp_deploy_enabled(env):
@@ -879,13 +687,8 @@ def verify_live_deployment(check_slug: str | None = None) -> dict:
 
 
 def deploy_to_live(commit_message: str, extra_paths: list[Path] | None = None, verify_slug: str | None = None) -> dict:
-    # Upload to Hostinger first — GitHub push triggers Railway redeploy which
-    # kills the process, so hosting upload must finish before pushing to GitHub.
-    # Try SFTP (port 65002) first — less likely to be rate-limited than FTP.
-    hostinger = sftp_deploy_to_hostinger()
-    if not hostinger.get("ok") and not hostinger.get("skipped"):
-        hostinger = ftp_deploy_to_hostinger()
     github = sync_changes_to_github(commit_message, extra_paths)
+    hostinger = ftp_deploy_to_hostinger()
     result: dict = {"github": github, "hostinger": hostinger}
     if hostinger.get("ok") and not hostinger.get("skipped"):
         result["verification"] = verify_live_deployment(verify_slug)
@@ -898,23 +701,16 @@ def dashboard_config() -> dict:
     site = site_data.get("site", {})
     store_data = load_json(STORE_FILE, {"config": {}})
     store_config = store_data.get("config", {}) if isinstance(store_data, dict) else {}
-    whatsapp_number = clean_whatsapp_number(
-        env.get("WHATSAPP_NUMBER")
-        or site.get("whatsapp_number")
-        or store_config.get("whatsapp_phone")
-        or "201012566955"
-    )
     return {
         "settings": {
             "openai_api_key_set": bool(env.get("OPENAI_API_KEY")),
             "openai_api_key_masked": "********" if env.get("OPENAI_API_KEY") else "",
-            "pexels_api_key_set": bool(env.get("PEXELS_API_KEY")),
             "auto_publish_blogs": str(env.get("AUTO_PUBLISH_BLOGS", "false")).lower() == "true",
             "daily_blog_posts": int(env.get("DAILY_BLOG_POSTS", "2") or "2"),
             "generate_blog_images": str(env.get("GENERATE_BLOG_IMAGES", "true")).lower() != "false",
             "openai_text_model": env.get("OPENAI_TEXT_MODEL", "gpt-4.1"),
-            "openai_image_model": env.get("OPENAI_IMAGE_MODEL", "gpt-image-1-mini"),
-            "whatsapp_number": whatsapp_number,
+            "openai_image_model": env.get("OPENAI_IMAGE_MODEL", "dall-e-3"),
+            "whatsapp_number": env.get("WHATSAPP_NUMBER", site.get("whatsapp_number", store_config.get("whatsapp_phone", "201010317647"))),
             "site_base_url": env.get("SITE_BASE_URL", site.get("base_url", "https://respira-tech.com")),
             "admin_password_set": bool(env.get("ADMIN_PASSWORD")),
             "cron_secret_set": bool(env.get("CRON_SECRET")),
@@ -922,8 +718,8 @@ def dashboard_config() -> dict:
             "seo_brain_auto": str(env.get("SEO_BRAIN_AUTO", "true")).lower() != "false",
             "seo_brain_runs_per_day": int(env.get("SEO_BRAIN_RUNS_PER_DAY", "2") or "2"),
             "gsc_site_url": env.get("GSC_SITE_URL", env.get("SITE_BASE_URL", site.get("base_url", "https://respira-tech.com"))),
-            "gsc_credentials_set": seo_brain.gsc_credentials_available(),
-            "gsc_service_account_email": seo_brain.google_service_account_email(),
+            "gsc_credentials_set": GSC_CREDENTIALS_FILE.exists(),
+            "seo_daily_report_email": env.get("SEO_DAILY_REPORT_EMAIL", "alihessien0@gmail.com"),
             "auto_push_changes": str(env.get("AUTO_PUSH_CHANGES", "true")).lower() != "false",
             "github_repo": env.get("GITHUB_REPO", ""),
             "github_branch": env.get("GITHUB_BRANCH", "main"),
@@ -933,20 +729,11 @@ def dashboard_config() -> dict:
             "ftp_password_set": bool(env.get("SHARED_HOSTING_FTP_PASSWORD")),
             "ftp_remote_dir": safe_hostinger_remote_dir(env.get("SHARED_HOSTING_FTP_REMOTE_DIR")),
             "ftp_deploy_configured": ftp_deploy_enabled(env),
-            "alerts_enabled": str(env.get("ALERTS_ENABLED", "true")).lower() != "false",
-            "alert_email_to": env.get("ALERT_EMAIL_TO", "alihessien0@gmail.com"),
-            "smtp_host": env.get("SMTP_HOST", ""),
-            "smtp_port": env.get("SMTP_PORT", "587"),
-            "smtp_username": env.get("SMTP_USERNAME", ""),
-            "smtp_password_set": bool(env.get("SMTP_PASSWORD")),
-            "smtp_from": env.get("SMTP_FROM", env.get("SMTP_USERNAME", "")),
-            "smtp_ssl": str(env.get("SMTP_SSL", "false")).lower() == "true",
         },
         "logs": read_blog_logs(),
         "articles": load_articles(),
         "seo_brain": seo_brain.current_state(),
         "activity_logs": read_activity_logs(),
-        "alert_logs": load_json(ALERT_LOG_FILE, [])[:50] if isinstance(load_json(ALERT_LOG_FILE, []), list) else [],
     }
 
 
@@ -968,9 +755,7 @@ def normalize_article(payload: dict, existing: dict | None = None) -> dict:
     article["internal_links"] = article.get("internal_links") or site_data.get("core_links", [])[:5]
     article["cta_text"] = article.get("cta_text") or "فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب."
     article["cta_button_text"] = article.get("cta_button_text") or "تواصل معنا عبر واتساب"
-    whatsapp_number = clean_whatsapp_number(load_env().get("WHATSAPP_NUMBER") or site.get("whatsapp_number", "201012566955"))
-    if "your_whatsapp" in str(article.get("cta_button_url") or "").lower():
-        article["cta_button_url"] = ""
+    whatsapp_number = load_env().get("WHATSAPP_NUMBER") or site.get("whatsapp_number", "201010317647")
     article["cta_button_url"] = article.get("cta_button_url") or f"https://wa.me/{whatsapp_number}"
     article["medical_disclaimer"] = article.get("medical_disclaimer") or site.get("medical_disclaimer", "هذا المحتوى للتثقيف فقط ولا يغني عن استشارة الطبيب أو المختص.")
     article["status"] = article.get("status") or "draft"
@@ -989,27 +774,15 @@ class StoreHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(BASE_DIR), **kwargs)
 
-    def _send_cors_headers(self) -> None:
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Admin-Password, X-Cron-Secret")
-        self.send_header("Access-Control-Max-Age", "86400")
-
     def _send_json(self, payload: dict | list, status: int = 200) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self._send_cors_headers()
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         self.end_headers()
         self.wfile.write(body)
-
-    def do_OPTIONS(self) -> None:
-        self.send_response(204)
-        self._send_cors_headers()
-        self.send_header("Content-Length", "0")
-        self.end_headers()
 
     def _read_json_body(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
@@ -1070,7 +843,7 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 payload.setdefault("config", {})
                 if isinstance(payload["config"], dict):
                     env = load_env()
-                    payload["config"]["whatsapp_phone"] = clean_whatsapp_number(env.get("WHATSAPP_NUMBER") or payload["config"].get("whatsapp_phone", "201012566955"))
+                    payload["config"]["whatsapp_phone"] = env.get("WHATSAPP_NUMBER", payload["config"].get("whatsapp_phone", "201010317647"))
             return self._send_json(payload)
 
         if parsed.path == "/api/health":
@@ -1127,12 +900,6 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 "articles_count": articles_count,
                 "base_dir": str(BASE_DIR),
             })
-
-        if parsed.path == "/api/alerts/logs":
-            if not self._ensure_admin():
-                return
-            logs = load_json(ALERT_LOG_FILE, [])
-            return self._send_json({"logs": logs[:50] if isinstance(logs, list) else []})
 
         return super().do_GET()
 
@@ -1264,29 +1031,22 @@ class StoreHandler(SimpleHTTPRequestHandler):
             try:
                 payload = self._read_json_body()
                 count = max(1, min(5, int(payload.get("count", 1) or 1)))
-                publish_now = payload.get("publish_now")
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
-            extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true"}
-            if publish_now is True:
-                extra_env["FORCE_PUBLISH"] = "true"
-            elif publish_now is False:
-                extra_env["FORCE_PUBLISH"] = "false"
+            publish_now = False
+            extra_env = {"DAILY_BLOG_POSTS": str(count), "FORCE_GENERATE": "true", "FORCE_PUBLISH": "false"}
 
             def _run_generation():
                 try:
                     run_blog_generator(extra_env)
-                    append_activity_log("blog_generate_batch", generated_count=count, publish_now=publish_now)
-                    result = deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
-                    hostinger = result.get("hostinger", {})
-                    append_activity_log("manual_ftp_deploy", uploaded=hostinger.get("uploaded"), error=hostinger.get("error"))
+                    append_activity_log("blog_generate_batch", generated_count=count, publish_now=False, review_required=True)
+                    deploy_to_live(f"Generate blog batch {datetime.utcnow().isoformat()}")
                 except Exception as exc:
                     import traceback
                     append_activity_log("blog_generate_batch", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
-                    append_activity_log("manual_ftp_deploy", status="error", error=str(exc))
 
             threading.Thread(target=_run_generation, daemon=True).start()
-            return self._send_json({"ok": True, "started": True, "count": count, "publish_now": publish_now})
+            return self._send_json({"ok": True, "started": True, "count": count, "publish_now": False, "review_required": True})
 
         if parsed.path == "/api/seo/gsc/upload":
             if not self._ensure_admin():
@@ -1303,27 +1063,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except json.JSONDecodeError as exc:
                 return self._send_json({"error": f"invalid JSON: {exc}"}, 400)
             save_json(GSC_CREDENTIALS_FILE, parsed_json)
-            encoded_credentials = base64.b64encode(json.dumps(parsed_json, ensure_ascii=False).encode("utf-8")).decode("ascii")
-            save_env({"GSC_CREDENTIALS_JSON_B64": encoded_credentials})
             append_activity_log("gsc_credentials_upload")
-            return self._send_json({"ok": True, "service_account_email": parsed_json.get("client_email")})
-
-        if parsed.path == "/api/seo/gsc/submit-sitemap":
-            if not self._ensure_admin():
-                return
-            try:
-                payload = self._read_json_body()
-            except ValueError:
-                payload = {}
-            try:
-                result = seo_brain.submit_sitemap(
-                    site_url=str(payload.get("site_url") or "").strip() or None,
-                    sitemap_url=str(payload.get("sitemap_url") or "").strip() or None,
-                )
-            except Exception as exc:
-                return self._send_json({"ok": False, "error": str(exc)}, 400)
-            append_activity_log("gsc_sitemap_submit", sitemap_url=result.get("sitemap_url"))
-            return self._send_json({"ok": True, "result": result, "state": seo_brain.current_state()})
+            return self._send_json({"ok": True})
 
         if parsed.path == "/api/seo/brain":
             if not self._ensure_admin():
@@ -1333,36 +1074,6 @@ class StoreHandler(SimpleHTTPRequestHandler):
             except ValueError as exc:
                 return self._send_json({"error": str(exc)}, 400)
             action = str(payload.get("action") or "").strip()
-            if payload.get("async"):
-                def _run_seo_action_async():
-                    try:
-                        if action == "audit":
-                            result = seo_brain.audit_site()
-                        elif action == "refresh_links":
-                            result = seo_brain.refresh_article_links(auto_fix=True)
-                        elif action == "full_run":
-                            result = seo_brain.full_run()
-                        elif action == "from_url":
-                            source_url = str(payload.get("url") or "").strip()
-                            if not source_url:
-                                raise RuntimeError("missing url")
-                            result = seo_brain.build_article_from_url(source_url, publish=bool(payload.get("publish_now")))
-                        else:
-                            raise RuntimeError("unknown action")
-                        append_activity_log(
-                            f"seo_{action}",
-                            slug=result.get("slug") if isinstance(result, dict) else None,
-                            updated_count=result.get("updated_count") if isinstance(result, dict) else None,
-                            recommendations_count=result.get("recommendations_count") if isinstance(result, dict) else None,
-                        )
-                        deploy_to_live(f"Run SEO brain action {action} {datetime.utcnow().isoformat()}")
-                    except Exception as exc:
-                        import traceback
-                        append_activity_log(f"seo_{action or 'unknown'}", status="error", error=str(exc), traceback=traceback.format_exc()[-500:])
-
-                threading.Thread(target=_run_seo_action_async, daemon=True).start()
-                return self._send_json({"ok": True, "started": True, "action": action})
-
             try:
                 if action == "audit":
                     result = seo_brain.audit_site()
@@ -1374,7 +1085,8 @@ class StoreHandler(SimpleHTTPRequestHandler):
                     source_url = str(payload.get("url") or "").strip()
                     if not source_url:
                         return self._send_json({"error": "missing url"}, 400)
-                    result = seo_brain.build_article_from_url(source_url, publish=bool(payload.get("publish_now")))
+                    result = seo_brain.build_article_from_url(source_url, publish=False)
+                    result["review_required"] = True
                 else:
                     return self._send_json({"error": "unknown action"}, 400)
             except requests.RequestException as exc:
@@ -1405,12 +1117,13 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 "DAILY_BLOG_POSTS": str(payload.get("daily_blog_posts") or 2),
                 "GENERATE_BLOG_IMAGES": "true" if payload.get("generate_blog_images", True) else "false",
                 "OPENAI_TEXT_MODEL": str(payload.get("openai_text_model") or "gpt-4.1").strip(),
-                "OPENAI_IMAGE_MODEL": str(payload.get("openai_image_model") or "gpt-image-1-mini").strip(),
-                "WHATSAPP_NUMBER": str(payload.get("whatsapp_number") or "201012566955").strip(),
+                "OPENAI_IMAGE_MODEL": str(payload.get("openai_image_model") or "dall-e-3").strip(),
+                "WHATSAPP_NUMBER": str(payload.get("whatsapp_number") or "201010317647").strip(),
                 "SITE_BASE_URL": str(payload.get("site_base_url") or "https://respira-tech.com").strip(),
                 "SEO_BRAIN_AUTO": "true" if payload.get("seo_brain_auto", True) else "false",
                 "SEO_BRAIN_RUNS_PER_DAY": str(payload.get("seo_brain_runs_per_day") or 2),
                 "GSC_SITE_URL": str(payload.get("gsc_site_url") or payload.get("site_base_url") or "https://respira-tech.com").strip(),
+                "SEO_DAILY_REPORT_EMAIL": str(payload.get("seo_daily_report_email") or "alihessien0@gmail.com").strip(),
                 "AUTO_PUSH_CHANGES": "true" if payload.get("auto_push_changes", True) else "false",
                 "GITHUB_REPO": str(payload.get("github_repo") or "").strip(),
                 "GITHUB_BRANCH": str(payload.get("github_branch") or "main").strip() or "main",
@@ -1418,29 +1131,6 @@ class StoreHandler(SimpleHTTPRequestHandler):
             api_key = str(payload.get("openai_api_key") or "").strip()
             if api_key and api_key != "********":
                 updates["OPENAI_API_KEY"] = api_key
-            pexels_api_key = str(payload.get("pexels_api_key") or "").strip()
-            if pexels_api_key and pexels_api_key != "********":
-                updates["PEXELS_API_KEY"] = pexels_api_key
-            updates["ALERTS_ENABLED"] = "true" if payload.get("alerts_enabled", True) else "false"
-            alert_email_to = str(payload.get("alert_email_to") or "alihessien0@gmail.com").strip()
-            if alert_email_to:
-                updates["ALERT_EMAIL_TO"] = alert_email_to
-            smtp_host = str(payload.get("smtp_host") or "").strip()
-            if smtp_host:
-                updates["SMTP_HOST"] = smtp_host
-            smtp_port = str(payload.get("smtp_port") or "").strip()
-            if smtp_port:
-                updates["SMTP_PORT"] = smtp_port
-            smtp_username = str(payload.get("smtp_username") or "").strip()
-            if smtp_username:
-                updates["SMTP_USERNAME"] = smtp_username
-            smtp_password = str(payload.get("smtp_password") or "").strip()
-            if smtp_password and smtp_password != "********":
-                updates["SMTP_PASSWORD"] = smtp_password
-            smtp_from = str(payload.get("smtp_from") or "").strip()
-            if smtp_from:
-                updates["SMTP_FROM"] = smtp_from
-            updates["SMTP_SSL"] = "true" if payload.get("smtp_ssl") else "false"
             admin_password = str(payload.get("admin_password") or "").strip()
             if admin_password:
                 updates["ADMIN_PASSWORD"] = admin_password
@@ -1486,27 +1176,6 @@ class StoreHandler(SimpleHTTPRequestHandler):
             sync = deploy_to_live(f"Update dashboard settings {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "config": dashboard_config(), "sync": sync})
 
-        if parsed.path == "/api/alerts/test":
-            if not self._ensure_admin():
-                return
-            try:
-                payload = self._read_json_body()
-            except ValueError:
-                payload = {}
-            action = str(payload.get("action") or "manual_test_error").strip()
-            try:
-                # Deliberate read error for end-to-end alert verification.
-                (BASE_DIR / "data" / "__missing_alert_read_test__.json").read_text(encoding="utf-8")
-            except Exception as exc:
-                entry = append_activity_log(
-                    action,
-                    status="error",
-                    error=f"deliberate read error test: {exc}",
-                    traceback="Intentional test from /api/alerts/test",
-                )
-                return self._send_json({"ok": True, "alert_triggered": True, "activity": entry, "alert_logs": load_json(ALERT_LOG_FILE, [])[:5]})
-            return self._send_json({"ok": False, "error": "test did not fail as expected"}, 500)
-
         if parsed.path == "/api/build":
             if not self._ensure_admin():
                 return
@@ -1523,13 +1192,11 @@ class StoreHandler(SimpleHTTPRequestHandler):
                 return self._send_json({"error": "unauthorized"}, 401)
             def _run_cron_generation():
                 try:
-                    run_blog_generator({"FORCE_PUBLISH": "true", "DAILY_BLOG_POSTS": "1"})
-                    append_activity_log("cron_generate_blog")
-                    result = deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
-                    hostinger = result.get("hostinger", {})
-                    append_activity_log("manual_ftp_deploy", uploaded=hostinger.get("uploaded"), error=hostinger.get("error"))
-                except Exception as exc:
-                    append_activity_log("cron_generate_blog", status="error", error=str(exc))
+                    run_blog_generator({"FORCE_PUBLISH": "false", "DAILY_BLOG_POSTS": "1"})
+                    append_activity_log("cron_generate_blog", publish_now=False, review_required=True)
+                    deploy_to_live(f"Cron generate blog {datetime.utcnow().isoformat()}")
+                except Exception:
+                    pass
             threading.Thread(target=_run_cron_generation, daemon=True).start()
             return self._send_json({"ok": True, "started": True})
 
@@ -1548,42 +1215,15 @@ class StoreHandler(SimpleHTTPRequestHandler):
             sync = deploy_to_live(f"Cron SEO brain {datetime.utcnow().isoformat()}")
             return self._send_json({"ok": True, "result": result, "sync": sync})
 
-        if parsed.path == "/api/cron/refresh-internal-links":
-            if not self._cron_authorized():
-                return self._send_json({"error": "unauthorized"}, 401)
-
-            def _run_refresh_links():
-                try:
-                    result = seo_brain.refresh_article_links(auto_fix=True)
-                    append_activity_log(
-                        "cron_refresh_internal_links",
-                        updated_count=result.get("updated_count") if isinstance(result, dict) else None,
-                    )
-                    sync = deploy_to_live(f"Cron refresh internal links {datetime.utcnow().isoformat()}")
-                    hostinger = sync.get("hostinger", {}) if isinstance(sync, dict) else {}
-                    append_activity_log(
-                        "manual_ftp_deploy",
-                        uploaded=hostinger.get("uploaded"),
-                        error=hostinger.get("error"),
-                    )
-                except Exception as exc:
-                    append_activity_log("cron_refresh_internal_links", status="error", error=str(exc))
-
-            threading.Thread(target=_run_refresh_links, daemon=True).start()
-            return self._send_json({"ok": True, "started": True})
-
         if parsed.path == "/api/deploy":
             if not self._ensure_admin():
                 return
             def _run_deploy():
                 try:
-                    deploy = sftp_deploy_to_hostinger()
-                    if not deploy.get("ok") and not deploy.get("skipped"):
-                        deploy = ftp_deploy_to_hostinger()
+                    deploy = ftp_deploy_to_hostinger()
                     if deploy.get("ok"):
                         deploy["verification"] = verify_live_deployment()
                     append_activity_log("manual_ftp_deploy", uploaded=deploy.get("uploaded"), error=deploy.get("error"))
-                    sync_changes_to_github(f"Deploy {datetime.utcnow().isoformat()}")
                 except Exception as exc:
                     append_activity_log("manual_ftp_deploy", status="error", error=str(exc))
             threading.Thread(target=_run_deploy, daemon=True).start()

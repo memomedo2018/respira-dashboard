@@ -1,8 +1,4 @@
 {
-  "config": {
-    "whatsapp_phone": "201012566955",
-    "price_text_default": "السعر عند التواصل"
-  },
   "categories": [
     {
       "id": "full-face",
@@ -25,6 +21,10 @@
       "name_ar": "إكسسوارات الماسك"
     }
   ],
+  "config": {
+    "whatsapp_phone": "201010317647",
+    "price_text_default": "السعر عند التواصل"
+  },
   "products": [
     {
       "id": "airfit-f20-complete-mask-system",

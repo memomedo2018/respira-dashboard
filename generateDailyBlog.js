@@ -6,83 +6,11 @@ import { execFileSync } from 'child_process';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 const TOPICS_FILE = path.join(ROOT, 'data', 'blog_topics.json');
-const KEYWORD_PLAN_FILE = path.join(ROOT, 'data', 'blog_keyword_plan.json');
 const ARTICLES_DIR = path.join(ROOT, 'data', 'blog_articles');
 const SITE_FILE = path.join(ROOT, 'data', 'site.json');
-const FALLBACK_CATALOG_FILE = path.join(ROOT, 'data', 'blog_fallback_images.json');
 const ENV_FILE = path.join(ROOT, '.env');
 const LOG_FILE = path.join(ROOT, 'data', 'blog_generation_log.json');
 const BLOG_IMAGES_DIR = path.join(ROOT, 'assets', 'images', 'blog');
-const DEFAULT_TARGET_WORDS = 1800;
-const DEFAULT_MIN_WORDS = 1600;
-const FALLBACK_BLOG_IMAGES = [
-  '/assets/images/blog/cpap-daily-usage-hours-guide.png',
-  '/assets/images/blog/cpap-cleaning-guide.png',
-  '/assets/images/blog/choose-cpap-mask-guide.png',
-  '/assets/images/blog/cpap-sleep-comfort.png',
-  '/assets/images/blog/cpap-mask-air-leakage-causes-solutions.png',
-  '/assets/images/store/resmed-airsense-11-autoset.jpg',
-  '/assets/images/store/resmed-airsense-10-autoset.jpg',
-  '/assets/images/store/yuwell-auto-cpap.png'
-];
-let fallbackCatalogCache = null;
-
-const INTERNAL_LINK_STRATEGY = [
-  {
-    url: '/services/cpap/',
-    anchors: [
-      'أفضل أجهزة CPAP لعلاج انقطاع النفس أثناء النوم',
-      'أجهزة CPAP المنزلية',
-      'جهاز CPAP المناسب لحالتك',
-      'خدمة أجهزة CPAP من Respira Tech'
-    ]
-  },
-  {
-    url: '/services/bipap/',
-    anchors: [
-      'الفرق بين أجهزة CPAP و BiPAP',
-      'أجهزة BiPAP للحالات التي تحتاج دعم تنفسي أكبر',
-      'متى يكون جهاز BiPAP اختيارًا مناسبًا',
-      'خدمة أجهزة BiPAP المنزلية'
-    ]
-  },
-  {
-    url: '/services/sleep-apnea/',
-    anchors: [
-      'أعراض انقطاع النفس أثناء النوم',
-      'تشخيص انقطاع النفس أثناء النوم',
-      'الشخير وتوقف التنفس أثناء النوم',
-      'متى تحتاج لتقييم اضطرابات النوم'
-    ]
-  },
-  {
-    url: '/services/cpap-masks/',
-    anchors: [
-      'اختيار ماسك CPAP المناسب',
-      'حل مشكلة تسريب الهواء من ماسك CPAP',
-      'أنواع ماسكات CPAP وطرق اختيارها',
-      'ماسكات CPAP المريحة للاستخدام اليومي'
-    ]
-  },
-  {
-    url: '/store/',
-    anchors: [
-      'تصفح أجهزة التنفس وماسكات CPAP المتاحة',
-      'شراء مستلزمات CPAP و BiPAP',
-      'منتجات Respira Tech لأجهزة التنفس المنزلي',
-      'خيارات أجهزة وماسكات التنفس المتوفرة'
-    ]
-  },
-  {
-    url: '/contact/',
-    anchors: [
-      'استشارة Respira Tech لاختيار الجهاز المناسب',
-      'التواصل مع مختص قبل شراء جهاز CPAP',
-      'مساعدة في اختيار جهاز التنفس المنزلي',
-      'طلب دعم لاختيار الماسك أو الجهاز'
-    ]
-  }
-];
 
 function loadEnv() {
   const env = {};
@@ -95,16 +23,6 @@ function loadEnv() {
     }
   }
   return { ...env, ...process.env };
-}
-
-function cleanWhatsappNumber(value) {
-  const candidate = String(value || '').trim();
-  if (!candidate || candidate.toLowerCase().includes('your_whatsapp')) return '201012566955';
-  return candidate.replace(/\D/g, '') || '201012566955';
-}
-
-function whatsappNumber(env, siteData) {
-  return cleanWhatsappNumber(env?.WHATSAPP_NUMBER || siteData?.site?.whatsapp_number);
 }
 
 function readJson(file, fallback = null) {
@@ -144,101 +62,6 @@ function readingTime(markdown = '') {
   return Math.max(1, Math.round(stripMarkdown(markdown).length / 180));
 }
 
-function fallbackCatalog() {
-  if (fallbackCatalogCache) return fallbackCatalogCache;
-  const catalog = readJson(FALLBACK_CATALOG_FILE, []);
-  fallbackCatalogCache = Array.isArray(catalog) && catalog.length
-    ? catalog.filter((item) => item?.url)
-    : FALLBACK_BLOG_IMAGES.map((url) => ({ url, source: 'Respira Tech local fallback library', creator: 'Respira Tech' }));
-  return fallbackCatalogCache;
-}
-
-function fallbackFeaturedImage(seed = '', article = null) {
-  const catalog = fallbackCatalog();
-  const hash = Array.from(String(seed || '')).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  const item = catalog[hash % catalog.length];
-  if (article && item?.source) {
-    article.featured_image_credit = {
-      source: item.source,
-      creator: item.creator || '',
-      url: item.credit_url || ''
-    };
-  }
-  return item?.url || FALLBACK_BLOG_IMAGES[hash % FALLBACK_BLOG_IMAGES.length];
-}
-
-function imageSearchQuery(article = {}) {
-  const source = `${article.title_ar || ''} ${article.category || ''}`.toLowerCase();
-  if (source.includes('mask') || source.includes('ماسك') || source.includes('قناع')) return 'sleep apnea mask';
-  if (source.includes('bipap')) return 'CPAP';
-  if (source.includes('sleep') || source.includes('نوم') || source.includes('انقطاع')) return 'sleep apnea';
-  return 'CPAP';
-}
-
-function imageExtension(contentType, fallback = '.jpg') {
-  if (contentType.includes('png')) return '.png';
-  if (contentType.includes('jpeg') || contentType.includes('jpg')) return '.jpg';
-  if (contentType.includes('webp')) return '.webp';
-  return fallback;
-}
-
-async function downloadRemoteImage(imageUrl, filePath) {
-  const response = await fetch(imageUrl, { headers: { 'User-Agent': 'RespiraTechBot/1.0' } });
-  if (!response.ok) throw new Error(`image download HTTP ${response.status}`);
-  const contentType = response.headers.get('content-type') || '';
-  if (!contentType.startsWith('image/')) throw new Error(`not an image: ${contentType}`);
-  const ext = imageExtension(contentType, path.extname(filePath) || '.jpg');
-  const targetPath = filePath.replace(/\.[^.]+$/, ext);
-  fs.writeFileSync(targetPath, Buffer.from(await response.arrayBuffer()));
-  return targetPath;
-}
-
-async function fetchPexelsImage({ article, env, filePath }) {
-  const key = env.PEXELS_API_KEY;
-  if (!key) return null;
-  const query = encodeURIComponent(imageSearchQuery(article));
-  const response = await fetch(`https://api.pexels.com/v1/search?query=${query}&orientation=landscape&per_page=12`, {
-    headers: { Authorization: key, 'User-Agent': 'RespiraTechBot/1.0' }
-  });
-  if (!response.ok) throw new Error(`Pexels HTTP ${response.status}`);
-  const payload = await response.json();
-  const photo = (payload.photos || []).find((item) => item?.src?.large2x || item?.src?.large || item?.src?.original);
-  if (!photo) return null;
-  const savedPath = await downloadRemoteImage(photo.src.large2x || photo.src.large || photo.src.original, filePath);
-  article.featured_image_credit = {
-    source: 'Pexels',
-    creator: photo.photographer || '',
-    url: photo.url || ''
-  };
-  return `/assets/images/blog/${path.basename(savedPath)}`;
-}
-
-async function fetchOpenverseImage({ article, filePath }) {
-  const query = encodeURIComponent(imageSearchQuery(article));
-  const response = await fetch(`https://api.openverse.org/v1/images/?q=${query}&license=cc0,pdm,by,by-sa&extension=jpg,png&page_size=12`, {
-    headers: { 'User-Agent': 'RespiraTechBot/1.0' }
-  });
-  if (!response.ok) throw new Error(`Openverse HTTP ${response.status}`);
-  const payload = await response.json();
-  const images = (payload.results || []).filter((item) => item?.url && !/pillow|pet/i.test(`${item.title || ''} ${item.url || ''}`));
-  let lastError = null;
-  for (const image of images) {
-    try {
-      const savedPath = await downloadRemoteImage(image.url, filePath);
-      article.featured_image_credit = {
-        source: image.source || 'Openverse',
-        creator: image.creator || '',
-        url: image.foreign_landing_url || image.url || ''
-      };
-      return `/assets/images/blog/${path.basename(savedPath)}`;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  if (lastError) throw lastError;
-  return null;
-}
-
 function seoScore(article) {
   const markdown = article.content_markdown || '';
   const words = stripMarkdown(markdown).length;
@@ -254,47 +77,9 @@ function seoScore(article) {
     !!article.medical_disclaimer,
     !!article.category,
     !!article.slug,
-    words >= DEFAULT_MIN_WORDS
+    words >= 1200
   ];
   return Math.round(checks.reduce((sum, ok) => sum + (ok ? 100 / checks.length : 0), 0));
-}
-
-function targetWords(env) {
-  const configured = Number(env.ARTICLE_TARGET_WORDS || env.BLOG_ARTICLE_TARGET_WORDS || DEFAULT_TARGET_WORDS);
-  return Number.isFinite(configured) ? Math.max(DEFAULT_MIN_WORDS, configured) : DEFAULT_TARGET_WORDS;
-}
-
-function minWords(env) {
-  const configured = Number(env.ARTICLE_MIN_WORDS || env.BLOG_ARTICLE_MIN_WORDS || DEFAULT_MIN_WORDS);
-  return Number.isFinite(configured) ? Math.max(1200, configured) : DEFAULT_MIN_WORDS;
-}
-
-function linkScoreForTopic(link, text) {
-  const source = String(text || '').toLowerCase();
-  let score = 0;
-  if (link.url.includes('cpap') && source.includes('cpap')) score += 3;
-  if (link.url.includes('bipap') && source.includes('bipap')) score += 3;
-  if (link.url.includes('sleep-apnea') && /انقطاع|الشخير|النفس|النوم/.test(source)) score += 3;
-  if (link.url.includes('cpap-masks') && /ماسك|قناع|تسريب|mask/.test(source)) score += 3;
-  if (link.url.includes('store') && /شراء|سعر|منتج|متجر|اختيار/.test(source)) score += 1;
-  if (link.url.includes('contact')) score += 1;
-  return score;
-}
-
-function pickAnchor(link, topic, index = 0) {
-  const strategy = INTERNAL_LINK_STRATEGY.find((item) => item.url === link.url);
-  if (!strategy) return link.anchor;
-  const offset = Math.abs(slugify(topic).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0));
-  return strategy.anchors[(offset + index) % strategy.anchors.length];
-}
-
-function isWeakAnchor(anchor = '') {
-  const value = String(anchor).trim();
-  return (
-    value.length < 13 ||
-    /^(صفحة|المتجر|تواصل معنا|اضغط هنا|اقرأ المزيد|خدمة العملاء)$/i.test(value) ||
-    /^صفحة\s+/i.test(value)
-  );
 }
 
 function deriveCategory(topic) {
@@ -307,54 +92,11 @@ function deriveCategory(topic) {
   return 'نصائح الاستخدام والعناية';
 }
 
-function normalizeTopicItem(item) {
-  if (typeof item === 'string') {
-    return {
-      topic: item,
-      primary_keyword: item,
-      intent: 'informational',
-      priority: 50,
-      cluster: deriveCategory(item)
-    };
-  }
-  return {
-    topic: String(item.topic || item.title || item.primary_keyword || '').trim(),
-    primary_keyword: String(item.primary_keyword || item.topic || '').trim(),
-    secondary_keywords: Array.isArray(item.secondary_keywords) ? item.secondary_keywords : [],
-    intent: String(item.intent || 'informational').trim(),
-    priority: Number.isFinite(Number(item.priority)) ? Number(item.priority) : 50,
-    cluster: String(item.cluster || '').trim()
-  };
-}
-
-function topicKey(item) {
-  return slugify(item.topic || item.primary_keyword || '');
-}
-
-function chooseTopics(topicItems, articles, generationLog, neededCount) {
-  const usedTitles = new Set(articles.map((a) => a.title_ar));
-  const usedSlugs  = new Set(articles.map((a) => a.slug).filter(Boolean));
-  // Also track topics that were already attempted via generation log
-  const usedTopics = new Set();
-  for (const entry of (Array.isArray(generationLog) ? generationLog : [])) {
-    if (Array.isArray(entry.items)) {
-      for (const item of entry.items) {
-        if (item.topic) usedTopics.add(item.topic);
-        if (item.slug)  usedSlugs.add(item.slug);
-      }
-    }
-  }
-  const normalized = topicItems.map(normalizeTopicItem).filter((item) => item.topic);
-  const deduped = [...new Map(normalized.map((item) => [topicKey(item), item])).values()]
-    .sort((a, b) => b.priority - a.priority);
-  const available = deduped.filter(
-    (item) => !usedTitles.has(item.topic) && !usedSlugs.has(topicKey(item)) && !usedTopics.has(item.topic)
-  );
+function chooseTopics(topics, articles, neededCount) {
+  const used = new Set(articles.map((article) => article.title_ar));
+  const available = topics.filter((topic) => !used.has(topic));
   if (available.length >= neededCount) return available.slice(0, neededCount);
-  // Fall back: at least avoid slug collisions
-  const noSlugCollision = deduped.filter((item) => !usedSlugs.has(topicKey(item)) && !usedTopics.has(item.topic));
-  const pool = noSlugCollision.length ? noSlugCollision : deduped.filter((item) => !usedTopics.has(item.topic));
-  return (pool.length ? pool : deduped).slice(0, neededCount);
+  return [...available, ...topics.filter((topic) => !available.includes(topic)).slice(0, neededCount - available.length)];
 }
 
 function createdTodayCount(articles, cairoDate) {
@@ -365,59 +107,20 @@ function createdTodayCount(articles, cairoDate) {
 }
 
 function ensureInternalLinks(article, siteData) {
-  const topicText = `${article.title_ar || ''} ${article.excerpt || ''} ${article.category || ''}`;
-  const existing = Array.isArray(article.internal_links) ? article.internal_links.filter((item) => item?.url) : [];
-  const byUrl = new Map();
-  for (const item of existing) {
-    const core = siteData.core_links.find((link) => link.url === item.url);
-    const anchor = !isWeakAnchor(item.anchor) ? item.anchor : pickAnchor(core || item, topicText, byUrl.size);
-    byUrl.set(item.url, { anchor, url: item.url });
-  }
-  const rankedCore = [...siteData.core_links].sort((a, b) => linkScoreForTopic(b, topicText) - linkScoreForTopic(a, topicText));
-  for (const link of rankedCore) {
-    if (!byUrl.has(link.url)) {
-      byUrl.set(link.url, { anchor: pickAnchor(link, topicText, byUrl.size), url: link.url });
-    }
-  }
-  return [...byUrl.values()].slice(0, 6);
+  const links = Array.isArray(article.internal_links) ? article.internal_links.filter((item) => item?.anchor && item?.url) : [];
+  if (links.length >= 3) return links.slice(0, 5);
+  const additions = siteData.core_links.filter((link) => !links.some((item) => item.url === link.url));
+  return [...links, ...additions].slice(0, 5);
 }
 
 function autoLinkMarkdown(markdown = '', links = []) {
-  let updated = String(markdown || '').replace(/\[\[([^\]]+)\]\((\/[^)]+)\)\]\(https:\/\/respira-tech\.com\/?[^)]*\)/g, '[$1]($2)');
-  const missingLinks = [];
+  let updated = String(markdown || '');
   for (const link of links) {
     if (!link?.anchor || !link?.url) continue;
-    const urlPattern = link.url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const existingLinkRegex = new RegExp(`\\[([^\\]]+)\\]\\((?:https://respira-tech\\.com)?${urlPattern}\\)`, 'i');
-    const existingMatch = updated.match(existingLinkRegex);
-    if (existingMatch) {
-      if (isWeakAnchor(existingMatch[1])) {
-        updated = updated.replace(existingLinkRegex, `[${link.anchor}](${link.url})`);
-      }
-      continue;
-    }
+    if (updated.includes(`](${link.url})`)) continue;
     const escaped = link.anchor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(escaped, 'i');
-    if (regex.test(updated)) {
-      updated = updated.replace(regex, `[${link.anchor}](${link.url})`);
-      continue;
-    }
-    missingLinks.push(link);
-  }
-  if (missingLinks.length && !updated.includes('## روابط تساعدك على الخطوة التالية')) {
-    const lines = [
-      '',
-      '## روابط تساعدك على الخطوة التالية',
-      '',
-      ...missingLinks.slice(0, 6).map((link) => `- [${link.anchor}](${link.url})`)
-    ];
-    const insertion = `\n${lines.join('\n')}\n`;
-    const ctaIndex = updated.search(/\n##\s+(الخلاصة|هل تحتاج|تواصل|CTA|دعوة)/i);
-    if (ctaIndex > -1) {
-      updated = `${updated.slice(0, ctaIndex).trimEnd()}${insertion}\n${updated.slice(ctaIndex).trimStart()}`;
-    } else {
-      updated = `${updated.trimEnd()}${insertion}`;
-    }
+    updated = updated.replace(regex, `[${link.anchor}](${link.url})`);
   }
   return updated;
 }
@@ -429,16 +132,13 @@ function buildImagePrompt(topic, category) {
 function fallbackArticle(topic, siteData, nowIso) {
   const category = deriveCategory(topic);
   const slug = slugify(topic);
-  const contactNumber = cleanWhatsappNumber(siteData.site.whatsapp_number);
   const content_markdown = `# ${topic}
 
 هذا المقال يشرح الموضوع بلغة عربية واضحة وطبيعية، كما لو أن مختصًا يكتبه يدويًا للقارئ العربي الذي يبحث عن فهم أفضل قبل اتخاذ قرار يتعلق بالنوم أو أجهزة الدعم التنفسي المنزلي.
 
-## مقدمة: لماذا يحتاج القارئ إلى دليل مفصل؟
+## مقدمة
 
 يبحث كثير من الأشخاص عن معلومات حول اضطرابات النوم أو أجهزة العلاج التنفسي المنزلي، لكن المشكلة ليست فقط في كثرة المعلومات، بل في أن جزءًا كبيرًا منها إما مبالغ فيه أو غير واضح. لهذا نحاول هنا تقديم شرح منظم ومسؤول يساعدك على فهم الفكرة الأساسية، ومتى يكون من المناسب طلب تقييم متخصص.
-
-في الموضوعات المرتبطة بالتنفس أثناء النوم، التفاصيل الصغيرة قد تصنع فرقًا كبيرًا: نوع الأعراض، وقت ظهورها، طريقة النوم، وجود انسداد بالأنف، مستوى الراحة مع الماسك، ومدى الالتزام اليومي باستخدام الجهاز. لذلك لا يكفي أن تعرف اسم الجهاز فقط، بل تحتاج أن تفهم الصورة كاملة بطريقة عملية وهادئة.
 
 ## لماذا يهم هذا الموضوع؟
 
@@ -447,18 +147,6 @@ function fallbackArticle(topic, siteData, nowIso) {
 ## شرح مبسط
 
 في كثير من الحالات، يكون الهدف هو تحسين جودة النوم وتقليل الاضطرابات التي تؤثر على التنفس أثناء الليل. وقد يعتمد ذلك على تقييم الأعراض، ونتائج الفحص أو دراسة النوم عند الحاجة، ثم اختيار الجهاز أو الماسك المناسب بناءً على توصية الطبيب وطبيعة الاستخدام اليومي في المنزل.
-
-## كيف تفكر في القرار بطريقة صحيحة؟
-
-قبل الشراء أو تغيير الجهاز أو الماسك، اسأل نفسك عدة أسئلة: هل المشكلة في التشخيص نفسه أم في الراحة أثناء الاستخدام؟ هل الضغط مزعج؟ هل يوجد تسريب هواء؟ هل تستيقظ بفم جاف؟ هل تستخدم الجهاز عدد ساعات كافيًا؟ الإجابة على هذه الأسئلة تساعد المختص على توجيهك بشكل أدق.
-
-## أخطاء شائعة يجب تجنبها
-
-- الاعتماد على تجربة شخص آخر بدون تقييم حالتك.
-- شراء ماسك بناءً على الشكل فقط دون تجربة المقاس.
-- إيقاف استخدام الجهاز عند أول شعور بعدم الراحة.
-- تجاهل تسريب الهواء أو جفاف الأنف والفم.
-- اعتبار المقالات التعليمية بديلًا عن الطبيب أو دراسة النوم.
 
 ### دور الجهاز أو الماسك
 
@@ -480,7 +168,7 @@ function fallbackArticle(topic, siteData, nowIso) {
 
 فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب.
 
-[تواصل معنا عبر واتساب](https://wa.me/${contactNumber})
+[تواصل معنا عبر واتساب](https://wa.me/${siteData.site.whatsapp_number})
 
 > ${siteData.site.medical_disclaimer}
 `;
@@ -493,7 +181,7 @@ function fallbackArticle(topic, siteData, nowIso) {
     excerpt: `مقال عربي مبسط يشرح: ${topic}`,
     category,
     tags: [category, 'Respira Tech', 'أجهزة النوم'],
-    featured_image: fallbackFeaturedImage(slug || topic),
+    featured_image: '/assets/images/store/respira-tech-logo.png',
     featured_image_prompt: buildImagePrompt(topic, category),
     content_html: '',
     content_markdown,
@@ -510,7 +198,7 @@ function fallbackArticle(topic, siteData, nowIso) {
     internal_links: siteData.core_links.slice(0, 5),
     cta_text: 'فريق Respira Tech يساعدك في فهم احتياجك واختيار جهاز CPAP أو BiPAP أو الماسك المناسب حسب حالتك وتوصية الطبيب.',
     cta_button_text: 'تواصل معنا عبر واتساب',
-    cta_button_url: `https://wa.me/${contactNumber}`,
+    cta_button_url: `https://wa.me/${siteData.site.whatsapp_number}`,
     author: siteData.site.author,
     status: 'draft',
     published_at: null,
@@ -522,16 +210,10 @@ function fallbackArticle(topic, siteData, nowIso) {
   };
 }
 
-async function generateWithOpenAI({ topicItem, env, siteData }) {
+async function generateWithOpenAI({ topic, env, siteData }) {
   if (!env.OPENAI_API_KEY) return null;
-  const topic = topicItem.topic;
-  const primaryKeyword = topicItem.primary_keyword || topic;
-  const secondaryKeywords = Array.isArray(topicItem.secondary_keywords) ? topicItem.secondary_keywords : [];
-  const searchIntent = topicItem.intent || 'informational';
 
   const systemPrompt = 'You are an expert Arabic SEO medical content writer for a respiratory therapy company. Write accurate, clear, responsible Arabic content about sleep apnea, CPAP, BiPAP, respiratory therapy, and home breathing support. The content must be educational, trustworthy, and conversion-focused without making unsafe medical claims. Do not diagnose. Do not prescribe treatment. Encourage the reader to consult a doctor or specialist. Use simple Arabic suitable for Egypt and Arabic-speaking audiences. Write naturally so the article feels manually written by a skilled Arabic human editor, with varied sentence structure and no robotic repetition.';
-  const desiredWords = targetWords(env);
-  const requiredWords = minWords(env);
   const schema = {
     type: 'object',
     additionalProperties: false,
@@ -584,7 +266,6 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
     body: JSON.stringify({
       model: env.OPENAI_TEXT_MODEL || 'gpt-4.1',
       temperature: 0.75,
-      max_tokens: 6500,
       response_format: {
         type: 'json_schema',
         json_schema: {
@@ -599,30 +280,19 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
           role: 'user',
           content: `اكتب مقالاً عربيًا احترافيًا عن هذا الموضوع: ${topic}
 
-بيانات السيو:
-- الكلمة المفتاحية الأساسية: ${primaryKeyword}
-- نية البحث: ${searchIntent}
-- كلمات ثانوية داعمة: ${secondaryKeywords.join('، ') || 'غير محدد'}
-
 القواعد:
-- المقال لا يقل عن ${requiredWords} كلمة عربية، والهدف المثالي حوالي ${desiredWords} كلمة.
+- المقال لا يقل عن 1200 كلمة عربية.
 - يجب أن يبدو كأنه مكتوب يدويًا بواسطة محرر عربي محترف، وليس نصًا آليًا.
-- لا تختصر: كل H2 يجب أن يحتوي شرحًا فعليًا من 2 إلى 4 فقرات، وليس فقرة واحدة سطحية.
 - استخدم H1 مرة واحدة فقط.
 - استخدم H2 و H3 بشكل منظم.
 - أضف مقدمة واضحة.
 - أضف قسمًا للأعراض عندما يكون ذلك مناسبًا.
 - أضف شرحًا عمليًا.
-- أضف قسمًا للأخطاء الشائعة وقسمًا للخطوات العملية أو جدول مقارنة Markdown عندما يناسب الموضوع.
 - أضف قسم: متى تطلب المساعدة؟
 - أضف FAQ.
 - أضف CTA نهائي.
-- استخدم 4 إلى 6 روابط داخلية طبيعية من هذه الروابط فقط: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
-- لا تستخدم أنكور عام مثل "اضغط هنا" أو "المتجر" أو "تواصل معنا" وحده. استخدم عبارات وصفية طويلة مثل "اختيار ماسك CPAP المناسب" أو "أعراض انقطاع النفس أثناء النوم".
-- وزع الروابط داخل الفقرات في أماكن منطقية، وليس كلها في آخر المقال.
+- استخدم 3 إلى 5 روابط داخلية طبيعية من هذه الروابط فقط: /services/cpap/ /services/bipap/ /services/sleep-apnea/ /services/cpap-masks/ /store/ /contact/
 - لا تكرر الكلمات المفتاحية بشكل مصطنع.
-- استخدم الكلمة المفتاحية الأساسية في H1 وفي المقدمة وفي Meta description بشكل طبيعي.
-- ابنِ المقال حول نية البحث المحددة: لو النية شراء/مقارنة فركز على الاختيار والمعايير، ولو مشكلة فركز على السبب والحل، ولو أعراض فركز على متى يراجع الطبيب.
 - لا تقل علاج مضمون أو شفاء مضمون.
 - اذكر Respira Tech بشكل طبيعي 2 أو 3 مرات فقط.
 - اختم بزر واتساب.
@@ -646,10 +316,10 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
   return {
     ...parsed,
     slug: slugify(parsed.slug || parsed.title_ar || topic),
-    featured_image: fallbackFeaturedImage(parsed.slug || parsed.title_ar || topic),
+    featured_image: '/assets/images/store/respira-tech-logo.png',
     featured_image_prompt: buildImagePrompt(parsed.title_ar || topic, category),
     content_html: '',
-    cta_button_url: `https://wa.me/${whatsappNumber(env, siteData)}`,
+    cta_button_url: `https://wa.me/${env.WHATSAPP_NUMBER || siteData.site.whatsapp_number}`,
     author: siteData.site.author,
     created_at: nowIso,
     updated_at: nowIso,
@@ -663,40 +333,16 @@ async function generateWithOpenAI({ topicItem, env, siteData }) {
 }
 
 async function generateFeaturedImage({ article, env }) {
-  fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
-  const fileName = `${article.slug}.jpg`;
-  const filePath = path.join(BLOG_IMAGES_DIR, fileName);
-  const stockImagesEnabled = String(env.STOCK_IMAGES_ENABLED || 'true').toLowerCase() !== 'false';
-
-  if (stockImagesEnabled) {
-    try {
-      const pexelsImage = await fetchPexelsImage({ article, env, filePath });
-      if (pexelsImage) return pexelsImage;
-    } catch (error) {
-      appendLog({ type: 'pexels_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
-    }
-
-    try {
-      const openverseImage = await fetchOpenverseImage({ article, filePath });
-      if (openverseImage) return openverseImage;
-    } catch (error) {
-      appendLog({ type: 'openverse_image_error', slug: article.slug, created_at: new Date().toISOString(), error: error.message });
-    }
-  }
-
-  if (!env.OPENAI_API_KEY) return fallbackFeaturedImage(article.slug || article.title_ar, article);
+  if (!env.OPENAI_API_KEY) return '/assets/images/store/respira-tech-logo.png';
   if (String(env.GENERATE_BLOG_IMAGES || 'true').toLowerCase() === 'false') {
-    return fallbackFeaturedImage(article.slug || article.title_ar, article);
-  }
-  if (String(env.OPENAI_IMAGE_MODEL || '').toLowerCase() === 'dall-e-3') {
-    return fallbackFeaturedImage(article.slug || article.title_ar, article);
+    return '/assets/images/store/respira-tech-logo.png';
   }
 
-  const aiFileName = `${article.slug}.png`;
-  const aiFilePath = path.join(BLOG_IMAGES_DIR, aiFileName);
-  const preferred = env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini';
-  const modelCandidates = [preferred, 'gpt-image-1-mini', 'gpt-image-1', 'dall-e-3']
-    .filter((model, index, arr) => model && arr.indexOf(model) === index);
+  fs.mkdirSync(BLOG_IMAGES_DIR, { recursive: true });
+  const fileName = `${article.slug}.png`;
+  const filePath = path.join(BLOG_IMAGES_DIR, fileName);
+  const preferred = env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
+  const modelCandidates = [preferred, 'dall-e-3'].filter((model, index, arr) => model && arr.indexOf(model) === index);
 
   let lastError = null;
   for (const model of modelCandidates) {
@@ -727,9 +373,8 @@ async function generateFeaturedImage({ article, env }) {
     const imageBase64 = payload?.data?.[0]?.b64_json;
     const imageUrl = payload?.data?.[0]?.url;
     if (imageBase64) {
-      fs.writeFileSync(aiFilePath, Buffer.from(imageBase64, 'base64'));
-      article.featured_image_credit = { source: 'OpenAI', creator: '', url: '' };
-      return `/assets/images/blog/${aiFileName}`;
+      fs.writeFileSync(filePath, Buffer.from(imageBase64, 'base64'));
+      return `/assets/images/blog/${fileName}`;
     }
     if (imageUrl) {
       const imageResponse = await fetch(imageUrl);
@@ -738,9 +383,8 @@ async function generateFeaturedImage({ article, env }) {
         continue;
       }
       const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-      fs.writeFileSync(aiFilePath, imageBuffer);
-      article.featured_image_credit = { source: 'OpenAI', creator: '', url: '' };
-      return `/assets/images/blog/${aiFileName}`;
+      fs.writeFileSync(filePath, imageBuffer);
+      return `/assets/images/blog/${fileName}`;
     }
     lastError = `OpenAI image error (${model}): empty image payload`;
   }
@@ -748,14 +392,11 @@ async function generateFeaturedImage({ article, env }) {
   throw new Error(lastError || 'OpenAI image error: no available image model');
 }
 
-async function buildArticle(topicItem, env, siteData) {
-  const topic = topicItem.topic || String(topicItem);
+async function buildArticle(topic, env, siteData) {
   let article = null;
-  let textGenerationError = null;
   try {
-    article = await generateWithOpenAI({ topicItem: normalizeTopicItem(topicItem), env, siteData });
+    article = await generateWithOpenAI({ topic, env, siteData });
   } catch (error) {
-    textGenerationError = error;
     appendLog({
       type: 'openai_text_error',
       topic,
@@ -765,12 +406,6 @@ async function buildArticle(topicItem, env, siteData) {
   }
 
   if (!article) {
-    const allowFallback = String(env.ALLOW_FALLBACK_ARTICLES || 'false').toLowerCase() === 'true';
-    const forcePublish = String(env.FORCE_PUBLISH || '').toLowerCase();
-    const wouldPublish = forcePublish === 'true' || (forcePublish !== 'false' && String(env.AUTO_PUBLISH_BLOGS).toLowerCase() === 'true');
-    if (wouldPublish && !allowFallback) {
-      throw new Error(`OpenAI article generation failed; refusing to publish fallback article. ${textGenerationError?.message || ''}`.trim());
-    }
     article = fallbackArticle(topic, siteData, new Date().toISOString());
   }
 
@@ -778,10 +413,7 @@ async function buildArticle(topicItem, env, siteData) {
   article.internal_links = ensureInternalLinks(article, siteData);
   article.content_markdown = autoLinkMarkdown(article.content_markdown || '', article.internal_links);
   article.cta_button_text = article.cta_button_text || 'تواصل معنا عبر واتساب';
-  if (article.cta_button_url && article.cta_button_url.includes('your_whatsapp')) {
-    article.cta_button_url = '';
-  }
-  article.cta_button_url = article.cta_button_url || `https://wa.me/${whatsappNumber(env, siteData)}`;
+  article.cta_button_url = article.cta_button_url || `https://wa.me/${env.WHATSAPP_NUMBER || siteData.site.whatsapp_number}`;
   const forcePublish = String(env.FORCE_PUBLISH || '').toLowerCase();
   if (forcePublish === 'true') {
     article.status = 'published';
@@ -797,7 +429,7 @@ async function buildArticle(topicItem, env, siteData) {
   try {
     article.featured_image = await generateFeaturedImage({ article, env });
   } catch (error) {
-    article.featured_image = fallbackFeaturedImage(article.slug || topic, article);
+    article.featured_image = '/assets/images/store/respira-tech-logo.png';
     appendLog({
       type: 'openai_image_error',
       topic,
@@ -817,12 +449,6 @@ async function main() {
   const env = loadEnv();
   const siteData = readJson(SITE_FILE);
   const topics = readJson(TOPICS_FILE, []);
-  const keywordPlan = readJson(KEYWORD_PLAN_FILE, []);
-  const topicItems = [
-    ...(Array.isArray(keywordPlan) ? keywordPlan : []),
-    ...(Array.isArray(topics) ? topics : [])
-  ];
-  const generationLog = readJson(LOG_FILE, []);
   const articleFiles = fs.existsSync(ARTICLES_DIR) ? fs.readdirSync(ARTICLES_DIR).filter((name) => name.endsWith('.json')) : [];
   const articles = articleFiles.map((name) => readJson(path.join(ARTICLES_DIR, name), {})).filter(Boolean);
   const cairoDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date());
@@ -843,7 +469,7 @@ async function main() {
     return;
   }
 
-  const selectedTopics = chooseTopics(topicItems, articles, generationLog, remaining);
+  const selectedTopics = chooseTopics(topics, articles, remaining);
   if (!selectedTopics.length) {
     appendLog({
       type: 'skipped',
@@ -855,14 +481,12 @@ async function main() {
   }
 
   const generated = [];
-  for (const topicItem of selectedTopics) {
-    const article = await buildArticle(topicItem, env, siteData);
+  for (const topic of selectedTopics) {
+    const article = await buildArticle(topic, env, siteData);
     const filePath = path.join(ARTICLES_DIR, `${article.slug}.json`);
     writeJson(filePath, article);
     generated.push({
-      topic: topicItem.topic,
-      primary_keyword: topicItem.primary_keyword,
-      intent: topicItem.intent,
+      topic,
       slug: article.slug,
       status: article.status,
       featured_image: article.featured_image

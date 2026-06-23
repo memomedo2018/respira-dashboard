@@ -34,8 +34,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(14px);
-      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,.82);
       border-bottom: 1px solid var(--border);
     }
     .topbar-shell, .page {
@@ -44,7 +44,7 @@
       padding-inline: 1.25rem;
     }
     .topbar-shell {
-      min-height: 72px;
+      min-height: 84px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -55,14 +55,14 @@
       display: inline-flex;
       align-items: center;
       gap: .85rem;
-      font-size: 1.25rem;
+      font-size: 1.7rem;
       font-weight: 900;
       color: #0097b2;
     }
     .brand-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
       background: linear-gradient(135deg, #17a2b8, #138496);
       box-shadow: 0 14px 32px rgba(23,162,184,.25);
     }
@@ -71,97 +71,57 @@
       gap: .75rem;
       flex-wrap: wrap;
     }
-    .actions { gap: .5rem; }
     .btn, .tab-btn {
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.08);
-      min-height: 42px;
-      padding: .65rem .95rem;
+      padding: .85rem 1.15rem;
       font-weight: 800;
       cursor: pointer;
       transition: .25s ease;
       background: rgba(255,255,255,.9);
       color: var(--text);
     }
-    .btn:hover, .tab-btn:hover { border-color: rgba(19,132,150,.35); }
+    .btn:hover, .tab-btn:hover { transform: translateY(-2px); }
     .btn-primary, .tab-btn.is-active {
       background: linear-gradient(135deg, #17a2b8, #138496);
       color: #fff;
       box-shadow: 0 16px 34px rgba(23,162,184,.22);
     }
-    .btn-secondary {
-      background: linear-gradient(135deg, #6c63ff, #4f46e5);
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(108,99,255,.22);
-    }
     .btn-danger {
       color: var(--danger);
       border-color: rgba(185,28,28,.18);
     }
-    .page { padding-block: 1.4rem 4rem; }
+    .page { padding-block: 2rem 4rem; }
     .hero {
-      padding: 1.35rem 1.5rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,.94);
-      border: 1px solid rgba(15,23,42,.08);
-      box-shadow: 0 12px 28px rgba(15,23,42,.05);
-      margin-bottom: 1rem;
+      padding: 2.1rem;
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(228,243,251,.9));
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 24px 56px rgba(15,23,42,.08);
+      margin-bottom: 1.5rem;
     }
     .hero h1 {
-      font-family: 'Alexandria', 'Segoe UI', sans-serif;
-      font-size: clamp(1.45rem, 2.8vw, 2.25rem);
-      margin-bottom: .45rem;
+      font-family: 'Marhey', 'Alexandria', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      margin-bottom: .75rem;
       color: #0097b2;
     }
-    .hero p { max-width: 980px; color: var(--muted); font-size: .98rem; }
-    .system-status {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      padding: .75rem 1rem;
-      border-radius: 14px;
-      border: 1px solid rgba(15,23,42,.08);
-      background: rgba(255,255,255,.86);
-      color: var(--muted);
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-    .system-status.success {
-      background: rgba(22,163,74,.08);
-      border-color: rgba(22,163,74,.2);
-      color: #166534;
-    }
-    .system-status.error {
-      background: rgba(185,28,28,.08);
-      border-color: rgba(185,28,28,.2);
-      color: #991b1b;
-    }
+    .hero p { max-width: 920px; color: var(--muted); }
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1rem;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
     }
     .metric, .panel {
       background: var(--surface);
       border: 1px solid rgba(15,23,42,.08);
-      border-radius: 14px;
-      box-shadow: 0 10px 24px rgba(15,23,42,.045);
+      border-radius: 28px;
+      box-shadow: 0 18px 44px rgba(15,23,42,.06);
     }
-    .metric { padding: 1rem; min-height: 96px; }
+    .metric { padding: 1.2rem 1.3rem; }
     .metric .label { color: var(--muted); font-size: .92rem; }
     .metric strong { display: block; font-size: 1.9rem; margin-top: .35rem; }
-    .tabs {
-      position: sticky;
-      top: 73px;
-      z-index: 90;
-      padding: .65rem;
-      margin-bottom: 1rem;
-      border-radius: 10px;
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(15,23,42,.08);
-      backdrop-filter: blur(12px);
-    }
     .tab-panel { display: none; }
     .tab-panel.is-active { display: block; }
     .dashboard-grid {
@@ -182,7 +142,7 @@
     .field label { font-weight: 800; font-size: .92rem; }
     .field input, .field textarea, .field select {
       border: 1px solid rgba(15,23,42,.12);
-      border-radius: 12px;
+      border-radius: 18px;
       padding: .95rem 1rem;
       background: rgba(255,255,255,.96);
       color: var(--text);
@@ -201,7 +161,7 @@
       gap: .7rem;
       padding: .95rem 1rem;
       border: 1px solid rgba(15,23,42,.12);
-      border-radius: 12px;
+      border-radius: 18px;
       background: rgba(255,255,255,.95);
     }
     .toggle-row input { width: auto; accent-color: #138496; }
@@ -214,7 +174,7 @@
     }
     .mini-card {
       padding: 1rem;
-      border-radius: 12px;
+      border-radius: 24px;
       border: 1px solid rgba(15,23,42,.08);
       background: rgba(255,255,255,.94);
       box-shadow: 0 12px 28px rgba(15,23,42,.05);
@@ -229,7 +189,7 @@
       width: 116px;
       height: 116px;
       object-fit: cover;
-      border-radius: 12px;
+      border-radius: 22px;
       border: 1px solid rgba(15,23,42,.08);
       background: #eef8fd;
       box-shadow: 0 10px 24px rgba(15,23,42,.06);
@@ -267,14 +227,14 @@
     .preview-box {
       background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(233,246,252,.92));
       border: 1px dashed rgba(23,162,184,.25);
-      border-radius: 12px;
+      border-radius: 24px;
       padding: 1rem;
     }
     .preview-thumb {
       width: 100%;
       aspect-ratio: 1 / 1;
       object-fit: cover;
-      border-radius: 12px;
+      border-radius: 24px;
       background: #eef8fd;
     }
     .gallery-preview {
@@ -287,7 +247,7 @@
       width: 74px;
       height: 74px;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 16px;
       border: 1px solid rgba(15,23,42,.08);
       background: #eef8fd;
     }
@@ -302,7 +262,7 @@
     }
     .log-item {
       padding: .9rem 1rem;
-      border-radius: 12px;
+      border-radius: 20px;
       background: rgba(255,255,255,.94);
       border: 1px solid rgba(15,23,42,.08);
     }
@@ -311,15 +271,8 @@
       color: #64748b;
       padding: 2rem 1rem;
     }
-    .error-metric {
-      grid-column: 1 / -1;
-      border-color: rgba(185,28,28,.2);
-      background: rgba(254,242,242,.92);
-    }
-    .error-metric strong { color: #991b1b; }
-    .error-metric small { display: block; color: #7f1d1d; margin-top: .4rem; }
     .adv-details { border: none; }
-    .adv-details summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.3rem; border-bottom: 1px solid transparent; background: rgba(255,255,255,.72); border-radius: 12px; }
+    .adv-details summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.3rem; border-bottom: 1px solid transparent; background: rgba(255,255,255,.72); border-radius: 20px; }
     .adv-details[open] summary { border-bottom-color: rgba(15,23,42,.08); border-radius: 20px 20px 0 0; }
     .adv-details summary h2 { font-size: 1.15rem; margin: 0; }
     .adv-details summary::-webkit-details-marker { display: none; }
@@ -345,8 +298,7 @@
     }
     @media (max-width: 760px) {
       .field-row, .field-row-3, .metrics { grid-template-columns: 1fr; }
-      .hero { padding: 1rem; }
-      .tabs { position: static; }
+      .hero { padding: 1.4rem; }
       .topbar-shell { padding-block: .9rem; }
       .product-list-card { grid-template-columns: 1fr; }
       .product-list-thumb {
@@ -375,10 +327,8 @@
   <main class="page">
     <section class="hero">
       <h1>إدارة المتجر والمدونة والأتمتة</h1>
-      <p>لوحة تشغيل عملية لإدارة المنتجات والمقالات والسيو والتوليد اليومي. المقالات تنشر تلقائيًا بمعدل مقال واحد يوميًا، مع تحديث أسبوعي للروابط الداخلية.</p>
+      <p>لوحة واحدة لإدارة منتجات Respira Tech، إعدادات OpenAI، التوليد اليومي للمقالات، الصور المميزة، والسيو الخاص بالمحتوى العربي. النظام مضبوط لينشئ مقالتين يوميًا مع حفظ الصور محليًا داخل المشروع عند تفعيل المفتاح.</p>
     </section>
-
-    <section class="system-status" id="systemStatus">جاري تحميل الداشبورد...</section>
 
     <section class="metrics" id="metrics"></section>
 
@@ -539,8 +489,8 @@
             <div class="panel-head"><h2>التحكم السريع</h2></div>
             <div class="panel-body">
               <label class="toggle-row">
-                <input id="settingAutoPublish" type="checkbox">
-                <span>نشر المقالات تلقائياً (بدل Draft)</span>
+                <input id="settingAutoPublish" type="checkbox" disabled>
+                <span>المقالات المولدة تحفظ Draft للمراجعة قبل النشر</span>
               </label>
               <label class="toggle-row">
                 <input id="settingGenerateImages" type="checkbox" checked>
@@ -557,21 +507,9 @@
               </div>
               <div class="toolbar">
                 <button class="btn" id="generateDraftNowBtn" type="button">Draft الآن</button>
-                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
+                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد Draft للمراجعة</button>
               </div>
-              <div id="generateNowProgress" style="display:none;margin-top:.6rem">
-                <div class="deploy-bar-track">
-                  <div id="generateNowBarFill" class="deploy-bar-fill"></div>
-                </div>
-                <p id="generateNowStatusText" class="deploy-status-text" style="font-size:.8rem;margin-top:.3rem;text-align:center"></p>
-              </div>
-              <button class="btn btn-secondary" id="deployNowBtn" type="button" style="width:100%;margin-top:.5rem">🚀 نشر على الموقع الآن</button>
-              <div id="deployNowProgress" style="display:none;margin-top:.6rem">
-                <div class="deploy-bar-track">
-                  <div id="deployNowBarFill" class="deploy-bar-fill"></div>
-                </div>
-                <p id="deployNowStatusText" class="deploy-status-text" style="font-size:.8rem;margin-top:.3rem;text-align:center"></p>
-              </div>
+              <button class="btn" id="deployNowBtn" type="button" style="width:100%;margin-top:.25rem">نشر على الموقع الآن</button>
             </div>
           </div>
 
@@ -588,49 +526,6 @@
                   <input id="settingOpenAiKey" type="password" placeholder="الصق المفتاح هنا">
                   <div class="hint">اتركه فارغاً لو محفوظ بالفعل.</div>
                 </div>
-                <div class="field">
-                  <label for="settingPexelsKey">PEXELS_API_KEY</label>
-                  <input id="settingPexelsKey" type="password" placeholder="الصق مفتاح Pexels هنا">
-                  <div class="hint">اختياري. عند حفظه ستستخدم المقالات صور Pexels مجانية وتحفظها محلياً.</div>
-                </div>
-                <label class="toggle-row">
-                  <input id="settingAlertsEnabled" type="checkbox" checked>
-                  <span>إرسال تنبيه تلقائي بالإيميل عند أخطاء المقالات أو الرفع</span>
-                </label>
-                <div class="field">
-                  <label for="settingAlertEmailTo">إيميل التنبيهات</label>
-                  <input id="settingAlertEmailTo" type="email" placeholder="alihessien0@gmail.com">
-                </div>
-                <div class="field-row">
-                  <div class="field">
-                    <label for="settingSmtpHost">SMTP_HOST</label>
-                    <input id="settingSmtpHost" type="text" placeholder="smtp.gmail.com">
-                  </div>
-                  <div class="field">
-                    <label for="settingSmtpPort">SMTP_PORT</label>
-                    <input id="settingSmtpPort" type="number" placeholder="587">
-                  </div>
-                </div>
-                <div class="field-row">
-                  <div class="field">
-                    <label for="settingSmtpUsername">SMTP_USERNAME</label>
-                    <input id="settingSmtpUsername" type="text" placeholder="example@gmail.com">
-                  </div>
-                  <div class="field">
-                    <label for="settingSmtpPassword">SMTP_PASSWORD</label>
-                    <input id="settingSmtpPassword" type="password" placeholder="اتركه فارغاً إذا كان محفوظاً">
-                  </div>
-                </div>
-                <div class="field-row">
-                  <div class="field">
-                    <label for="settingSmtpFrom">SMTP_FROM</label>
-                    <input id="settingSmtpFrom" type="email" placeholder="alerts@respira-tech.com">
-                  </div>
-                  <label class="toggle-row">
-                    <input id="settingSmtpSsl" type="checkbox">
-                    <span>استخدام SSL مباشر للمنفذ 465</span>
-                  </label>
-                </div>
                 <div class="field-row">
                   <div class="field">
                     <label for="settingTextModel">موديل الكتابة</label>
@@ -638,7 +533,7 @@
                   </div>
                   <div class="field">
                     <label for="settingImageModel">موديل الصور</label>
-                    <input id="settingImageModel" type="text" value="gpt-image-1-mini">
+                    <input id="settingImageModel" type="text" value="gpt-image-1">
                   </div>
                 </div>
                 <div class="field-row">
@@ -681,7 +576,6 @@
                 </label>
                 <div class="toolbar">
                   <button class="btn btn-primary" id="saveSettingsBtn" type="button">حفظ الإعدادات</button>
-                  <button class="btn" id="testAlertsBtn" type="button">اختبار تنبيه الإيميل</button>
                   <button class="btn" id="rebuildBtn" type="button">إعادة بناء الصفحات</button>
                 </div>
               </div>
@@ -716,18 +610,17 @@
                 </div>
                 <div class="field">
                   <label for="settingGscSiteUrl">رابط property في Search Console</label>
-                  <input id="settingGscSiteUrl" type="text" placeholder="sc-domain:respira-tech.com">
+                  <input id="settingGscSiteUrl" type="text" placeholder="https://respira-tech.com">
                 </div>
               </div>
               <div class="field">
                 <label for="gscCredentialsJson">Google Search Console Service Account JSON</label>
                 <textarea id="gscCredentialsJson" placeholder="الصق JSON هنا إذا أردت تتبع الكلمات والترتيب من Search Console"></textarea>
-                <div class="hint">لو الـ property من نوع Domain استخدم sc-domain:respira-tech.com. لن يعمل تتبع الكلمات أو تقديم sitemap إلا بعد رفع credentials وإضافة service account إلى Google Search Console property.</div>
+                <div class="hint">لن يعمل تتبع الكلمات الفعلي إلا بعد رفع credentials وإضافة service account إلى Google Search Console property.</div>
               </div>
               <div class="toolbar">
                 <button class="btn" id="saveSeoSettingsBtn" type="button">حفظ إعدادات SEO Brain</button>
                 <button class="btn" id="uploadGscBtn" type="button">رفع GSC Credentials</button>
-                <button class="btn btn-primary" id="submitGscSitemapBtn" type="button">إرسال Sitemap لجوجل</button>
               </div>
             </div>
           </div>
@@ -741,7 +634,7 @@
               </div>
               <div class="toolbar">
                 <button class="btn" id="generateFromUrlDraftBtn" type="button">كتابة Draft من الرابط</button>
-                <button class="btn btn-primary" id="generateFromUrlPublishBtn" type="button">كتابة ونشر من الرابط</button>
+                <button class="btn btn-primary" id="generateFromUrlPublishBtn" type="button">كتابة Draft للمراجعة</button>
               </div>
             </div>
           </div>
@@ -785,7 +678,7 @@
           <div class="panel-body">
             <div class="toolbar">
               <button class="btn" id="generateArticleDraftBtn" type="button">توليد Draft</button>
-              <button class="btn btn-primary" id="generateArticleBtn" type="button">توليد ونشر الآن</button>
+              <button class="btn btn-primary" id="generateArticleBtn" type="button">توليد Draft للمراجعة</button>
               <button class="btn" id="refreshArticlesBtn" type="button">تحديث القائمة</button>
             </div>
             <div class="list" id="articlesList"></div>
@@ -836,7 +729,7 @@
             </div>
             <div class="toolbar">
               <button class="btn btn-primary" id="saveArticleBtn" type="button">حفظ</button>
-              <button class="btn" id="toggleArticleStatusBtn" type="button">نشر / إلغاء نشر</button>
+              <button class="btn" id="toggleArticleStatusBtn" type="button">اعتماد ونشر</button>
               <button class="btn btn-danger" id="deleteArticleBtn" type="button">حذف</button>
             </div>
             <div id="articleSeoChecklist" class="list"></div>
@@ -868,6 +761,6 @@
     </section>
   </main>
 
-  <script src="/assets/js/dashboard-app.js?v=20260601-dashboard-fix"></script>
+  <script src="/assets/js/dashboard-app.js"></script>
 </body>
 </html>
