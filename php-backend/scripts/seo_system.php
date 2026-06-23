@@ -638,6 +638,48 @@ function rt_seo_outreach_task(): array {
     return $task;
 }
 
+function rt_seo_send_daily_report_email(array $report): array {
+    $to = trim((string)($report['email_to'] ?? ''));
+    if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
+        return ['sent' => false, 'error' => 'invalid email'];
+    }
+
+    $numbers = is_array($report['numbers'] ?? null) ? $report['numbers'] : [];
+    $subjectText = 'Respira Tech SEO Daily Report - ' . gmdate('Y-m-d');
+    $subject = '=?UTF-8?B?' . base64_encode($subjectText) . '?=';
+    $lines = [
+        'تقرير Respira Tech SEO اليومي',
+        '',
+        'الوقت: ' . (string)($report['created_at'] ?? gmdate('c')),
+        '',
+        'الأرقام الحالية:',
+        '- صفوف Search Console: ' . (string)($numbers['gsc_rows'] ?? 0),
+        '- توصيات مفتوحة: ' . (string)($numbers['open_recommendations'] ?? 0),
+        '- روابط في طابور الفهرسة: ' . (string)($numbers['indexing_queue'] ?? 0),
+        '- نتائج URL Inspection: ' . (string)($numbers['url_inspections'] ?? 0),
+        '- مشاكل Quality Gate: ' . (string)($numbers['quality_warnings'] ?? 0),
+        '- طابور تحديث المحتوى: ' . (string)($numbers['refresh_queue'] ?? 0),
+        '- مهام Outreach: ' . (string)($numbers['outreach_tasks'] ?? 0),
+        '',
+        'المطلوب يدويًا:',
+        (string)($report['human_action'] ?? 'راجع الداشبورد عند الحاجة.'),
+        '',
+        'Dashboard: ' . rt_seo_config()['base_url'] . '/داشبورد/',
+    ];
+    $body = implode("\r\n", $lines);
+    $headers = implode("\r\n", [
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        'From: Respira Tech <noreply@respira-tech.com>',
+        'Reply-To: Respira Tech <noreply@respira-tech.com>',
+        'X-Mailer: PHP/' . PHP_VERSION,
+    ]);
+
+    $sent = @mail($to, $subject, $body, $headers);
+    return ['sent' => (bool)$sent, 'error' => $sent ? '' : 'mail() returned false'];
+}
+
 function rt_seo_daily_report(array $jobs): array {
     $report = [
         'created_at' => gmdate('c'),
@@ -654,6 +696,7 @@ function rt_seo_daily_report(array $jobs): array {
         ],
         'human_action' => 'راجع توصيات SEO المفتوحة ومهمة outreach واحدة هذا الأسبوع.',
     ];
+    $report['email'] = rt_seo_send_daily_report_email($report);
     rt_seo_prepend_unique('seo_daily_reports', $report, ['created_at'], 365);
     return $report;
 }
