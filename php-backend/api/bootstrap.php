@@ -63,14 +63,52 @@ function rt_save_json(string $path, $data): void {
 function rt_env(string $key, string $default = ''): string {
     $value = getenv($key);
     if ($value !== false && $value !== '') return (string)$value;
-    $envPath = rt_data_path('.env');
-    if (!is_file($envPath)) return $default;
-    foreach (file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
-        if ($line === '' || str_starts_with(trim($line), '#') || !str_contains($line, '=')) continue;
-        [$name, $raw] = explode('=', $line, 2);
-        if (trim($name) === $key) return trim($raw);
+    $envPaths = [
+        rt_private_env_path(),
+        dirname(rt_base_dir(), 2) . '/respiratech_private/.env',
+        rt_data_path('.env'),
+    ];
+    foreach ($envPaths as $envPath) {
+        if (!is_file($envPath)) continue;
+        foreach (file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
+            if ($line === '' || str_starts_with(trim($line), '#') || !str_contains($line, '=')) continue;
+            [$name, $raw] = explode('=', $line, 2);
+            if (trim($name) === $key) return trim($raw);
+        }
     }
     return $default;
+}
+
+function rt_private_env_path(): string {
+    return dirname(rt_base_dir(), 3) . '/respiratech_private/.env';
+}
+
+function rt_private_gsc_path(): string {
+    return dirname(rt_base_dir(), 3) . '/respiratech_private/gsc-service-account.json';
+}
+
+function rt_save_env_updates(array $updates): void {
+    $path = rt_private_env_path();
+    $dir = dirname($path);
+    if (!is_dir($dir)) mkdir($dir, 0700, true);
+    $current = [];
+    if (is_file($path)) {
+        foreach (file($path, FILE_IGNORE_NEW_LINES) ?: [] as $line) {
+            if ($line === '' || str_starts_with(trim($line), '#') || !str_contains($line, '=')) continue;
+            [$name, $raw] = explode('=', $line, 2);
+            $current[trim($name)] = trim($raw);
+        }
+    }
+    foreach ($updates as $key => $value) {
+        if ($value === null) continue;
+        $current[$key] = (string)$value;
+    }
+    $lines = [];
+    foreach ($current as $key => $value) {
+        $lines[] = $key . '=' . $value;
+    }
+    file_put_contents($path, implode("\n", $lines) . "\n", LOCK_EX);
+    @chmod($path, 0600);
 }
 
 function rt_admin_authorized(): bool {
@@ -119,4 +157,71 @@ function rt_append_activity(string $action, array $details = []): void {
         'details' => $details,
     ]);
     rt_save_json($path, array_slice($items, 0, 200));
+}
+
+function rt_activity_logs(): array {
+    $items = rt_load_json(rt_data_path('data/dashboard_activity_log.json'), []);
+    return is_array($items) ? $items : [];
+}
+
+function rt_blog_logs(): array {
+    $items = rt_load_json(rt_data_path('data/blog_generation_log.json'), []);
+    return is_array($items) ? $items : [];
+}
+
+function rt_seo_state(): array {
+    $audit = rt_load_json(rt_data_path('data/seo_audit.json'), []);
+    $logs = rt_load_json(rt_data_path('data/seo_brain_log.json'), []);
+    return [
+        'settings' => [
+            'auto' => rt_env('SEO_BRAIN_AUTO', 'true') !== 'false',
+            'runs_per_day' => (int)rt_env('SEO_BRAIN_RUNS_PER_DAY', '2'),
+            'gsc_site_url' => rt_env('GSC_SITE_URL', rt_env('SITE_BASE_URL', 'https://respira-tech.com')),
+            'gsc_credentials_set' => is_file(rt_data_path('data/gsc-service-account.json')) || is_file(rt_private_gsc_path()) || is_file(dirname(rt_base_dir(), 2) . '/respiratech_private/gsc-service-account.json'),
+        ],
+        'audit' => is_array($audit) ? $audit : [],
+        'logs' => is_array($logs) ? $logs : [],
+    ];
+}
+
+function rt_dashboard_config(): array {
+    $siteData = rt_load_json(rt_data_path('data/site.json'), []);
+    $site = is_array($siteData['site'] ?? null) ? $siteData['site'] : [];
+    $store = rt_load_json(rt_data_path('data/store.json'), ['config' => []]);
+    $storeConfig = is_array($store['config'] ?? null) ? $store['config'] : [];
+    return [
+        'settings' => [
+            'openai_api_key_set' => rt_env('OPENAI_API_KEY', '') !== '',
+            'openai_api_key_masked' => rt_env('OPENAI_API_KEY', '') !== '' ? '********' : '',
+            'auto_publish_blogs' => rt_env('AUTO_PUBLISH_BLOGS', 'true') === 'true',
+            'daily_blog_posts' => (int)rt_env('DAILY_BLOG_POSTS', '2'),
+            'generate_blog_images' => rt_env('GENERATE_BLOG_IMAGES', 'true') !== 'false',
+            'openai_text_model' => rt_env('OPENAI_TEXT_MODEL', 'gpt-4.1'),
+            'openai_image_model' => rt_env('OPENAI_IMAGE_MODEL', 'dall-e-3'),
+            'whatsapp_number' => rt_env('WHATSAPP_NUMBER', $site['whatsapp_number'] ?? $storeConfig['whatsapp_phone'] ?? RESPIRATECH_DEFAULT_WHATSAPP),
+            'site_base_url' => rt_env('SITE_BASE_URL', $site['base_url'] ?? 'https://respira-tech.com'),
+            'admin_password_set' => rt_env('ADMIN_PASSWORD', '') !== '',
+            'cron_secret_set' => rt_env('CRON_SECRET', '') !== '',
+            'blog_publish_time' => '09:00 Africa/Cairo',
+            'seo_brain_auto' => rt_env('SEO_BRAIN_AUTO', 'true') !== 'false',
+            'seo_brain_runs_per_day' => (int)rt_env('SEO_BRAIN_RUNS_PER_DAY', '2'),
+            'gsc_site_url' => rt_env('GSC_SITE_URL', rt_env('SITE_BASE_URL', 'https://respira-tech.com')),
+            'gsc_credentials_set' => is_file(rt_data_path('data/gsc-service-account.json')) || is_file(rt_private_gsc_path()) || is_file(dirname(rt_base_dir(), 2) . '/respiratech_private/gsc-service-account.json'),
+            'seo_daily_report_email' => rt_env('SEO_DAILY_REPORT_EMAIL', 'alihessien0@gmail.com'),
+            'auto_push_changes' => false,
+            'github_repo' => rt_env('GITHUB_REPO', ''),
+            'github_branch' => rt_env('GITHUB_BRANCH', 'main'),
+            'github_sync_configured' => rt_env('GITHUB_TOKEN', '') !== '' && rt_env('GITHUB_REPO', '') !== '',
+            'ftp_server' => '',
+            'ftp_username' => '',
+            'ftp_password_set' => false,
+            'ftp_remote_dir' => 'domains/respira-tech.com/public_html',
+            'ftp_deploy_configured' => false,
+            'php_backend' => true,
+        ],
+        'logs' => rt_blog_logs(),
+        'articles' => rt_load_articles(),
+        'seo_brain' => rt_seo_state(),
+        'activity_logs' => rt_activity_logs(),
+    ];
 }

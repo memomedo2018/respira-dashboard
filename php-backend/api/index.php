@@ -46,20 +46,17 @@ if ($method === 'GET' && $path === '/api/blog/logs') {
 
 if ($method === 'GET' && $path === '/api/dashboard/config') {
     rt_require_admin();
-    rt_json_response([
-        'admin_password_set' => rt_env('ADMIN_PASSWORD', '') !== '',
-        'whatsapp_number' => rt_env('WHATSAPP_NUMBER', RESPIRATECH_DEFAULT_WHATSAPP),
-        'site_base_url' => rt_env('SITE_BASE_URL', 'https://respira-tech.com'),
-        'auto_publish_blogs' => rt_env('AUTO_PUBLISH_BLOGS', 'true') === 'true',
-        'daily_blog_posts' => (int)rt_env('DAILY_BLOG_POSTS', '2'),
-        'generate_blog_images' => rt_env('GENERATE_BLOG_IMAGES', 'true') !== 'false',
-        'seo_daily_report_email' => rt_env('SEO_DAILY_REPORT_EMAIL', 'alihessien0@gmail.com'),
-        'php_backend' => true,
-    ]);
+    rt_json_response(rt_dashboard_config());
+}
+
+if ($method === 'GET' && $path === '/api/seo/brain') {
+    rt_require_admin();
+    rt_json_response(rt_seo_state());
 }
 
 if ($method === 'POST' && $path === '/api/store/save') {
     rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/build_content.php');
     $payload = rt_read_json_body();
     $existing = rt_load_json(rt_data_path('data/store.json'), []);
     $existingCount = is_array($existing['products'] ?? null) ? count($existing['products']) : 0;
@@ -69,7 +66,49 @@ if ($method === 'POST' && $path === '/api/store/save') {
     }
     rt_save_json(rt_data_path('data/store.json'), $payload);
     rt_append_activity('store_save', ['products_count' => $incomingCount]);
-    rt_json_response(['ok' => true, 'sync' => ['mode' => 'php-local']]);
+    $build = rt_build_content(false);
+    rt_json_response(['ok' => true, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+}
+
+if ($method === 'POST' && $path === '/api/dashboard/config') {
+    rt_require_admin();
+    $payload = rt_read_json_body();
+    $updates = [
+        'AUTO_PUBLISH_BLOGS' => !empty($payload['auto_publish_blogs']) ? 'true' : 'false',
+        'DAILY_BLOG_POSTS' => (string)($payload['daily_blog_posts'] ?? 2),
+        'GENERATE_BLOG_IMAGES' => array_key_exists('generate_blog_images', $payload) && !$payload['generate_blog_images'] ? 'false' : 'true',
+        'OPENAI_TEXT_MODEL' => trim((string)($payload['openai_text_model'] ?? 'gpt-4.1')),
+        'OPENAI_IMAGE_MODEL' => trim((string)($payload['openai_image_model'] ?? 'dall-e-3')),
+        'WHATSAPP_NUMBER' => trim((string)($payload['whatsapp_number'] ?? RESPIRATECH_DEFAULT_WHATSAPP)),
+        'SITE_BASE_URL' => trim((string)($payload['site_base_url'] ?? 'https://respira-tech.com')),
+        'SEO_BRAIN_AUTO' => array_key_exists('seo_brain_auto', $payload) && !$payload['seo_brain_auto'] ? 'false' : 'true',
+        'SEO_BRAIN_RUNS_PER_DAY' => (string)($payload['seo_brain_runs_per_day'] ?? 2),
+        'GSC_SITE_URL' => trim((string)($payload['gsc_site_url'] ?? $payload['site_base_url'] ?? 'https://respira-tech.com')),
+        'SEO_DAILY_REPORT_EMAIL' => trim((string)($payload['seo_daily_report_email'] ?? 'alihessien0@gmail.com')),
+    ];
+    foreach (['openai_api_key' => 'OPENAI_API_KEY', 'admin_password' => 'ADMIN_PASSWORD', 'cron_secret' => 'CRON_SECRET', 'github_token' => 'GITHUB_TOKEN', 'github_repo' => 'GITHUB_REPO', 'github_branch' => 'GITHUB_BRANCH'] as $field => $envKey) {
+        $value = trim((string)($payload[$field] ?? ''));
+        if ($value !== '' && $value !== '********') $updates[$envKey] = $value;
+    }
+    rt_save_env_updates($updates);
+
+    $siteData = rt_load_json(rt_data_path('data/site.json'), []);
+    if (is_array($siteData)) {
+        if (!isset($siteData['site']) || !is_array($siteData['site'])) $siteData['site'] = [];
+        $siteData['site']['whatsapp_number'] = $updates['WHATSAPP_NUMBER'];
+        $siteData['site']['base_url'] = $updates['SITE_BASE_URL'];
+        rt_save_json(rt_data_path('data/site.json'), $siteData);
+    }
+    $store = rt_load_json(rt_data_path('data/store.json'), ['config' => [], 'products' => [], 'categories' => []]);
+    if (is_array($store)) {
+        if (!isset($store['config']) || !is_array($store['config'])) $store['config'] = [];
+        $store['config']['whatsapp_phone'] = $updates['WHATSAPP_NUMBER'];
+        rt_save_json(rt_data_path('data/store.json'), $store);
+    }
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    $build = rt_build_content(false);
+    rt_append_activity('dashboard_settings_update', ['backend' => 'php']);
+    rt_json_response(['ok' => true, 'config' => rt_dashboard_config(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
 }
 
 if ($method === 'POST' && $path === '/api/upload') {
@@ -99,6 +138,7 @@ if ($method === 'POST' && $path === '/api/upload') {
 
 if ($method === 'POST' && $path === '/api/blog/save') {
     rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/build_content.php');
     $payload = rt_read_json_body();
     $slug = rt_slugify((string)($payload['slug'] ?? $payload['title_ar'] ?? ''));
     if ($slug === '') rt_json_response(['error' => 'missing slug'], 400);
@@ -107,11 +147,13 @@ if ($method === 'POST' && $path === '/api/blog/save') {
     $payload['status'] = $payload['status'] ?? 'draft';
     rt_save_json(rt_blog_article_path($slug), $payload);
     rt_append_activity('article_save', ['slug' => $slug, 'status' => $payload['status']]);
-    rt_json_response(['ok' => true, 'article' => $payload, 'sync' => ['mode' => 'php-local']]);
+    $build = rt_build_content(false);
+    rt_json_response(['ok' => true, 'article' => $payload, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
 }
 
 if ($method === 'POST' && $path === '/api/blog/toggle-status') {
     rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/build_content.php');
     $payload = rt_read_json_body();
     $slug = rt_slugify((string)($payload['slug'] ?? ''));
     $pathToArticle = rt_blog_article_path($slug);
@@ -122,18 +164,21 @@ if ($method === 'POST' && $path === '/api/blog/toggle-status') {
     if ($article['status'] === 'published' && empty($article['published_at'])) $article['published_at'] = $article['updated_at'];
     rt_save_json($pathToArticle, $article);
     rt_append_activity('article_toggle_status', ['slug' => $slug, 'status' => $article['status']]);
-    rt_json_response(['ok' => true, 'article' => $article, 'sync' => ['mode' => 'php-local']]);
+    $build = rt_build_content(false);
+    rt_json_response(['ok' => true, 'article' => $article, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
 }
 
 if ($method === 'POST' && $path === '/api/blog/delete') {
     rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/build_content.php');
     $payload = rt_read_json_body();
     $slug = rt_slugify((string)($payload['slug'] ?? ''));
     $pathToArticle = rt_blog_article_path($slug);
     if (!is_file($pathToArticle)) rt_json_response(['error' => 'article not found'], 404);
     unlink($pathToArticle);
     rt_append_activity('article_delete', ['slug' => $slug]);
-    rt_json_response(['ok' => true, 'sync' => ['mode' => 'php-local']]);
+    $build = rt_build_content(false);
+    rt_json_response(['ok' => true, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
 }
 
 if ($method === 'POST' && $path === '/api/build') {
@@ -154,11 +199,59 @@ if ($method === 'POST' && $path === '/api/blog/generate') {
     $count = max(1, min(5, (int)($payload['count'] ?? 1)));
     $publishNow = array_key_exists('publish_now', $payload) ? (bool)$payload['publish_now'] : null;
     $dryRun = !empty($payload['dry_run']);
-    $shouldBuild = !empty($payload['build']);
+    $shouldBuild = array_key_exists('build', $payload) ? !empty($payload['build']) : !$dryRun;
     $generated = rt_generate_blog_batch($count, $publishNow, $dryRun);
     $build = (count($generated) > 0 && $shouldBuild) ? rt_build_content($dryRun) : ['skipped' => true, 'reason' => $shouldBuild ? 'no generated articles' : 'build not requested'];
     rt_append_activity('php_blog_generate_batch', ['count' => $count, 'publish_now' => $publishNow, 'generated' => $generated, 'build' => $build]);
     rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => $publishNow, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+}
+
+if ($method === 'POST' && $path === '/api/seo/gsc/upload') {
+    rt_require_admin();
+    $payload = rt_read_json_body();
+    $content = trim((string)($payload['content'] ?? ''));
+    $decoded = json_decode($content, true);
+    if ($content === '' || !is_array($decoded)) rt_json_response(['error' => 'invalid JSON'], 400);
+    $private = rt_private_gsc_path();
+    if (!is_dir(dirname($private))) mkdir(dirname($private), 0700, true);
+    file_put_contents($private, json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    @chmod($private, 0600);
+    rt_append_activity('gsc_credentials_upload', ['backend' => 'php']);
+    rt_json_response(['ok' => true]);
+}
+
+if ($method === 'POST' && $path === '/api/seo/brain') {
+    rt_require_admin();
+    $payload = rt_read_json_body();
+    $action = trim((string)($payload['action'] ?? ''));
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    $audit = [
+        'generated_at' => gmdate('c'),
+        'backend' => 'php',
+        'action' => $action,
+        'content' => [
+            'articles_count' => count(rt_load_articles()),
+            'published_count' => count(array_filter(rt_load_articles(), fn($a) => ($a['status'] ?? '') === 'published')),
+        ],
+        'recommendations' => [],
+    ];
+    if ($action === 'audit' || $action === 'refresh_links' || $action === 'full_run') {
+        rt_save_json(rt_data_path('data/seo_audit.json'), $audit);
+        rt_save_json(rt_data_path('data/seo_brain_log.json'), array_merge([['type' => $action, 'created_at' => gmdate('c'), 'backend' => 'php']], rt_load_json(rt_data_path('data/seo_brain_log.json'), [])));
+        $build = $action === 'full_run' || $action === 'refresh_links' ? rt_build_content(false) : ['skipped' => true, 'reason' => 'audit only'];
+        rt_json_response(['ok' => true, 'result' => $audit, 'state' => rt_seo_state(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+    }
+    if ($action === 'from_url') {
+        require_once rt_data_path('php-backend/scripts/generate_blog.php');
+        $url = trim((string)($payload['url'] ?? ''));
+        $topic = $url !== '' ? 'مراجعة مصدر: ' . parse_url($url, PHP_URL_HOST) : 'مقال جديد من مصدر خارجي';
+        $siteData = rt_site_data();
+        $article = rt_finalize_article(rt_fallback_article($topic, $siteData), $topic, $siteData, !empty($payload['publish_now']));
+        rt_save_json(rt_blog_article_path($article['slug']), $article);
+        $build = rt_build_content(false);
+        rt_json_response(['ok' => true, 'result' => ['slug' => $article['slug']], 'state' => rt_seo_state(), 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+    }
+    rt_json_response(['error' => 'unknown action'], 400);
 }
 
 rt_json_response([

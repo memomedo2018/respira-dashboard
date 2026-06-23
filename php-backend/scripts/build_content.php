@@ -135,6 +135,33 @@ function rt_build_content(bool $dryRun = true): array {
     $articles = rt_published_articles();
     $written = 0;
 
+    if (!$dryRun) {
+        $officialBuilder = rt_data_path('build_content_hostinger.py');
+        if (is_file($officialBuilder)) {
+            $cmd = 'cd ' . escapeshellarg(rt_base_dir()) . ' && python3 ' . escapeshellarg($officialBuilder) . ' 2>&1';
+            $output = [];
+            $code = 0;
+            exec($cmd, $output, $code);
+            if ($code !== 0) {
+                return [
+                    'dry_run' => false,
+                    'official_builder' => true,
+                    'ok' => false,
+                    'exit_code' => $code,
+                    'output' => implode("\n", array_slice($output, -20)),
+                ];
+            }
+            return [
+                'dry_run' => false,
+                'official_builder' => true,
+                'ok' => true,
+                'published_articles' => count($articles),
+                'products' => is_array(rt_load_json(rt_data_path('data/store.json'), [])['products'] ?? null) ? count(rt_load_json(rt_data_path('data/store.json'), [])['products']) : 0,
+                'output' => implode("\n", array_slice($output, -5)),
+            ];
+        }
+    }
+
     $cards = '';
     foreach ($articles as $article) {
         $url = '/blog/' . rawurlencode((string)$article['slug']) . '/';
@@ -193,4 +220,3 @@ function rt_build_content(bool $dryRun = true): array {
         'written_files' => $written,
     ];
 }
-

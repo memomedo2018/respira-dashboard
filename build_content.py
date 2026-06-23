@@ -54,6 +54,12 @@ RELEASE_TOP_LEVEL_PATHS = [
 ]
 
 RELEASE_DATA_PATHS = [
+    BASE_DIR / "data" / ".htaccess",
+    BLOG_DIR,
+    BASE_DIR / "data" / "blog_topics.json",
+    BASE_DIR / "data" / "blog_generation_log.json",
+    BASE_DIR / "data" / "seo_audit.json",
+    BASE_DIR / "data" / "seo_brain_log.json",
     STORE_FILE,
     SITE_FILE,
     BASE_DIR / "data" / "product-schema.json",
@@ -96,7 +102,10 @@ def sync_live_release() -> None:
         if not source.exists():
             continue
         target = release_data_dir / source.name
-        shutil.copy2(source, target)
+        if source.is_dir():
+            shutil.copytree(source, target, dirs_exist_ok=True)
+        else:
+            shutil.copy2(source, target)
 
     if STORE_FILE.exists():
         shutil.copy2(STORE_FILE, LIVE_RELEASE_DIR / "store-data.json")
