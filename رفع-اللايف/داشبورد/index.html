@@ -489,8 +489,8 @@
             <div class="panel-head"><h2>التحكم السريع</h2></div>
             <div class="panel-body">
               <label class="toggle-row">
-                <input id="settingAutoPublish" type="checkbox" disabled>
-                <span>المقالات المولدة تحفظ Draft للمراجعة قبل النشر</span>
+                <input id="settingAutoPublish" type="checkbox">
+                <span>نشر المقالات تلقائياً (بدل Draft)</span>
               </label>
               <label class="toggle-row">
                 <input id="settingGenerateImages" type="checkbox" checked>
@@ -507,7 +507,7 @@
               </div>
               <div class="toolbar">
                 <button class="btn" id="generateDraftNowBtn" type="button">Draft الآن</button>
-                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد Draft للمراجعة</button>
+                <button class="btn btn-primary" id="generateNowBtn" type="button">توليد ونشر الآن</button>
               </div>
               <button class="btn" id="deployNowBtn" type="button" style="width:100%;margin-top:.25rem">نشر على الموقع الآن</button>
             </div>
@@ -634,7 +634,7 @@
               </div>
               <div class="toolbar">
                 <button class="btn" id="generateFromUrlDraftBtn" type="button">كتابة Draft من الرابط</button>
-                <button class="btn btn-primary" id="generateFromUrlPublishBtn" type="button">كتابة Draft للمراجعة</button>
+                <button class="btn btn-primary" id="generateFromUrlPublishBtn" type="button">كتابة ونشر من الرابط</button>
               </div>
             </div>
           </div>
@@ -678,7 +678,7 @@
           <div class="panel-body">
             <div class="toolbar">
               <button class="btn" id="generateArticleDraftBtn" type="button">توليد Draft</button>
-              <button class="btn btn-primary" id="generateArticleBtn" type="button">توليد Draft للمراجعة</button>
+              <button class="btn btn-primary" id="generateArticleBtn" type="button">توليد ونشر الآن</button>
               <button class="btn" id="refreshArticlesBtn" type="button">تحديث القائمة</button>
             </div>
             <div class="list" id="articlesList"></div>
@@ -729,7 +729,7 @@
             </div>
             <div class="toolbar">
               <button class="btn btn-primary" id="saveArticleBtn" type="button">حفظ</button>
-              <button class="btn" id="toggleArticleStatusBtn" type="button">اعتماد ونشر</button>
+              <button class="btn" id="toggleArticleStatusBtn" type="button">نشر / إلغاء نشر</button>
               <button class="btn btn-danger" id="deleteArticleBtn" type="button">حذف</button>
             </div>
             <div id="articleSeoChecklist" class="list"></div>
@@ -761,6 +761,6 @@
     </section>
   </main>
 
-  <script src="/assets/js/dashboard-app.js"></script>
+  <script src="/assets/js/dashboard-app.js?v=20260623-2"></script>
 </body>
 </html>

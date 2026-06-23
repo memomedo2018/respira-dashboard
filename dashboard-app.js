@@ -29,12 +29,16 @@ function apiUrl(path) {
 
 async function adminApi(path, options = {}) {
   const password = adminPassword();
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Admin-Password': password,
-    ...(options.headers || {})
-  };
-  const response = await fetch(apiUrl(path), { ...options, headers, mode: 'cors' });
+  const requestOptions = { ...options };
+  const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
+  headers.set('X-Admin-Password', password);
+  if (options.headers) {
+    new Headers(options.headers).forEach((value, key) => headers.set(key, value));
+  }
+  requestOptions.headers = headers;
+  requestOptions.mode = 'cors';
+  const response = await fetch(apiUrl(path), requestOptions);
   if (response.status === 401) {
     window.localStorage.removeItem('respiratech_admin_password');
     throw new Error('كلمة المرور غير صحيحة');
@@ -48,7 +52,7 @@ async function adminApi(path, options = {}) {
 
 async function publicApi(path, options = {}) {
   if (window.location.hostname === 'respira-tech.com' && path === '/api/store') {
-    const response = await fetch('/store-data.json', { ...options, mode: 'same-origin' });
+    const response = await fetch('/store-data.json', { mode: 'same-origin' });
     if (!response.ok) throw new Error('تعذر تحميل البيانات');
     return response.json();
   }
@@ -351,30 +355,23 @@ async function uploadFiles(files) {
     filename: file.name,
     content: await readFileAsDataURL(file)
   })));
-  const response = await fetch('/api/upload', {
+  const payload = await adminApi('/api/upload', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ files: encodedFiles })
   });
-  const payload = await response.json();
   return Array.isArray(payload.files) ? payload.files.map((item) => item.url) : [];
 }
 
 async function saveStore() {
-  const response = await fetch('/api/store/save', {
+  const payload = await adminApi('/api/store/save', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       config: state.storeConfig,
       categories: state.categories,
       products: state.products
     })
   });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.error || 'تعذر حفظ بيانات المتجر');
-  }
-  return response.json();
+  return payload;
 }
 
 function collectProductPayload() {
