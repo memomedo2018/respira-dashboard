@@ -171,7 +171,7 @@ function rt_build_content(bool $dryRun = true): array {
         $written++;
     }
 
-    $urls = ['/', '/store/', '/blog/', '/contact/', '/about/', '/services/'];
+    $urls = ['/', '/about/', '/services/', '/services/cpap/', '/services/bipap/', '/services/sleep-apnea/', '/services/cpap-masks/', '/store/', '/blog/', '/contact/', '/privacy-policy/', '/refund-policy/', '/terms/'];
     foreach ($articles as $article) $urls[] = '/blog/' . $article['slug'] . '/';
     if (!empty($store['products']) && is_array($store['products'])) {
         foreach ($store['products'] as $product) {
