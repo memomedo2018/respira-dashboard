@@ -8,6 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+if (str_starts_with($path, '/php-api/')) {
+    $path = '/api/' . ltrim(substr($path, strlen('/php-api/')), '/');
+} elseif ($path === '/php-api') {
+    $path = '/api/health';
+}
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($method === 'GET' && $path === '/api/health') {
@@ -131,9 +136,18 @@ if ($method === 'POST' && $path === '/api/blog/delete') {
     rt_json_response(['ok' => true, 'sync' => ['mode' => 'php-local']]);
 }
 
+if ($method === 'POST' && $path === '/api/build') {
+    rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    $payload = rt_read_json_body();
+    $dryRun = !empty($payload['dry_run']);
+    $result = rt_build_content($dryRun);
+    rt_append_activity('php_build', ['dry_run' => $dryRun, 'result' => $result]);
+    rt_json_response(['ok' => true, 'result' => $result]);
+}
+
 rt_json_response([
     'error' => 'endpoint not migrated to PHP yet',
     'path' => $path,
     'method' => $method,
 ], 501);
-

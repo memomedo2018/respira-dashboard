@@ -4,7 +4,21 @@ declare(strict_types=1);
 const RESPIRATECH_DEFAULT_WHATSAPP = '201010317647';
 
 function rt_base_dir(): string {
-    return realpath(__DIR__ . '/../..') ?: dirname(__DIR__, 2);
+    $env = getenv('RESPIRATECH_BASE_DIR');
+    if ($env && is_dir($env)) return rtrim((string)$env, '/');
+
+    $candidates = [
+        __DIR__ . '/..',
+        __DIR__ . '/../..',
+    ];
+    foreach ($candidates as $candidate) {
+        $resolved = realpath($candidate);
+        if ($resolved && is_file($resolved . '/data/store.json')) {
+            return $resolved;
+        }
+    }
+
+    return realpath(__DIR__ . '/..') ?: dirname(__DIR__);
 }
 
 function rt_data_path(string $relative): string {
@@ -106,4 +120,3 @@ function rt_append_activity(string $action, array $details = []): void {
     ]);
     rt_save_json($path, array_slice($items, 0, 200));
 }
-
