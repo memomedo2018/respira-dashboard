@@ -146,6 +146,21 @@ if ($method === 'POST' && $path === '/api/build') {
     rt_json_response(['ok' => true, 'result' => $result]);
 }
 
+if ($method === 'POST' && $path === '/api/blog/generate') {
+    rt_require_admin();
+    require_once rt_data_path('php-backend/scripts/generate_blog.php');
+    require_once rt_data_path('php-backend/scripts/build_content.php');
+    $payload = rt_read_json_body();
+    $count = max(1, min(5, (int)($payload['count'] ?? 1)));
+    $publishNow = array_key_exists('publish_now', $payload) ? (bool)$payload['publish_now'] : null;
+    $dryRun = !empty($payload['dry_run']);
+    $shouldBuild = !empty($payload['build']);
+    $generated = rt_generate_blog_batch($count, $publishNow, $dryRun);
+    $build = (count($generated) > 0 && $shouldBuild) ? rt_build_content($dryRun) : ['skipped' => true, 'reason' => $shouldBuild ? 'no generated articles' : 'build not requested'];
+    rt_append_activity('php_blog_generate_batch', ['count' => $count, 'publish_now' => $publishNow, 'generated' => $generated, 'build' => $build]);
+    rt_json_response(['ok' => true, 'started' => false, 'count' => $count, 'publish_now' => $publishNow, 'dry_run' => $dryRun, 'generated' => $generated, 'sync' => ['mode' => 'php-local'], 'build' => $build]);
+}
+
 rt_json_response([
     'error' => 'endpoint not migrated to PHP yet',
     'path' => $path,
